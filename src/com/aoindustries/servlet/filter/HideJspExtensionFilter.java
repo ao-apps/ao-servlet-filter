@@ -63,7 +63,7 @@ import javax.servlet.http.HttpServletResponseWrapper;
  * may need FILTER dispatcher in addition to REQUEST to see the forwarded requests.
  * </p>
  * <p>
- * Note: When testing in Tomcat 7, /WEB-INF/ protection was not violated by the forwarding.
+ * Note: When testing in Tomcat 7, /WEB-INF/ protection was not compromised by the forwarding.
  * Requests to /WEB-INF/ never hit the filter.
  * </p>
  */
