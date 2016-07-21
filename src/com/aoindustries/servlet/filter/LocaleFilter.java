@@ -77,6 +77,8 @@ import javax.servlet.http.HttpServletResponseWrapper;
  * final resolved locale, the client is 301 redirected to the URL including the <code>paramName</code>
  * parameter.  This is to help avoid possible duplicate content penalties for search engines.
  * </p>
+ *
+ * @see ThreadLocale
  */
 abstract public class LocaleFilter implements Filter {
 

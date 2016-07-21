@@ -51,10 +51,10 @@ import javax.servlet.http.HttpServletResponse;
  * </p>
  * <p>
  * This implementation supports UTF-16 surrogate pairs:
- * {@link https://en.wikipedia.org/wiki/Universal_Character_Set_characters#Surrogates}
+ * <a href="https://en.wikipedia.org/wiki/Universal_Character_Set_characters#Surrogates">https://en.wikipedia.org/wiki/Universal_Character_Set_characters#Surrogates</a>
  * </p>
  * <p>
- * The allowed characters defined by the specification: {@link https://www.w3.org/TR/xml/#charsets}:
+ * The allowed characters defined by the specification at <a href="https://www.w3.org/TR/xml/#charsets">https://www.w3.org/TR/xml/#charsets</a>:
  * </p>
  * <pre>Char	   ::=   	#x9 | #xA | #xD | [#x20-#xD7FF] | [#xE000-#xFFFD] | [#x10000-#x10FFFF]</pre>
  * <p>
