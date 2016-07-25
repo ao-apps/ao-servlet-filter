@@ -85,11 +85,6 @@ abstract public class LocaleFilter implements Filter {
 	private static final boolean DEBUG = false;
 
 	/**
-	 * UTF-8 encoding is assumed for all URL encoding.
-	 */
-	private static final String ENCODING = "UTF-8";
-
-	/**
 	 * The default parameter name if not overridden.
 	 * 
 	 * @see  #getParamName() 
@@ -101,7 +96,7 @@ abstract public class LocaleFilter implements Filter {
     /**
      * Adds the current locale as a parameter to the URL.
      */
-    private String addLocale(Locale locale, String url, String encodedParamName) {
+    private String addLocale(Locale locale, String url, String encodedParamName, String encoding) {
         // Split the anchor
         int poundPos = url.lastIndexOf('#');
 		String beforeAnchor;
@@ -125,7 +120,7 @@ abstract public class LocaleFilter implements Filter {
                 )
             ) {
 				try {
-	                beforeAnchor += (questionPos == -1 ? '?' : '&') + encodedParamName + '=' + URLEncoder.encode(toLocaleString(locale), ENCODING);
+	                beforeAnchor += (questionPos == -1 ? '?' : '&') + encodedParamName + '=' + URLEncoder.encode(toLocaleString(locale), encoding);
 				} catch(UnsupportedEncodingException e) {
 					// Should never happen with standard supported encoding
 					throw new WrappedException(e);
@@ -182,11 +177,14 @@ abstract public class LocaleFilter implements Filter {
                 final HttpServletRequest httpRequest = (HttpServletRequest)request;
                 final HttpServletResponse httpResponse = (HttpServletResponse)response;
 
+				final String requestEncoding = ServletUtil.getRequestEncoding(request);
+				final String responseEncoding = response.getCharacterEncoding();
+
                 final String requestUri = ServletUtil.getContextRequestUri(httpRequest);
 				final boolean isLocalized = isLocalizedPath(requestUri);
 
 				final String paramName = getParamName();
-				final String encodedParamName = URLEncoder.encode(paramName, ENCODING);
+				final String encodedParamName = URLEncoder.encode(paramName, responseEncoding);
 				final String paramValue = httpRequest.getParameter(paramName);
 
 				if(
@@ -202,7 +200,7 @@ abstract public class LocaleFilter implements Filter {
 				) {
 					if(DEBUG) servletContext.log("DEBUG: Redirecting to remove \"" + paramName + "\" parameter.");
 					StringBuilder url = new StringBuilder();
-					url.append(UrlUtils.decodeUrlPath(requestUri));
+					url.append(UrlUtils.decodeUrlPath(requestUri, requestEncoding));
 					boolean didOne = false;
 					for(Map.Entry<String,List<String>> entry : new ServletRequestParameters(request).getParameterMap().entrySet()) {
 						String name = entry.getKey();
@@ -214,7 +212,7 @@ abstract public class LocaleFilter implements Filter {
 									url.append('?');
 									didOne = true;
 								}
-								url.append(URLEncoder.encode(name, ENCODING)).append('=').append(URLEncoder.encode(value, ENCODING));
+								url.append(URLEncoder.encode(name, responseEncoding)).append('=').append(URLEncoder.encode(value, responseEncoding));
 							}
 						}
 					}
@@ -283,7 +281,7 @@ abstract public class LocaleFilter implements Filter {
 					) {
 						if(DEBUG) servletContext.log("DEBUG: Redirecting for missing or mismatched locale parameter: " + localeString);
 						StringBuilder url = new StringBuilder();
-						url.append(UrlUtils.decodeUrlPath(requestUri));
+						url.append(UrlUtils.decodeUrlPath(requestUri, requestEncoding));
 						boolean didOne = false;
 						for(Map.Entry<String,List<String>> entry : new ServletRequestParameters(request).getParameterMap().entrySet()) {
 							String name = entry.getKey();
@@ -294,7 +292,7 @@ abstract public class LocaleFilter implements Filter {
 										url.append('?');
 										didOne = true;
 									}
-									url.append(URLEncoder.encode(name, ENCODING)).append('=').append(URLEncoder.encode(value, ENCODING));
+									url.append(URLEncoder.encode(name, responseEncoding)).append('=').append(URLEncoder.encode(value, responseEncoding));
 								}
 							}
 						}
@@ -304,7 +302,7 @@ abstract public class LocaleFilter implements Filter {
 							url.append('?');
 							// Not used: didOne = true;
 						}
-						url.append(encodedParamName).append('=').append(URLEncoder.encode(localeString, ENCODING));
+						url.append(encodedParamName).append('=').append(URLEncoder.encode(localeString, responseEncoding));
 						ServletUtil.sendRedirect(httpRequest, httpResponse, url.toString(), HttpServletResponse.SC_MOVED_PERMANENTLY);
 						return;
 					}
@@ -357,12 +355,12 @@ abstract public class LocaleFilter implements Filter {
 									} else if(url.startsWith("cid:")) {
 										return httpResponse.encodeRedirectURL(url);
 									} else {
-										String newUrl = addLocale(httpResponse.getLocale(), url, encodedParamName);
+										String newUrl = addLocale(httpResponse.getLocale(), url, encodedParamName, httpResponse.getCharacterEncoding());
 										return httpResponse.encodeRedirectURL(newUrl);
 									}
 									int slashPos = remaining.indexOf('/');
 									if(slashPos==-1) {
-										String newUrl = addLocale(httpResponse.getLocale(), url, encodedParamName);
+										String newUrl = addLocale(httpResponse.getLocale(), url, encodedParamName, httpResponse.getCharacterEncoding());
 										return httpResponse.encodeRedirectURL(newUrl);
 									}
 									String hostPort = remaining.substring(0, slashPos);
@@ -370,7 +368,7 @@ abstract public class LocaleFilter implements Filter {
 									String host = colonPos==-1 ? hostPort : hostPort.substring(0, colonPos);
 									String encoded;
 									if(host.equalsIgnoreCase(httpRequest.getServerName())) {
-										encoded = protocol + hostPort + addLocale(httpResponse.getLocale(), remaining.substring(slashPos), encodedParamName);
+										encoded = protocol + hostPort + addLocale(httpResponse.getLocale(), remaining.substring(slashPos), encodedParamName, httpResponse.getCharacterEncoding());
 									} else {
 										// Going to an different hostname, do not add request parameters
 										encoded = url;
@@ -406,12 +404,12 @@ abstract public class LocaleFilter implements Filter {
 									} else if(url.startsWith("cid:")) {
 										return httpResponse.encodeURL(url);
 									} else {
-										String newUrl = addLocale(httpResponse.getLocale(), url, encodedParamName);
+										String newUrl = addLocale(httpResponse.getLocale(), url, encodedParamName, httpResponse.getCharacterEncoding());
 										return httpResponse.encodeURL(newUrl);
 									}
 									int slashPos = remaining.indexOf('/');
 									if(slashPos==-1) {
-										String newUrl = addLocale(httpResponse.getLocale(), url, encodedParamName);
+										String newUrl = addLocale(httpResponse.getLocale(), url, encodedParamName, httpResponse.getCharacterEncoding());
 										return httpResponse.encodeURL(newUrl);
 									}
 									String hostPort = remaining.substring(0, slashPos);
@@ -419,7 +417,7 @@ abstract public class LocaleFilter implements Filter {
 									String host = colonPos==-1 ? hostPort : hostPort.substring(0, colonPos);
 									String encoded;
 									if(host.equalsIgnoreCase(httpRequest.getServerName())) {
-										encoded = protocol + hostPort + addLocale(httpResponse.getLocale(), remaining.substring(slashPos), encodedParamName);
+										encoded = protocol + hostPort + addLocale(httpResponse.getLocale(), remaining.substring(slashPos), encodedParamName, httpResponse.getCharacterEncoding());
 									} else {
 										// Going to an different hostname, do not add request parameters
 										encoded = url;

@@ -110,6 +110,7 @@ public class HideJspExtensionFilter implements Filter {
                 ) {
                     final HttpServletRequest httpRequest = (HttpServletRequest)request;
                     final HttpServletResponse httpResponse = (HttpServletResponse)response;
+					final String responseEncoding = response.getCharacterEncoding();
 
 					String servletPath = httpRequest.getServletPath();
 					boolean requestRewrite = !noRewritePatterns.isMatch(servletPath);
@@ -122,7 +123,7 @@ public class HideJspExtensionFilter implements Filter {
 								String queryString = httpRequest.getQueryString();
 								String path = servletPath.substring(0, servletPath.length() - INDEX_JSP.length());
 								// Encode URL path elements (like Japanese filenames)
-								path = UrlUtils.encodeUrlPath(path);
+								path = UrlUtils.encodeUrlPath(path, responseEncoding);
 								// Add any query string
 								if(queryString != null) {
 									path = path + '?' + queryString;
@@ -146,7 +147,7 @@ public class HideJspExtensionFilter implements Filter {
 							String path = servletPath.substring(0, servletPath.length() - JSP_EXTENSION.length());
 							if(!isFolder(path)) {
 								// Encode URL path elements (like Japanese filenames)
-								path = UrlUtils.encodeUrlPath(path);
+								path = UrlUtils.encodeUrlPath(path, responseEncoding);
 								// Add any query string
 								if(queryString != null) {
 									path = path + '?' + queryString;

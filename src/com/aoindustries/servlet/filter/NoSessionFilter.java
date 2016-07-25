@@ -101,7 +101,7 @@ public class NoSessionFilter implements Filter {
 	 * Adds the values for any new cookies to the URL.  This handles cookie-based
 	 * session management through URL rewriting.
 	 */
-	private String addCookieValues(HttpServletRequest request, Map<String,Cookie> newCookies, String url) {
+	private String addCookieValues(HttpServletRequest request, Map<String,Cookie> newCookies, String url, String encoding) {
 		// Split the anchor
 		int poundPos = url.lastIndexOf('#');
 		String anchor;
@@ -139,9 +139,9 @@ public class NoSessionFilter implements Filter {
 								hasParam = true;
 							}
 							urlSB
-								.append(URLEncoder.encode(COOKIE_URL_PARAM_PREFIX+cookieName, "UTF-8"))
+								.append(URLEncoder.encode(COOKIE_URL_PARAM_PREFIX+cookieName, encoding))
 								.append('=')
-								.append(URLEncoder.encode(newCookie.getValue(), "UTF-8"))
+								.append(URLEncoder.encode(newCookie.getValue(), encoding))
 							;
 						} else {
 							// Cookie was removed - do not add to URL
@@ -172,9 +172,9 @@ public class NoSessionFilter implements Filter {
 									hasParam = true;
 								}
 								urlSB
-									.append(URLEncoder.encode(paramName, "UTF-8"))
+									.append(URLEncoder.encode(paramName, encoding))
 									.append('=')
-									.append(URLEncoder.encode(values[values.length-1], "UTF-8"))
+									.append(URLEncoder.encode(values[values.length-1], encoding))
 								;
 							}
 						}
@@ -357,18 +357,18 @@ public class NoSessionFilter implements Filter {
 								} else if(url.startsWith("cid:")) {
 									return url;
 								} else {
-									return addCookieValues(originalRequest, newCookies, url);
+									return addCookieValues(originalRequest, newCookies, url, getCharacterEncoding());
 								}
 								int slashPos = remaining.indexOf('/');
 								if(slashPos==-1) {
-									return addCookieValues(originalRequest, newCookies, url);
+									return addCookieValues(originalRequest, newCookies, url, getCharacterEncoding());
 								}
 								String hostPort = remaining.substring(0, slashPos);
 								int colonPos = hostPort.indexOf(':');
 								String host = colonPos==-1 ? hostPort : hostPort.substring(0, colonPos);
 								String encoded;
 								if(host.equalsIgnoreCase(originalRequest.getServerName())) {
-									encoded = protocol + hostPort + addCookieValues(originalRequest, newCookies, remaining.substring(slashPos));
+									encoded = protocol + hostPort + addCookieValues(originalRequest, newCookies, remaining.substring(slashPos), getCharacterEncoding());
 								} else {
 									// Going to an different hostname, do not add request parameters
 									encoded = url;
@@ -403,18 +403,18 @@ public class NoSessionFilter implements Filter {
 								} else if(url.startsWith("cid:")) {
 									return url;
 								} else {
-									return addCookieValues(originalRequest, newCookies, url);
+									return addCookieValues(originalRequest, newCookies, url, getCharacterEncoding());
 								}
 								int slashPos = remaining.indexOf('/');
 								if(slashPos==-1) {
-									return addCookieValues(originalRequest, newCookies, url);
+									return addCookieValues(originalRequest, newCookies, url, getCharacterEncoding());
 								}
 								String hostPort = remaining.substring(0, slashPos);
 								int colonPos = hostPort.indexOf(':');
 								String host = colonPos==-1 ? hostPort : hostPort.substring(0, colonPos);
 								String encoded;
 								if(host.equalsIgnoreCase(originalRequest.getServerName())) {
-									encoded = protocol + hostPort + addCookieValues(originalRequest, newCookies, remaining.substring(slashPos));
+									encoded = protocol + hostPort + addCookieValues(originalRequest, newCookies, remaining.substring(slashPos), getCharacterEncoding());
 								} else {
 									// Going to an different hostname, do not add request parameters
 									encoded = url;

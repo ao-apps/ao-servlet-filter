@@ -24,7 +24,6 @@ package com.aoindustries.servlet.filter;
 
 import com.aoindustries.net.ServletRequestParameters;
 import com.aoindustries.servlet.http.ServletUtil;
-import com.aoindustries.util.AoCollections;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -60,16 +59,8 @@ import javax.servlet.http.HttpServletResponse;
  * <p>
  * Only HTTP/HTTPS requests are filtered.
  * </p>
- * <p>
- * UTF-8 encoding is assumed.
- * </p>
  */
 public class StripInvalidXmlCharactersFilter implements Filter {
-
-	/**
-	 * UTF-8 encoding is assumed for all URL encoding.
-	 */
-	private static final String ENCODING = "UTF-8";
 
 	/**
 	 * <pre>Char	   ::=   	#x9 | #xA | #xD | [#x20-#xD7FF] | [#xE000-#xFFFD] | [#x10000-#x10FFFF]</pre>
@@ -178,6 +169,7 @@ public class StripInvalidXmlCharactersFilter implements Filter {
 			}
 			if(!isValid) {
 				HttpServletResponse httpResponse = (HttpServletResponse)response;
+				String responseEncoding = response.getCharacterEncoding();
 				if("GET".equals(httpRequest.getMethod())) {
 					// Redirect to same request but with special characters removed
 					StringBuilder url = new StringBuilder();
@@ -198,9 +190,9 @@ public class StripInvalidXmlCharactersFilter implements Filter {
 								didOne = true;
 							}
 							url
-								.append(URLEncoder.encode(name, ENCODING))
+								.append(URLEncoder.encode(name, responseEncoding))
 								.append('=')
-								.append(URLEncoder.encode(filter(value), ENCODING))
+								.append(URLEncoder.encode(filter(value), responseEncoding))
 							;
 						}
 					}

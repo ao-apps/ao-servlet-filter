@@ -38,7 +38,9 @@ import javax.servlet.ServletResponse;
  * Also restores the ThreadLocale to the system default upon request completion.
  * </p>
  * <p>
- * This should be used for the REQUEST dispatcher only.
+ * This should be first in the filter chain and used for the REQUEST dispatcher only.
+ * TODO: This extra side effect should either be moved to a different filter or just done away with entirely.
+ * TODO: All code in good form should restore the thread locale already anyway with try/finally.
  * </p>
  *
  * @author  AO Industries, Inc.
