@@ -48,8 +48,8 @@ import javax.servlet.http.HttpServletResponseWrapper;
  * <ol>
  * <li>Rewrite any URLs ending in "/path/index.jsp" to "/path/", maintaining any query string</li>
  * <li>Rewrite any URLs ending in "/path/file.jsp" to "/path/file", maintaining any query string</li>
- * <li>301 redirect any incoming request ending in "/path/index.jsp" to "/path/" (to not lose traffic after enabling the filter)</li>
- * <li>301 redirect any incoming request ending in "/path/file.jsp" to "/path/file" (to not lose traffic after enabling the filter)</li>
+ * <li>301 redirect any incoming GET request ending in "/path/index.jsp" to "/path/" (to not lose traffic after enabling the filter)</li>
+ * <li>301 redirect any incoming GET request ending in "/path/file.jsp" to "/path/file" (to not lose traffic after enabling the filter)</li>
  * <li>Forward incoming request of "/path/" to "/path/index.jsp", if the resource exists.
  *     This is done by container with a welcome file list of index.jsp in web.xml.</li>
  * <li>Forward incoming request of "/path/file" to "/path/file.jsp", if the resource exists</li>
@@ -60,11 +60,11 @@ import javax.servlet.http.HttpServletResponseWrapper;
  * </p>
  * <p>
  * In the filter chain, it is important to consider the forwarding performed by this filter.  Subsequent filters
- * may need FILTER dispatcher in addition to REQUEST to see the forwarded requests.
+ * may need FORWARD dispatcher in addition to REQUEST to see the forwarded requests.
  * </p>
  * <p>
  * Note: When testing in Tomcat 7, /WEB-INF/ protection was not compromised by the forwarding.
- * Requests to /WEB-INF/ never hit the filter.
+ * Requests to /WEB-INF/ never even hit the filter.
  * </p>
  */
 public class HideJspExtensionFilter implements Filter {
@@ -113,9 +113,14 @@ public class HideJspExtensionFilter implements Filter {
 					final String responseEncoding = response.getCharacterEncoding();
 
 					String servletPath = httpRequest.getServletPath();
-					boolean requestRewrite = !noRewritePatterns.isMatch(servletPath);
+					boolean requestRewrite =
+						// Only redirect GET requests
+						ServletUtil.METHOD_GET.equals(httpRequest.getMethod())
+						// Also skip manual no-rewrites
+						&& !noRewritePatterns.isMatch(servletPath)
+					;
 					if(requestRewrite) {
-						// 301 redirect any incoming request ending in "/path/index.jsp" to "/path/" (to not lose traffic after enabling the filter)
+						// 301 redirect any incoming GET request ending in "/path/index.jsp" to "/path/" (to not lose traffic after enabling the filter)
 						if(servletPath.endsWith(SLASH_INDEX_JSP)) {
 							// "index.jsp" is added to the servlet path for requests ending in /, this
 							// uses the un-decoded requestUri to distinguish between the two
@@ -137,7 +142,7 @@ public class HideJspExtensionFilter implements Filter {
 							}
 						}
 
-						// 301 redirect any incoming request ending in "/path/file.jsp" to "/path/file" (to not lose traffic after enabling the filter)
+						// 301 redirect any incoming GET request ending in "/path/file.jsp" to "/path/file" (to not lose traffic after enabling the filter)
 						if(
 							servletPath.endsWith(JSP_EXTENSION)
 							// Do not redirect the index.jsp
