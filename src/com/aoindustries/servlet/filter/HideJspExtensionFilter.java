@@ -113,13 +113,12 @@ public class HideJspExtensionFilter implements Filter {
 					final String responseEncoding = response.getCharacterEncoding();
 
 					String servletPath = httpRequest.getServletPath();
-					boolean requestRewrite =
+					boolean requestRewrite = !noRewritePatterns.isMatch(servletPath);
+					if(
+						requestRewrite
 						// Only redirect GET requests
-						ServletUtil.METHOD_GET.equals(httpRequest.getMethod())
-						// Also skip manual no-rewrites
-						&& !noRewritePatterns.isMatch(servletPath)
-					;
-					if(requestRewrite) {
+						&& ServletUtil.METHOD_GET.equals(httpRequest.getMethod())
+					) {
 						// 301 redirect any incoming GET request ending in "/path/index.jsp" to "/path/" (to not lose traffic after enabling the filter)
 						if(servletPath.endsWith(SLASH_INDEX_JSP)) {
 							// "index.jsp" is added to the servlet path for requests ending in /, this
