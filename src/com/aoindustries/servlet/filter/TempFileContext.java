@@ -24,6 +24,8 @@ package com.aoindustries.servlet.filter;
 
 import com.aoindustries.io.TempFileList;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -55,13 +57,52 @@ import javax.servlet.ServletResponse;
  */
 public class TempFileContext implements Filter {
 
+	private static final Logger logger = Logger.getLogger(TempFileContext.class.getName());
+
 	private static final String REQUEST_ATTRIBUTE_NAME = TempFileContext.class.getName()+".tempFileList";
-	
+
 	/**
 	 * Gets the temp file list for the current request context or <code>null</code> if filter not active.
 	 */
 	public static TempFileList getTempFileList(ServletRequest request) {
 		return (TempFileList)request.getAttribute(REQUEST_ATTRIBUTE_NAME);
+	}
+
+	// Java 1.8: @FunctionalInterface
+	public static interface Wrapper<T> {
+		T call(T original, TempFileList tempFileList);
+	}
+
+	private static final Object tempFileWarningLock = new Object();
+	private static boolean tempFileWarned = false;
+
+	/**
+	 * If the TempFileContext is enabled, wraps the original object.
+	 * When the context is inactive, the original object is returned unaltered.
+	 * This is logged as a warning the first time not wrapped.
+	 */
+	public static <T> T wrapTempFileList(T original, ServletRequest request, Wrapper<T> wrapper) {
+		TempFileList tempFileList = getTempFileList(request);
+		if(tempFileList != null) {
+			return wrapper.call(original, tempFileList);
+		} else {
+			// Warn once
+			synchronized(tempFileWarningLock) {
+				if(!tempFileWarned) {
+					if(logger.isLoggable(Level.WARNING)) {
+						logger.log(
+							Level.WARNING,
+							"TempFileContext not initialized: refusing to automatically create temp files for large buffers.  "
+							+ "Additional heap space may be used for large requests.  "
+							+ "Please add the " + TempFileContext.class.getName() + " filter to your web.xml file.",
+							new Throwable("Stack Trace")
+						);
+					}
+					tempFileWarned = true;
+				}
+			}
+			return original;
+		}
 	}
 
 	@Override
