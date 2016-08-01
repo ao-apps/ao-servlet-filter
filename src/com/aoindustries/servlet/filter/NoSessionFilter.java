@@ -112,7 +112,7 @@ public class NoSessionFilter implements Filter {
 		}
 		// Don't add for certains file types
 		int questionPos = url.lastIndexOf('?');
-		String lowerPath = (questionPos==-1 ? url : url.substring(0, questionPos)).toLowerCase(Locale.ENGLISH);
+		String lowerPath = (questionPos==-1 ? url : url.substring(0, questionPos)).toLowerCase(Locale.ROOT);
 		if(
 			!lowerPath.endsWith(".css")
 			&& !lowerPath.endsWith(".gif")

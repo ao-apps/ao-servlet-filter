@@ -467,7 +467,7 @@ abstract public class LocaleFilter implements Filter {
 	 */
     protected boolean isLocalizedPath(String url) {
         int questionPos = url.lastIndexOf('?');
-        String lowerPath = (questionPos==-1 ? url : url.substring(0, questionPos)).toLowerCase(Locale.ENGLISH);
+        String lowerPath = (questionPos==-1 ? url : url.substring(0, questionPos)).toLowerCase(Locale.ROOT);
         return
             !lowerPath.endsWith(".css")
             && !lowerPath.endsWith(".exe")
@@ -609,9 +609,9 @@ abstract public class LocaleFilter implements Filter {
 			}
 		}
 		if(!language.isEmpty()) {
-			language = language.toLowerCase(Locale.ENGLISH);
+			language = language.toLowerCase(Locale.ROOT);
 			if(!country.isEmpty()) {
-				country = country.toUpperCase(Locale.ENGLISH);
+				country = country.toUpperCase(Locale.ROOT);
 				if(!variant.isEmpty()) {
 					// Exact match on language, country, and variant
 					Locale match = supportedLocales.get(
