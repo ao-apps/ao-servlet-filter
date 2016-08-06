@@ -59,7 +59,7 @@ import javax.servlet.http.HttpSession;
  * <p>
  * <b>Security implications!</b>  Since cookies may now come from the URL, they
  * may be added on links from other sites.  Thus, one cannot use cookies in
- * these Cross-Site Request Forgery (CSRF) detection or for any other purpose
+ * any Cross-Site Request Forgery (CSRF) detection or for any other purpose
  * that assumes the cookie may only be provided by the browser.
  * </p>
  * <p>
