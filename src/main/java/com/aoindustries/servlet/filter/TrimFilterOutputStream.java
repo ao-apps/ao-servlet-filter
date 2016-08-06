@@ -26,7 +26,7 @@ import com.aoindustries.util.BufferManager;
 import java.io.IOException;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.ServletResponse;
-import javax.servlet.WriteListener;
+// Java EE 7: import javax.servlet.WriteListener;
 
 /**
  * Filters the output and removes extra white space at the beginning of lines and completely removes blank lines.
@@ -388,6 +388,7 @@ public class TrimFilterOutputStream extends ServletOutputStream {
 		}
 	}
 
+	/* Java EE 7: 
 	@Override
 	public boolean isReady() {
 		return wrapped.isReady();
@@ -397,4 +398,5 @@ public class TrimFilterOutputStream extends ServletOutputStream {
 	public void setWriteListener(WriteListener wl) {
 		wrapped.setWriteListener(wl);
 	}
+	 */
 }
