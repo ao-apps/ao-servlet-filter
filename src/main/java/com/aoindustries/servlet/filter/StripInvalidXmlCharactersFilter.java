@@ -199,10 +199,10 @@ public class StripInvalidXmlCharactersFilter implements Filter {
 					ServletUtil.sendRedirect(httpResponse, url.toString(), HttpServletResponse.SC_MOVED_PERMANENTLY);
 				} else {
 					// Filter invalid characters
-					final Map<String,List<String>> filteredMap = new LinkedHashMap<>(paramMap.size()*4/3+1);
+					final Map<String,List<String>> filteredMap = new LinkedHashMap<String,List<String>>(paramMap.size()*4/3+1);
 					for(Map.Entry<String,List<String>> entry : paramMap.entrySet()) {
 						List<String> values = entry.getValue();
-						List<String> filteredValues = new ArrayList<>(values.size());
+						List<String> filteredValues = new ArrayList<String>(values.size());
 						for(String value : values) {
 							filteredValues.add(filter(value));
 						}
@@ -220,7 +220,7 @@ public class StripInvalidXmlCharactersFilter implements Filter {
 
 							@Override
 							public Map<String, String[]> getParameterMap() {
-								Map<String,String[]> newMap = new LinkedHashMap<>(filteredMap.size()*4/3+1);
+								Map<String,String[]> newMap = new LinkedHashMap<String,String[]>(filteredMap.size()*4/3+1);
 								for(Map.Entry<String,List<String>> entry : filteredMap.entrySet()) {
 									List<String> values = entry.getValue();
 									newMap.put(entry.getKey(), values.toArray(new String[values.size()]));
