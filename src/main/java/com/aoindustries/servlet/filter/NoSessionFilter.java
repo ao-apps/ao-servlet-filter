@@ -101,7 +101,7 @@ public class NoSessionFilter implements Filter {
 	 */
 	public static final int MAXIMUM_COOKIES = 20;
 
-	private final SortedSet<String> cookieNames = new TreeSet<>();
+	private final SortedSet<String> cookieNames = new TreeSet<String>();
 
 	/**
 	 * Adds the values for any new cookies to the URL.  This handles cookie-based
@@ -218,7 +218,7 @@ public class NoSessionFilter implements Filter {
 				) {
 					final HttpServletRequest originalRequest = (HttpServletRequest)request;
 					final HttpServletResponse originalResponse = (HttpServletResponse)response;
-					final Map<String,Cookie> newCookies = new HashMap<>(cookieNames.size()*4/3+1);
+					final Map<String,Cookie> newCookies = new HashMap<String,Cookie>(cookieNames.size()*4/3+1);
 					chain.doFilter(
 						new HttpServletRequestWrapper(originalRequest) {
 							@Override
@@ -249,7 +249,7 @@ public class NoSessionFilter implements Filter {
 									}
 								}
 								if(!needsFilter) return completeMap;
-								Map<String,String[]> filteredMap = new LinkedHashMap<>(completeMap.size()*4/3); // No +1 on size since we will filter at least one - guaranteed no rehash
+								Map<String,String[]> filteredMap = new LinkedHashMap<String,String[]>(completeMap.size()*4/3); // No +1 on size since we will filter at least one - guaranteed no rehash
 								for(Map.Entry<String,String[]> entry : completeMap.entrySet()) {
 									String paramName = entry.getKey();
 									if(!paramName.startsWith(COOKIE_URL_PARAM_PREFIX)) filteredMap.put(paramName, entry.getValue());
@@ -302,7 +302,7 @@ public class NoSessionFilter implements Filter {
 								Enumeration<String> parameterNames = originalRequest.getParameterNames();
 								if(headerCookies==null && !parameterNames.hasMoreElements()) return null; // Not possibly any cookies
 								// Add header cookies
-								Map<String,Cookie> allCookies = new LinkedHashMap<>(cookieNames.size()*4/3+1); // Worst-case map size is cookieNames
+								Map<String,Cookie> allCookies = new LinkedHashMap<String,Cookie>(cookieNames.size()*4/3+1); // Worst-case map size is cookieNames
 								if(headerCookies!=null) {
 									for(Cookie cookie : headerCookies) {
 										String cookieName = cookie.getName();
