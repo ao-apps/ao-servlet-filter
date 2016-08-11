@@ -143,15 +143,15 @@ public class StripInvalidXmlCharactersFilter implements Filter {
 	}
 
 	@Override
-    public void init(FilterConfig config) {
-    }
+	public void init(FilterConfig config) {
+	}
 
-    @Override
-    public void doFilter(
-        ServletRequest request,
-        ServletResponse response,
-        FilterChain chain
-    ) throws IOException, ServletException {
+	@Override
+	public void doFilter(
+		ServletRequest request,
+		ServletResponse response,
+		FilterChain chain
+	) throws IOException, ServletException {
 		if(
 			(request instanceof HttpServletRequest)
 			&& (response instanceof HttpServletResponse)
@@ -250,9 +250,9 @@ public class StripInvalidXmlCharactersFilter implements Filter {
 			// Not HTTP/HTTPS, do no filtering
 			chain.doFilter(request, response);
 		}
-    }
+	}
 
-    @Override
-    public void destroy() {
-    }
+	@Override
+	public void destroy() {
+	}
 }

@@ -91,96 +91,96 @@ abstract public class LocaleFilter implements Filter {
 	 */
 	private static final String DEFAULT_PARAM_NAME = "hl";
 
-    private static final String ENABLED_LOCALES_REQUEST_ATTRIBUTE_KEY = LocaleFilter.class.getName()+".enabledLocales";
+	private static final String ENABLED_LOCALES_REQUEST_ATTRIBUTE_KEY = LocaleFilter.class.getName()+".enabledLocales";
 
-    /**
-     * Adds the current locale as a parameter to the URL.
-     */
-    private String addLocale(Locale locale, String url, String encodedParamName, String encoding) {
-        // Split the anchor
-        int poundPos = url.lastIndexOf('#');
+	/**
+	 * Adds the current locale as a parameter to the URL.
+	 */
+	private String addLocale(Locale locale, String url, String encodedParamName, String encoding) {
+		// Split the anchor
+		int poundPos = url.lastIndexOf('#');
 		String beforeAnchor;
-        String anchor;
-        if(poundPos==-1) {
+		String anchor;
+		if(poundPos==-1) {
 			beforeAnchor = url;
 			anchor = null;
 		} else {
-            anchor = url.substring(poundPos);
-            beforeAnchor = url.substring(0, poundPos);
-        }
-        // Only add for non-excluded file types
-        if(isLocalizedPath(beforeAnchor)) {
-            int questionPos = beforeAnchor.lastIndexOf('?');
-            // Only rewrite a URL that does not already contain a paramName parameter.
-            if(
-                questionPos == -1
-                || (
-                    !beforeAnchor.startsWith("?"+encodedParamName+"=", questionPos)
-                    && beforeAnchor.indexOf("&"+encodedParamName+"=", questionPos + 1) == -1
-                )
-            ) {
+			anchor = url.substring(poundPos);
+			beforeAnchor = url.substring(0, poundPos);
+		}
+		// Only add for non-excluded file types
+		if(isLocalizedPath(beforeAnchor)) {
+			int questionPos = beforeAnchor.lastIndexOf('?');
+			// Only rewrite a URL that does not already contain a paramName parameter.
+			if(
+				questionPos == -1
+				|| (
+					!beforeAnchor.startsWith("?"+encodedParamName+"=", questionPos)
+					&& beforeAnchor.indexOf("&"+encodedParamName+"=", questionPos + 1) == -1
+				)
+			) {
 				try {
-	                beforeAnchor += (questionPos == -1 ? '?' : '&') + encodedParamName + '=' + URLEncoder.encode(toLocaleString(locale), encoding);
+					beforeAnchor += (questionPos == -1 ? '?' : '&') + encodedParamName + '=' + URLEncoder.encode(toLocaleString(locale), encoding);
 				} catch(UnsupportedEncodingException e) {
 					// Should never happen with standard supported encoding
 					throw new WrappedException(e);
 				}
-            }
+			}
 			return
 				(anchor != null)
 				? (beforeAnchor + anchor)
 				: beforeAnchor
 			;
-        } else {
+		} else {
 			// Unmodified
 			return url;
 		}
-    }
+	}
 
 	private ServletContext servletContext;
 
-    @Override
-    public void init(FilterConfig config) throws ServletException {
+	@Override
+	public void init(FilterConfig config) throws ServletException {
 		this.servletContext = config.getServletContext();
-    }
+	}
 
-    /**
-     * Gets the set of enabled locales for the provided request.  This must be called
-     * from a request that has already been filtered through LocaleFilter.
+	/**
+	 * Gets the set of enabled locales for the provided request.  This must be called
+	 * from a request that has already been filtered through LocaleFilter.
 	 * When container's default locale is used, will return an empty map.
 	 * 
 	 * @return  The mapping from localeString to locale
-     */
-    public static Map<String,Locale> getEnabledLocales(ServletRequest request) {
-        @SuppressWarnings("unchecked")
-        Map<String,Locale> enabledLocales = (Map<String,Locale>)request.getAttribute(ENABLED_LOCALES_REQUEST_ATTRIBUTE_KEY);
-        if(enabledLocales==null) throw new IllegalStateException("Not in request filtered by LocaleFilter, unable to get enabled locales.");
-        return enabledLocales;
-    }
+	 */
+	public static Map<String,Locale> getEnabledLocales(ServletRequest request) {
+		@SuppressWarnings("unchecked")
+		Map<String,Locale> enabledLocales = (Map<String,Locale>)request.getAttribute(ENABLED_LOCALES_REQUEST_ATTRIBUTE_KEY);
+		if(enabledLocales==null) throw new IllegalStateException("Not in request filtered by LocaleFilter, unable to get enabled locales.");
+		return enabledLocales;
+	}
 
-    @Override
-    public void doFilter(
-        ServletRequest request,
-        ServletResponse response,
-        FilterChain chain
-    ) throws IOException, ServletException {
-        if(
-	        // Makes sure only one locale filter is applied per request
-            request.getAttribute(ENABLED_LOCALES_REQUEST_ATTRIBUTE_KEY) == null
+	@Override
+	public void doFilter(
+		ServletRequest request,
+		ServletResponse response,
+		FilterChain chain
+	) throws IOException, ServletException {
+		if(
+			// Makes sure only one locale filter is applied per request
+			request.getAttribute(ENABLED_LOCALES_REQUEST_ATTRIBUTE_KEY) == null
 			// Must be HTTP protocol
-            && (request instanceof HttpServletRequest)
-            && (response instanceof HttpServletResponse)
-        ) {
+			&& (request instanceof HttpServletRequest)
+			&& (response instanceof HttpServletResponse)
+		) {
 			final Map<String,Locale> supportedLocales = getSupportedLocales(request);
-            request.setAttribute(ENABLED_LOCALES_REQUEST_ATTRIBUTE_KEY, supportedLocales);
-            try {
-                final HttpServletRequest httpRequest = (HttpServletRequest)request;
-                final HttpServletResponse httpResponse = (HttpServletResponse)response;
+			request.setAttribute(ENABLED_LOCALES_REQUEST_ATTRIBUTE_KEY, supportedLocales);
+			try {
+				final HttpServletRequest httpRequest = (HttpServletRequest)request;
+				final HttpServletResponse httpResponse = (HttpServletResponse)response;
 
 				final String requestEncoding = ServletUtil.getRequestEncoding(request);
 				final String responseEncoding = response.getCharacterEncoding();
 
-                final String requestUri = ServletUtil.getContextRequestUri(httpRequest);
+				final String requestUri = ServletUtil.getContextRequestUri(httpRequest);
 				final boolean isLocalized = isLocalizedPath(requestUri);
 
 				final String paramName = getParamName();
@@ -224,7 +224,7 @@ abstract public class LocaleFilter implements Filter {
 					!isLocalized
 				) {
 					if(DEBUG) servletContext.log("DEBUG: Resource not localized, using container's default locale and performing no URL rewriting.");
-		            chain.doFilter(request, response);
+					chain.doFilter(request, response);
 					return;
 				}
 				if(
@@ -232,7 +232,7 @@ abstract public class LocaleFilter implements Filter {
 					supportedLocales.isEmpty()
 				) {
 					if(DEBUG) servletContext.log("DEBUG: No supported locales, using container's default locale and performing no URL rewriting.");
-		            chain.doFilter(request, response);
+					chain.doFilter(request, response);
 					return;
 				}
 				final Locale responseLocale;
@@ -434,18 +434,18 @@ abstract public class LocaleFilter implements Filter {
 				} finally {
 					ThreadLocale.set(oldThreadLocale);
 				}
-            } finally {
-                request.removeAttribute(ENABLED_LOCALES_REQUEST_ATTRIBUTE_KEY);
-            }
-        } else {
-            chain.doFilter(request, response);
-        }
-    }
+			} finally {
+				request.removeAttribute(ENABLED_LOCALES_REQUEST_ATTRIBUTE_KEY);
+			}
+		} else {
+			chain.doFilter(request, response);
+		}
+	}
 
-    @Override
-    public void destroy() {
+	@Override
+	public void destroy() {
 		// Do nothing
-    }
+	}
 
 	/**
 	 * Checks if the locale parameter should be added to the given URL.
@@ -465,21 +465,21 @@ abstract public class LocaleFilter implements Filter {
 	 *   <li>*.zip[?params]</li>
 	 * </ul>
 	 */
-    protected boolean isLocalizedPath(String url) {
-        int questionPos = url.lastIndexOf('?');
-        String lowerPath = (questionPos==-1 ? url : url.substring(0, questionPos)).toLowerCase(Locale.ROOT);
-        return
-            !lowerPath.endsWith(".css")
-            && !lowerPath.endsWith(".exe")
-            && !lowerPath.endsWith(".gif")
-            && !lowerPath.endsWith(".ico")
-            && !lowerPath.endsWith(".jpeg")
-            && !lowerPath.endsWith(".jpg")
-            && !lowerPath.endsWith(".js")
-            && !lowerPath.endsWith(".png")
-            && !lowerPath.endsWith(".txt")
-            && !lowerPath.endsWith(".zip")
-        ;
+	protected boolean isLocalizedPath(String url) {
+		int questionPos = url.lastIndexOf('?');
+		String lowerPath = (questionPos==-1 ? url : url.substring(0, questionPos)).toLowerCase(Locale.ROOT);
+		return
+			!lowerPath.endsWith(".css")
+			&& !lowerPath.endsWith(".exe")
+			&& !lowerPath.endsWith(".gif")
+			&& !lowerPath.endsWith(".ico")
+			&& !lowerPath.endsWith(".jpeg")
+			&& !lowerPath.endsWith(".jpg")
+			&& !lowerPath.endsWith(".js")
+			&& !lowerPath.endsWith(".png")
+			&& !lowerPath.endsWith(".txt")
+			&& !lowerPath.endsWith(".zip")
+		;
 	}
 
 	/**
@@ -491,7 +491,7 @@ abstract public class LocaleFilter implements Filter {
 	protected String toLocaleString(Locale locale) {
 		String language = locale.getLanguage();
 		if(language.isEmpty()) return "";
-		
+
 		String country = locale.getCountry();
 		if(country.isEmpty()) return language;
 

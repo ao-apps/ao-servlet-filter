@@ -47,38 +47,38 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class TrimFilter implements Filter {
 
-    private static final String REQUEST_ATTRIBUTE_KEY = TrimFilter.class.getName()+".filter_applied";
+	private static final String REQUEST_ATTRIBUTE_KEY = TrimFilter.class.getName()+".filter_applied";
 
-    private boolean enabled;
+	private boolean enabled;
 
-    @Override
-    public void init(FilterConfig config) {
-        String enabledParam = config.getServletContext().getInitParameter("com.aoindustries.servlet.filter.TrimFilter.enabled");
-        if(enabledParam==null || (enabledParam=enabledParam.trim()).length()==0) enabledParam = "true";
-        enabled = Boolean.parseBoolean(enabledParam);
-    }
+	@Override
+	public void init(FilterConfig config) {
+		String enabledParam = config.getServletContext().getInitParameter("com.aoindustries.servlet.filter.TrimFilter.enabled");
+		if(enabledParam==null || (enabledParam=enabledParam.trim()).length()==0) enabledParam = "true";
+		enabled = Boolean.parseBoolean(enabledParam);
+	}
 
-    @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        // Makes sure only one filter is applied per request
-        if(
-            enabled
-            && request.getAttribute(REQUEST_ATTRIBUTE_KEY)==null
-            && (response instanceof HttpServletResponse)
-        ) {
-            request.setAttribute(REQUEST_ATTRIBUTE_KEY, Boolean.TRUE);
-            try {
-                chain.doFilter(request, new TrimFilterResponse((HttpServletResponse)response));
-            } finally {
-                request.removeAttribute(REQUEST_ATTRIBUTE_KEY);
-            }
-        } else {
-            chain.doFilter(request, response);
-        }
-    }
+	@Override
+	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+		// Makes sure only one filter is applied per request
+		if(
+			enabled
+			&& request.getAttribute(REQUEST_ATTRIBUTE_KEY)==null
+			&& (response instanceof HttpServletResponse)
+		) {
+			request.setAttribute(REQUEST_ATTRIBUTE_KEY, Boolean.TRUE);
+			try {
+				chain.doFilter(request, new TrimFilterResponse((HttpServletResponse)response));
+			} finally {
+				request.removeAttribute(REQUEST_ATTRIBUTE_KEY);
+			}
+		} else {
+			chain.doFilter(request, response);
+		}
+	}
 
-    @Override
-    public void destroy() {
-        enabled = false;
-    }
+	@Override
+	public void destroy() {
+		enabled = false;
+	}
 }

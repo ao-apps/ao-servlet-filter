@@ -69,7 +69,7 @@ import javax.servlet.http.HttpServletResponseWrapper;
  */
 public class HideJspExtensionFilter implements Filter {
 
-    private static final String FILTER_APPLIED_KEY = HideJspExtensionFilter.class.getName()+".filterApplied";
+	private static final String FILTER_APPLIED_KEY = HideJspExtensionFilter.class.getName()+".filterApplied";
 
 	private static final String JSP_EXTENSION = ".jsp";
 	private static final String INDEX_JSP = "index" + JSP_EXTENSION;
@@ -79,8 +79,8 @@ public class HideJspExtensionFilter implements Filter {
 	private WildcardPatternMatcher noRewritePatterns;
 
 	@Override
-    public void init(FilterConfig config) {
-        ServletContext configContext = config.getServletContext();
+	public void init(FilterConfig config) {
+		ServletContext configContext = config.getServletContext();
 		this.servletContext = configContext;
 		String param = config.getInitParameter("noRewritePatterns");
 		if(param==null) noRewritePatterns = WildcardPatternMatcher.getMatchNone();
@@ -96,20 +96,20 @@ public class HideJspExtensionFilter implements Filter {
 	}
 
 	@Override
-    public void doFilter(
-        ServletRequest request,
-        ServletResponse response,
-        FilterChain chain
-    ) throws IOException, ServletException {
-        if(request.getAttribute(FILTER_APPLIED_KEY)==null) {
-            try {
-                request.setAttribute(FILTER_APPLIED_KEY, Boolean.TRUE);
-                if(
-                    (request instanceof HttpServletRequest)
-                    && (response instanceof HttpServletResponse)
-                ) {
-                    final HttpServletRequest httpRequest = (HttpServletRequest)request;
-                    final HttpServletResponse httpResponse = (HttpServletResponse)response;
+	public void doFilter(
+		ServletRequest request,
+		ServletResponse response,
+		FilterChain chain
+	) throws IOException, ServletException {
+		if(request.getAttribute(FILTER_APPLIED_KEY)==null) {
+			try {
+				request.setAttribute(FILTER_APPLIED_KEY, Boolean.TRUE);
+				if(
+					(request instanceof HttpServletRequest)
+					&& (response instanceof HttpServletResponse)
+				) {
+					final HttpServletRequest httpRequest = (HttpServletRequest)request;
+					final HttpServletResponse httpResponse = (HttpServletResponse)response;
 					final String responseEncoding = response.getCharacterEncoding();
 
 					String servletPath = httpRequest.getServletPath();
@@ -261,21 +261,21 @@ public class HideJspExtensionFilter implements Filter {
 					}
 					// Send any other request down the filter chain</li>
 					chain.doFilter(httpRequest, rewritingResponse);
-                } else {
+				} else {
 					// Not HTTP protocol
-                    chain.doFilter(request, response);
-                }
-            } finally {
-                request.removeAttribute(FILTER_APPLIED_KEY);
-            }
-        } else {
-            // Filter already applied
-            chain.doFilter(request, response);
-        }
-    }
+					chain.doFilter(request, response);
+				}
+			} finally {
+				request.removeAttribute(FILTER_APPLIED_KEY);
+			}
+		} else {
+			// Filter already applied
+			chain.doFilter(request, response);
+		}
+	}
 
-    @Override
-    public void destroy() {
+	@Override
+	public void destroy() {
 		servletContext = null;
-    }
+	}
 }
