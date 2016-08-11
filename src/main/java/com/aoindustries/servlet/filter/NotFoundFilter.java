@@ -56,18 +56,18 @@ public class NotFoundFilter implements Filter {
 	private WildcardPatternMatcher patterns;
 
 	@Override
-    public void init(FilterConfig config) {
+	public void init(FilterConfig config) {
 		String param = config.getInitParameter("patterns");
 		if(param==null) patterns = WildcardPatternMatcher.getMatchAll();
 		else patterns = WildcardPatternMatcher.getInstance(param);
-    }
+	}
 
-    @Override
-    public void doFilter(
-        ServletRequest request,
-        ServletResponse response,
-        FilterChain chain
-    ) throws IOException, ServletException {
+	@Override
+	public void doFilter(
+		ServletRequest request,
+		ServletResponse response,
+		FilterChain chain
+	) throws IOException, ServletException {
 		final String message = "404 Not Found";
 		if(
 			(request instanceof HttpServletRequest)
@@ -83,9 +83,9 @@ public class NotFoundFilter implements Filter {
 		} else {
 			throw new ServletException(message);
 		}
-    }
+	}
 
-    @Override
-    public void destroy() {
-    }
+	@Override
+	public void destroy() {
+	}
 }

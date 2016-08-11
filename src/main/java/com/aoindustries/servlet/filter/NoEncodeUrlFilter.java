@@ -43,26 +43,26 @@ import javax.servlet.http.HttpServletResponseWrapper;
  */
 public class NoEncodeUrlFilter implements Filter {
 
-    private static final String REQUEST_ATTRIBUTE_KEY = NoEncodeUrlFilter.class.getName()+".filter_applied";
+	private static final String REQUEST_ATTRIBUTE_KEY = NoEncodeUrlFilter.class.getName()+".filter_applied";
 
 	@Override
-    public void init(FilterConfig config) {
+	public void init(FilterConfig config) {
 		// Nothing to do
-    }
+	}
 
-    @Override
-    public void doFilter(
-        ServletRequest request,
-        ServletResponse response,
-        FilterChain chain
-    ) throws IOException, ServletException {
-        // Makes sure only one filter is applied per request
-        if(
-            request.getAttribute(REQUEST_ATTRIBUTE_KEY)==null
-            && (response instanceof HttpServletResponse)
-        ) {
-            request.setAttribute(REQUEST_ATTRIBUTE_KEY, Boolean.TRUE);
-            try {
+	@Override
+	public void doFilter(
+		ServletRequest request,
+		ServletResponse response,
+		FilterChain chain
+	) throws IOException, ServletException {
+		// Makes sure only one filter is applied per request
+		if(
+			request.getAttribute(REQUEST_ATTRIBUTE_KEY)==null
+			&& (response instanceof HttpServletResponse)
+		) {
+			request.setAttribute(REQUEST_ATTRIBUTE_KEY, Boolean.TRUE);
+			try {
 				chain.doFilter(
 					request,
 					new HttpServletResponseWrapper((HttpServletResponse)response) {
@@ -89,16 +89,16 @@ public class NoEncodeUrlFilter implements Filter {
 						}
 					}
 				);
-            } finally {
-                request.removeAttribute(REQUEST_ATTRIBUTE_KEY);
-            }
-        } else {
-            chain.doFilter(request, response);
-        }
-    }
+			} finally {
+				request.removeAttribute(REQUEST_ATTRIBUTE_KEY);
+			}
+		} else {
+			chain.doFilter(request, response);
+		}
+	}
 
-    @Override
-    public void destroy() {
+	@Override
+	public void destroy() {
 		// Nothing to do
-    }
+	}
 }

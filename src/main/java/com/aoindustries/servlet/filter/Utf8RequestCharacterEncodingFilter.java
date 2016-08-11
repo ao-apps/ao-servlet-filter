@@ -47,25 +47,25 @@ import javax.servlet.ServletResponse;
  */
 public class Utf8RequestCharacterEncodingFilter implements Filter {
 
-    @Override
-    public void init(FilterConfig config) {
-    }
+	@Override
+	public void init(FilterConfig config) {
+	}
 
-    @Override
-    public void doFilter(
-        ServletRequest request,
-        ServletResponse response,
-        FilterChain chain
-    ) throws IOException, ServletException {
-        request.setCharacterEncoding("UTF-8");
-        try {
-            chain.doFilter(request, response);
-        } finally {
-            ThreadLocale.set(Locale.getDefault());
-        }
-    }
-    
-    @Override
-    public void destroy() {
-    }
+	@Override
+	public void doFilter(
+		ServletRequest request,
+		ServletResponse response,
+		FilterChain chain
+	) throws IOException, ServletException {
+		request.setCharacterEncoding("UTF-8");
+		try {
+			chain.doFilter(request, response);
+		} finally {
+			ThreadLocale.set(Locale.getDefault());
+		}
+	}
+
+	@Override
+	public void destroy() {
+	}
 }
