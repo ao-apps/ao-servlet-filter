@@ -74,13 +74,32 @@ public class HideJspExtensionFilter implements Filter {
 
 	private static final String FILTER_APPLIED_KEY = HideJspExtensionFilter.class.getName()+".filterApplied";
 
-	private static final String JSPX_EXTENSION = ".jspx";
-	private static final String INDEX_JSPX = "index" + JSPX_EXTENSION;
-	private static final String SLASH_INDEX_JSPX = "/" + INDEX_JSPX;
+	/**
+	 * The file extensions to rewrite, in priority order.
+	 */
+	private static final String[] EXTENSIONS = {
+		".jspx",
+		".jsp"
+	};
 
-	private static final String JSP_EXTENSION = ".jsp";
-	private static final String INDEX_JSP = "index" + JSP_EXTENSION;
-	private static final String SLASH_INDEX_JSP = "/" + INDEX_JSP;
+	/**
+	 * The index.ext resource names.
+	 */
+	private static final String[] INDEXES = new String[EXTENSIONS.length];
+
+	/**
+	 * The /index.ext paths.
+	 */
+	private static final String[] SLASH_INDEXES = new String[EXTENSIONS.length];
+
+	static {
+		for(int i=0; i<EXTENSIONS.length; i++) {
+			String extension = EXTENSIONS[i];
+			String index = "index" + extension;
+			INDEXES[i] = index;
+			SLASH_INDEXES[i] = "/" + index;
+		}
+	}
 
 	private ServletContext servletContext;
 	private WildcardPatternMatcher noRewritePatterns;
@@ -126,90 +145,53 @@ public class HideJspExtensionFilter implements Filter {
 						// Only redirect GET requests
 						&& ServletUtil.METHOD_GET.equals(httpRequest.getMethod())
 					) {
-						// 301 redirect any incoming GET request ending in "/path/index.jspx" to "/path/" (to not lose traffic after enabling the filter)
-						if(servletPath.endsWith(SLASH_INDEX_JSPX)) {
-							// "index.jspx" is added to the servlet path for requests ending in /, this
-							// uses the un-decoded requestUri to distinguish between the two
-							if(httpRequest.getRequestURI().endsWith(SLASH_INDEX_JSPX)) {
-								String queryString = httpRequest.getQueryString();
-								String path = servletPath.substring(0, servletPath.length() - INDEX_JSPX.length());
-								// Encode URL path elements (like Japanese filenames)
-								path = UrlUtils.encodeUrlPath(path, responseEncoding);
-								// Add any query string
-								if(queryString != null) {
-									path = path + '?' + queryString;
+						for(int i=0; i<EXTENSIONS.length; i++) {
+							String slashIndex = SLASH_INDEXES[i];
+							// 301 redirect any incoming GET request ending in "/path/index.jsp(x)" to "/path/" (to not lose traffic after enabling the filter)
+							if(servletPath.endsWith(slashIndex)) {
+								// "index.jsp(x)" is added to the servlet path for requests ending in /, this
+								// uses the un-decoded requestUri to distinguish between the two
+								if(httpRequest.getRequestURI().endsWith(slashIndex)) {
+									String queryString = httpRequest.getQueryString();
+									String path = servletPath.substring(0, servletPath.length() - INDEXES[i].length());
+									// Encode URL path elements (like Japanese filenames)
+									path = UrlUtils.encodeUrlPath(path, responseEncoding);
+									// Add any query string
+									if(queryString != null) {
+										path = path + '?' + queryString;
+									}
+									// Perform URL rewriting
+									path = httpResponse.encodeRedirectURL(path);
+									// Convert to absolute URL
+									String location = ServletUtil.getAbsoluteURL(httpRequest, path);
+									ServletUtil.sendRedirect(httpResponse, location, HttpServletResponse.SC_MOVED_PERMANENTLY);
+									return;
 								}
-								// Perform URL rewriting
-								path = httpResponse.encodeRedirectURL(path);
-								// Convert to absolute URL
-								String location = ServletUtil.getAbsoluteURL(httpRequest, path);
-								ServletUtil.sendRedirect(httpResponse, location, HttpServletResponse.SC_MOVED_PERMANENTLY);
-								return;
-							}
-						}
-						// 301 redirect any incoming GET request ending in "/path/index.jsp" to "/path/" (to not lose traffic after enabling the filter)
-						else if(servletPath.endsWith(SLASH_INDEX_JSP)) {
-							// "index.jsp" is added to the servlet path for requests ending in /, this
-							// uses the un-decoded requestUri to distinguish between the two
-							if(httpRequest.getRequestURI().endsWith(SLASH_INDEX_JSP)) {
-								String queryString = httpRequest.getQueryString();
-								String path = servletPath.substring(0, servletPath.length() - INDEX_JSP.length());
-								// Encode URL path elements (like Japanese filenames)
-								path = UrlUtils.encodeUrlPath(path, responseEncoding);
-								// Add any query string
-								if(queryString != null) {
-									path = path + '?' + queryString;
-								}
-								// Perform URL rewriting
-								path = httpResponse.encodeRedirectURL(path);
-								// Convert to absolute URL
-								String location = ServletUtil.getAbsoluteURL(httpRequest, path);
-								ServletUtil.sendRedirect(httpResponse, location, HttpServletResponse.SC_MOVED_PERMANENTLY);
-								return;
 							}
 						}
 
-						// 301 redirect any incoming GET request ending in "/path/file.jspx" to "/path/file" (to not lose traffic after enabling the filter)
-						if(servletPath.endsWith(JSPX_EXTENSION)) {
-							// Do not redirect the index.jspx
-							if(!servletPath.endsWith(SLASH_INDEX_JSPX)) {
-								String queryString = httpRequest.getQueryString();
-								String path = servletPath.substring(0, servletPath.length() - JSPX_EXTENSION.length());
-								if(!isFolder(path)) {
-									// Encode URL path elements (like Japanese filenames)
-									path = UrlUtils.encodeUrlPath(path, responseEncoding);
-									// Add any query string
-									if(queryString != null) {
-										path = path + '?' + queryString;
+						for(int i=0; i<EXTENSIONS.length; i++) {
+							String extension = EXTENSIONS[i];
+							// 301 redirect any incoming GET request ending in "/path/file.jsp(x)" to "/path/file" (to not lose traffic after enabling the filter)
+							if(servletPath.endsWith(extension)) {
+								// Do not redirect the index.jsp(x)
+								if(!servletPath.endsWith(SLASH_INDEXES[i])) {
+									String queryString = httpRequest.getQueryString();
+									String path = servletPath.substring(0, servletPath.length() - extension.length());
+									if(!isFolder(path)) {
+										// Encode URL path elements (like Japanese filenames)
+										path = UrlUtils.encodeUrlPath(path, responseEncoding);
+										// Add any query string
+										if(queryString != null) {
+											path = path + '?' + queryString;
+										}
+										// Perform URL rewriting
+										path = httpResponse.encodeRedirectURL(path);
+										// Convert to absolute URL
+										String location = ServletUtil.getAbsoluteURL(httpRequest, path);
+										ServletUtil.sendRedirect(httpResponse, location, HttpServletResponse.SC_MOVED_PERMANENTLY);
+										return;
 									}
-									// Perform URL rewriting
-									path = httpResponse.encodeRedirectURL(path);
-									// Convert to absolute URL
-									String location = ServletUtil.getAbsoluteURL(httpRequest, path);
-									ServletUtil.sendRedirect(httpResponse, location, HttpServletResponse.SC_MOVED_PERMANENTLY);
-									return;
-								}
-							}
-						}
-						// 301 redirect any incoming GET request ending in "/path/file.jsp" to "/path/file" (to not lose traffic after enabling the filter)
-						else if(servletPath.endsWith(JSP_EXTENSION)) {
-							// Do not redirect the index.jsp
-							if(!servletPath.endsWith(SLASH_INDEX_JSP)) {
-								String queryString = httpRequest.getQueryString();
-								String path = servletPath.substring(0, servletPath.length() - JSP_EXTENSION.length());
-								if(!isFolder(path)) {
-									// Encode URL path elements (like Japanese filenames)
-									path = UrlUtils.encodeUrlPath(path, responseEncoding);
-									// Add any query string
-									if(queryString != null) {
-										path = path + '?' + queryString;
-									}
-									// Perform URL rewriting
-									path = httpResponse.encodeRedirectURL(path);
-									// Convert to absolute URL
-									String location = ServletUtil.getAbsoluteURL(httpRequest, path);
-									ServletUtil.sendRedirect(httpResponse, location, HttpServletResponse.SC_MOVED_PERMANENTLY);
-									return;
 								}
 							}
 						}
@@ -234,28 +216,10 @@ public class HideJspExtensionFilter implements Filter {
 							}
 							String path = url.substring(0, pathEnd);
 							if(!noRewritePatterns.isMatch(path)) {
-								// Rewrite any URLs ending in "/path/index.jspx" to "/path/", maintaining any query string
-								if(path.endsWith(SLASH_INDEX_JSPX)) {
-									String shortenedPath = path.substring(0, path.length() - INDEX_JSPX.length());
-									if(pathEnd == urlLen) {
-										return shortenedPath;
-									} else {
-										return shortenedPath + url.substring(pathEnd);
-									}
-								}
-								// Rewrite any URLs ending in "/path/index.jsp" to "/path/", maintaining any query string
-								else if(path.endsWith(SLASH_INDEX_JSP)) {
-									String shortenedPath = path.substring(0, path.length() - INDEX_JSP.length());
-									if(pathEnd == urlLen) {
-										return shortenedPath;
-									} else {
-										return shortenedPath + url.substring(pathEnd);
-									}
-								}
-								// Rewrite any URLs ending in "/path/file.jspx" to "/path/file", maintaining any query string
-								if(path.endsWith(JSPX_EXTENSION)) {
-									String shortenedPath = path.substring(0, path.length() - JSPX_EXTENSION.length());
-									if(!isFolder(shortenedPath)) {
+								for(int i=0; i<EXTENSIONS.length; i++) {
+									// Rewrite any URLs ending in "/path/index.jsp(x)" to "/path/", maintaining any query string
+									if(path.endsWith(SLASH_INDEXES[i])) {
+										String shortenedPath = path.substring(0, path.length() - INDEXES[i].length());
 										if(pathEnd == urlLen) {
 											return shortenedPath;
 										} else {
@@ -263,14 +227,17 @@ public class HideJspExtensionFilter implements Filter {
 										}
 									}
 								}
-								// Rewrite any URLs ending in "/path/file.jsp" to "/path/file", maintaining any query string
-								else if(path.endsWith(JSP_EXTENSION)) {
-									String shortenedPath = path.substring(0, path.length() - JSP_EXTENSION.length());
-									if(!isFolder(shortenedPath)) {
-										if(pathEnd == urlLen) {
-											return shortenedPath;
-										} else {
-											return shortenedPath + url.substring(pathEnd);
+								for(int i=0; i<EXTENSIONS.length; i++) {
+									String extension = EXTENSIONS[i];
+									// Rewrite any URLs ending in "/path/file.jsp(x)" to "/path/file", maintaining any query string
+									if(path.endsWith(extension)) {
+										String shortenedPath = path.substring(0, path.length() - extension.length());
+										if(!isFolder(shortenedPath)) {
+											if(pathEnd == urlLen) {
+												return shortenedPath;
+											} else {
+												return shortenedPath + url.substring(pathEnd);
+											}
 										}
 									}
 								}
@@ -304,48 +271,28 @@ public class HideJspExtensionFilter implements Filter {
 						// This is done by container with a welcome file list of index.jsp(x) in web.xml.
 
 						if(!isFolder(servletPath)) {
-							// Forward incoming request of "/path/file" to "/path/file.jspx", if the resource exists
-							String jspxResourcePath = servletPath + JSPX_EXTENSION;
-							// Do not forward index to index.jspx
-							if(!jspxResourcePath.endsWith(SLASH_INDEX_JSPX)) {
-								URL resourceUrl;
-								try {
-									resourceUrl = servletContext.getResource(jspxResourcePath);
-								} catch(MalformedURLException e) {
-									// Assume does not exist
-									resourceUrl = null;
-								}
-								if(resourceUrl != null) {
-									// Forward to JSPX file
-									Dispatcher.forward(
-										servletContext,
-										jspxResourcePath,
-										httpRequest,
-										rewritingResponse
-									);
-									return;
-								}
-							}
-							// Forward incoming request of "/path/file" to "/path/file.jsp", if the resource exists
-							String jspResourcePath = servletPath + JSP_EXTENSION;
-							// Do not forward index to index.jsp
-							if(!jspResourcePath.endsWith(SLASH_INDEX_JSP)) {
-								URL resourceUrl;
-								try {
-									resourceUrl = servletContext.getResource(jspResourcePath);
-								} catch(MalformedURLException e) {
-									// Assume does not exist
-									resourceUrl = null;
-								}
-								if(resourceUrl != null) {
-									// Forward to JSP file
-									Dispatcher.forward(
-										servletContext,
-										jspResourcePath,
-										httpRequest,
-										rewritingResponse
-									);
-									return;
+							for(int i=0; i<EXTENSIONS.length; i++) {
+								// Forward incoming request of "/path/file" to "/path/file.jsp(x)", if the resource exists
+								String resourcePath = servletPath + EXTENSIONS[i];
+								// Do not forward index to index.jsp(x)
+								if(!resourcePath.endsWith(SLASH_INDEXES[i])) {
+									URL resourceUrl;
+									try {
+										resourceUrl = servletContext.getResource(resourcePath);
+									} catch(MalformedURLException e) {
+										// Assume does not exist
+										resourceUrl = null;
+									}
+									if(resourceUrl != null) {
+										// Forward to .jsp(x) file
+										Dispatcher.forward(
+											servletContext,
+											resourcePath,
+											httpRequest,
+											rewritingResponse
+										);
+										return;
+									}
 								}
 							}
 						}
