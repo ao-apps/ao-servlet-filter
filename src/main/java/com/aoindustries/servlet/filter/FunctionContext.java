@@ -45,9 +45,9 @@ public class FunctionContext implements Filter {
 
 	private static final String INIT_ERROR_MESSAGE = "Function context not initialized.  Please install FunctionContext filter to web.xml";
 
-	private static final ThreadLocal<ServletContext> servletContextTL = new ThreadLocal<ServletContext>();
-	private static final ThreadLocal<HttpServletRequest> requestTL = new ThreadLocal<HttpServletRequest>();
-	private static final ThreadLocal<HttpServletResponse> responseTL = new ThreadLocal<HttpServletResponse>();
+	static final ThreadLocal<ServletContext> servletContextTL = new ThreadLocal<ServletContext>();
+	static final ThreadLocal<HttpServletRequest> requestTL = new ThreadLocal<HttpServletRequest>();
+	static final ThreadLocal<HttpServletResponse> responseTL = new ThreadLocal<HttpServletResponse>();
 
 	public static ServletContext getServletContext() {
 		ServletContext servletContext = servletContextTL.get();
