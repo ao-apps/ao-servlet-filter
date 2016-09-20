@@ -83,8 +83,7 @@ public class TempFileContext implements Filter {
 	 * When the context is inactive, the original object is returned unaltered.
 	 * This is logged as a warning the first time not wrapped.
 	 */
-	public static <T> T wrapTempFileList(T original, ServletRequest request, Wrapper<T> wrapper) {
-		TempFileList tempFileList = getTempFileList(request);
+	public static <T> T wrapTempFileList(T original, TempFileList tempFileList, Wrapper<T> wrapper) {
 		if(tempFileList != null) {
 			return wrapper.call(original, tempFileList);
 		} else {
@@ -105,6 +104,14 @@ public class TempFileContext implements Filter {
 			}
 			return original;
 		}
+	}
+
+	/**
+	 * @see  #getTempFileList(javax.servlet.ServletRequest)
+	 * @see  #wrapTempFileList(java.lang.Object, com.aoindustries.io.TempFileList, com.aoindustries.servlet.filter.TempFileContext.Wrapper)
+	 */
+	public static <T> T wrapTempFileList(T original, ServletRequest request, Wrapper<T> wrapper) {
+		return wrapTempFileList(original, getTempFileList(request), wrapper);
 	}
 
 	@Override
