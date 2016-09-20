@@ -59,6 +59,8 @@ public class TempFileContext implements Filter {
 
 	private static final Logger logger = Logger.getLogger(TempFileContext.class.getName());
 
+	private static final String PREFIX = TempFileContext.class.getSimpleName();
+
 	private static final String REQUEST_ATTRIBUTE_NAME = TempFileContext.class.getName()+".tempFileList";
 
 	/**
@@ -118,7 +120,7 @@ public class TempFileContext implements Filter {
 		TempFileList list = (TempFileList)request.getAttribute(REQUEST_ATTRIBUTE_NAME);
 		if(list==null) {
 			// Make new list and delete when done
-			list = new TempFileList("TempFileContext");
+			list = new TempFileList(PREFIX);
 			try {
 				request.setAttribute(REQUEST_ATTRIBUTE_NAME, list);
 				chain.doFilter(request, response);
