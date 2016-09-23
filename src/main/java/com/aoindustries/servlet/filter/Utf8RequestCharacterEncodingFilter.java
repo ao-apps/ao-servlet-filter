@@ -22,9 +22,7 @@
  */
 package com.aoindustries.servlet.filter;
 
-import com.aoindustries.util.i18n.ThreadLocale;
 import java.io.IOException;
-import java.util.Locale;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -34,13 +32,10 @@ import javax.servlet.ServletResponse;
 
 /**
  * <p>
- * Sets the request encoding to "UTF-8".
- * Also restores the ThreadLocale to the system default upon request completion.
+ * Sets the request encoding to "UTF-8" when encoding not provided by the client.
  * </p>
  * <p>
  * This should be first in the filter chain and used for the REQUEST dispatcher only.
- * TODO: This extra side effect should either be moved to a different filter or just done away with entirely.
- * TODO: All code in good form should restore the thread locale already anyway with try/finally.
  * </p>
  *
  * @author  AO Industries, Inc.
@@ -57,12 +52,11 @@ public class Utf8RequestCharacterEncodingFilter implements Filter {
 		ServletResponse response,
 		FilterChain chain
 	) throws IOException, ServletException {
-		request.setCharacterEncoding("UTF-8");
-		try {
-			chain.doFilter(request, response);
-		} finally {
-			ThreadLocale.set(Locale.getDefault());
+		// Only override encoding when not provided by the client
+		if(request.getCharacterEncoding() == null) {
+			request.setCharacterEncoding("UTF-8");
 		}
+		chain.doFilter(request, response);
 	}
 
 	@Override
