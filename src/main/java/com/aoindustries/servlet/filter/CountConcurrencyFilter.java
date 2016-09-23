@@ -33,6 +33,8 @@ import javax.servlet.ServletResponse;
 
 /**
  * Tracks the request concurrency, used to decide to use concurrent or sequential implementations.
+ *
+ * This should be on the REQUEST and ERROR dispatchers.
  */
 public class CountConcurrencyFilter implements Filter {
 
@@ -64,8 +66,10 @@ public class CountConcurrencyFilter implements Filter {
 			assert newConcurrency >= 1;
 			try {
 				request.setAttribute(REQUEST_ATTRIBUTE_NAME, newConcurrency);
+				onConcurrencySet(request, newConcurrency);
 				chain.doFilter(request, response);
 			} finally {
+				onConcurrencyRemove(request);
 				request.removeAttribute(REQUEST_ATTRIBUTE_NAME);
 				concurrency.getAndDecrement();
 			}
@@ -73,6 +77,24 @@ public class CountConcurrencyFilter implements Filter {
 			// Filter already active on this request, do not increase concurrency
 			chain.doFilter(request, response);
 		}
+	}
+
+	/**
+	 * Called just after the concurrency of this request is set.
+	 *
+	 * Empty method, overriding methods do not need to call this method via {@code super}.
+	 */
+	protected void onConcurrencySet(ServletRequest request, int newConcurrency) {
+		// Do nothing
+	}
+
+	/**
+	 * Called just before the concurrency of this request is removed.
+	 *
+	 * Empty method, overriding methods do not need to call this method via {@code super}.
+	 */
+	protected void onConcurrencyRemove(ServletRequest request) {
+		// Do nothing
 	}
 
 	@Override
