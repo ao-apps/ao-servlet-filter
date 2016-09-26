@@ -75,7 +75,8 @@ public class TempFileContext implements Filter {
 		T call(T original, TempFileList tempFileList);
 	}
 
-	private static final Object tempFileWarningLock = new Object();
+	private static class TempFileWarningLock {}
+	private static final TempFileWarningLock tempFileWarningLock = new TempFileWarningLock();
 	private static boolean tempFileWarned = false;
 
 	/**
