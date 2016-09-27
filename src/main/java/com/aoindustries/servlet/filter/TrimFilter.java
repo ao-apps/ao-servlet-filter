@@ -40,7 +40,7 @@ import javax.servlet.http.HttpServletResponse;
  * for maximum performance.
  * </p>
  * <p>
- * This should be used for the REQUEST, FORWARD, and optionally INCLUDE and ERROR dispatchers.
+ * This should be used for the REQUEST, FORWARD, and optionally ERROR dispatchers.  No benefit to have on INCLUDE.
  * </p>
  *
  * @author  AO Industries, Inc.
