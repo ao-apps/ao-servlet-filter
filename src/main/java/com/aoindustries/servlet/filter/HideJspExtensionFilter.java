@@ -23,6 +23,7 @@
 package com.aoindustries.servlet.filter;
 
 import com.aoindustries.net.UrlUtils;
+import com.aoindustries.servlet.ServletContextCache;
 import com.aoindustries.servlet.http.Dispatcher;
 import com.aoindustries.servlet.http.ServletUtil;
 import com.aoindustries.util.WildcardPatternMatcher;
@@ -69,6 +70,8 @@ import javax.servlet.http.HttpServletResponseWrapper;
  * Note: When testing in Tomcat 7, /WEB-INF/ protection was not compromised by the forwarding.
  * Requests to /WEB-INF/ never even hit the filter.
  * </p>
+ *
+ * @see  ServletContextCache  This requires the cache be active
  */
 public class HideJspExtensionFilter implements Filter {
 
@@ -137,6 +140,8 @@ public class HideJspExtensionFilter implements Filter {
 					final HttpServletRequest httpRequest = (HttpServletRequest)request;
 					final HttpServletResponse httpResponse = (HttpServletResponse)response;
 					final String responseEncoding = response.getCharacterEncoding();
+
+					final ServletContextCache servletContextCache = ServletContextCache.getCache(servletContext);
 
 					String servletPath = httpRequest.getServletPath();
 					boolean requestRewrite = !noRewritePatterns.isMatch(servletPath);
@@ -227,8 +232,7 @@ public class HideJspExtensionFilter implements Filter {
 										}
 									}
 								}
-								for(int i=0; i<EXTENSIONS.length; i++) {
-									String extension = EXTENSIONS[i];
+								for (String extension : EXTENSIONS) {
 									// Rewrite any URLs ending in "/path/file.jsp(x)" to "/path/file", maintaining any query string
 									if(path.endsWith(extension)) {
 										String shortenedPath = path.substring(0, path.length() - extension.length());
@@ -278,7 +282,7 @@ public class HideJspExtensionFilter implements Filter {
 								if(!resourcePath.endsWith(SLASH_INDEXES[i])) {
 									URL resourceUrl;
 									try {
-										resourceUrl = servletContext.getResource(resourcePath);
+										resourceUrl = servletContextCache.getResource(resourcePath);
 									} catch(MalformedURLException e) {
 										// Assume does not exist
 										resourceUrl = null;
