@@ -42,6 +42,7 @@ import javax.servlet.http.HttpServletResponse;
  * <p>
  * This should be used for the REQUEST, FORWARD, and optionally ERROR dispatchers.  No benefit to have on INCLUDE.
  * </p>
+ * // TODO: Why is filter not applied on ERROR (such as 404) in sites like aointernet.net?
  *
  * @author  AO Industries, Inc.
  */
