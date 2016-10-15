@@ -239,6 +239,7 @@ along with ao-servlet-filter.  If not, see <http://www.gnu.org/licenses />.
 							<header><![CDATA[<a target="_top" href="${project.url}">${project.name} ${project.version}</a>]]></header>
 							<keywords>true</keywords><!-- Help internal search systems -->
 							<quiet>true</quiet>
+							<docfilessubdirs>true</docfilessubdirs>
 							<links>
 								<link>http://docs.oracle.com/javaee/6/api/</link>
 								<link>https://www.aoindustries.com/aocode-public/apidocs/</link>
