@@ -3,6 +3,7 @@ Reusable Java library of servlet filters.
 
 ## Project Links
 * [Project Home](https://www.aoindustries.com/ao-servlet-filter/)
+* [Changelog](https://www.aoindustries.com/ao-servlet-filter/changelog)
 * [API Docs](https://www.aoindustries.com/ao-servlet-filter/apidocs/)
 * [Maven Central Repository](https://search.maven.org/#search%7Cgav%7C1%7Cg:%22com.aoindustries%22%20AND%20a:%22ao-servlet-filter%22)
 * [GitHub](https://github.com/aoindustries/ao-servlet-filter)
