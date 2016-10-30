@@ -57,7 +57,6 @@ along with ao-servlet-filter.  If not, see <http://www.gnu.org/licenses />.
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-javadoc-plugin</artifactId>
-						<version>2.10.4</version>
 						<configuration>
 							<links>
 								<link>https://docs.oracle.com/javaee/6/api/</link>
