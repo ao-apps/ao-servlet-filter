@@ -37,7 +37,7 @@ along with ao-servlet-filter.  If not, see <http://www.gnu.org/licenses />.
 	<packaging>jar</packaging>
 
 	<name>AO Servlet Filter</name>
-	<url>https://aoindustries.com${bookPath}/</url><!-- Can't inherit due to multi-module -->
+	<url>https://aoindustries.com/${project.artifactId}/</url>
 	<description>Reusable Java library of servlet filters.</description>
 	<inceptionYear>2006</inceptionYear>
 
