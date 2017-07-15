@@ -36,7 +36,7 @@ along with ao-servlet-filter.  If not, see <http://www.gnu.org/licenses />.
 		shortTitle="Changelog"
 		tocLevels="1"
 		datePublished="2016-10-29T21:37:35-0500"
-		dateModified="2017-07-14T18:05:14-0500"
+		dateModified="2017-07-15T14:38:48-0500"
 	>
 		<!-- The current snapshot, unreleased version -->
 		<c:set var="version" value="@{com.aoindustries:ao-servlet-filter:pom.version}" />
@@ -58,7 +58,7 @@ along with ao-servlet-filter.  If not, see <http://www.gnu.org/licenses />.
 						New <code>AddResponseHeaderFilter</code> filter to add response headers.
 						For when filter mappings are not expressive enough, supports both
 						lightning-fast <ao:a href="https://aoindustries.com/aocode-public/apidocs/com/aoindustries/util/WildcardPatternMatcher.html">WildcardPatternMatcher</ao:a>
-						and standard Java <ao:a href="https://docs.oracle.com/javase/6/docs/api/java/util/regex/Pattern.html">Pattern</ao:a>.
+						and standard Java <ao:a href="@{javac.link.javaApi.jdk16}java/util/regex/Pattern.html">Pattern</ao:a>.
 					</li>
 				</ul>
 			</changelog:release>
