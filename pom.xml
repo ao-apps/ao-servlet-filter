@@ -60,7 +60,7 @@ along with ao-servlet-filter.  If not, see <http://www.gnu.org/licenses />.
 							<artifactId>maven-javadoc-plugin</artifactId>
 							<configuration>
 								<links>
-									<link>https://docs.oracle.com/javaee/6/api/</link>
+									<link>${javac.link.javaeeApi.6}</link>
 									<link>https://aoindustries.com/ao-lang/apidocs/</link>
 									<link>https://aoindustries.com/aocode-public/apidocs/</link>
 								</links>
