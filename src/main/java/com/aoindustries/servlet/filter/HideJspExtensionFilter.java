@@ -1,6 +1,6 @@
 /*
  * ao-servlet-filter - Reusable Java library of servlet filters.
- * Copyright (C) 2015, 2016  AO Industries, Inc.
+ * Copyright (C) 2015, 2016, 2017  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -112,8 +112,8 @@ public class HideJspExtensionFilter implements Filter {
 		ServletContext configContext = config.getServletContext();
 		this.servletContext = configContext;
 		String param = config.getInitParameter("noRewritePatterns");
-		if(param==null) noRewritePatterns = WildcardPatternMatcher.getMatchNone();
-		else noRewritePatterns = WildcardPatternMatcher.getInstance(param);
+		if(param == null) noRewritePatterns = WildcardPatternMatcher.matchNone();
+		else noRewritePatterns = WildcardPatternMatcher.compile(param);
 	}
 
 	/**

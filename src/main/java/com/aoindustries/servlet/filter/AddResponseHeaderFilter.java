@@ -96,8 +96,8 @@ public class AddResponseHeaderFilter implements Filter {
 	public void init(FilterConfig config) {
 		// Parse patterns
 		String patternsParam = config.getInitParameter(PATTERNS_PARAM_NAME);
-		if(patternsParam == null) patterns = WildcardPatternMatcher.getMatchAll();
-		else patterns = WildcardPatternMatcher.getInstance(patternsParam);
+		if(patternsParam == null) patterns = WildcardPatternMatcher.matchAll();
+		else patterns = WildcardPatternMatcher.compile(patternsParam);
 
 		// Find and sort any regular expressions
 		{

@@ -58,8 +58,8 @@ public class NotFoundFilter implements Filter {
 	@Override
 	public void init(FilterConfig config) {
 		String param = config.getInitParameter("patterns");
-		if(param==null) patterns = WildcardPatternMatcher.getMatchAll();
-		else patterns = WildcardPatternMatcher.getInstance(param);
+		if(param == null) patterns = WildcardPatternMatcher.matchAll();
+		else patterns = WildcardPatternMatcher.compile(param);
 	}
 
 	@Override
