@@ -1,6 +1,6 @@
 /*
  * ao-servlet-filter - Reusable Java library of servlet filters.
- * Copyright (C) 2016  AO Industries, Inc.
+ * Copyright (C) 2016, 2017  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -29,12 +29,16 @@ import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
+import javax.servlet.ServletRequestListener;
 import javax.servlet.ServletResponse;
 
 /**
  * Tracks the request concurrency, used to decide to use concurrent or sequential implementations.
  *
  * This should be on the REQUEST and ERROR dispatchers.
+ * <p>
+ * TODO: Convert to {@link ServletRequestListener}
+ * </p>
  */
 public class CountConcurrencyFilter implements Filter {
 

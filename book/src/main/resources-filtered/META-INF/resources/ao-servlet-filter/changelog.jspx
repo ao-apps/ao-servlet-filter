@@ -37,7 +37,7 @@ along with ao-servlet-filter.  If not, see <http://www.gnu.org/licenses />.
 		shortTitle="Changelog"
 		tocLevels="1"
 		datePublished="2016-10-29T21:37:35-0500"
-		dateModified="2017-08-03T11:05:22-0500"
+		dateModified="2017-08-07T00:34:46-0500"
 	>
 		<!-- The current snapshot, unreleased version -->
 		<c:set var="version" value="@{com.aoindustries:ao-servlet-filter:pom.version}" />
@@ -52,7 +52,16 @@ along with ao-servlet-filter.  If not, see <http://www.gnu.org/licenses />.
 				groupId="@{documented.groupId}"
 				artifactId="@{documented.artifactId}"
 				scmUrl="@{documented.scm.url}"
-			/>
+			>
+				<ul>
+					<li>
+						Deprecated <ao:a href="apidocs/com/aoindustries/servlet/filter/TempFileContext.html">TempFileContext</ao:a>
+						in favor of new <ao:a href="https://aoindustries.com/ao-tempfiles/servlet/apidocs/com/aoindustries/tempfiles/servlet/ServletTempFileContext.html">ServletTempFileContext</ao:a>
+						that does not require <code>web.xml</code> configuration, supports additional scopes (application and session),
+						and registers a shutdown hook to delete on JVM exit.
+					</li>
+				</ul>
+			</changelog:release>
 		</c:if>
 
 		<changelog:release
