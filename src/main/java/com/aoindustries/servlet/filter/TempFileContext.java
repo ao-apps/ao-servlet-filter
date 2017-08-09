@@ -1,6 +1,6 @@
 /*
  * ao-servlet-filter - Reusable Java library of servlet filters.
- * Copyright (C) 2013, 2015, 2016  AO Industries, Inc.
+ * Copyright (C) 2013, 2015, 2016, 2017  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -39,6 +39,7 @@ import javax.servlet.ServletResponse;
  * affects on the request, it could be first.
  * <p>
  * Example web.xml contents:
+ * </p>
  * <pre>
  * &lt;!-- Cleans-up temp files created during request processing. --&gt;
  * &lt;filter&gt;
@@ -53,8 +54,12 @@ import javax.servlet.ServletResponse;
  *     &lt;dispatcher&gt;ERROR&lt;/dispatcher&gt;
  * &lt;/filter-mapping&gt;
  * </pre>
- * </p>
+ *
+ * @deprecated  Please use <a href="https://aoindustries.com/ao-tempfiles/servlet/apidocs/com/aoindustries/tempfiles/servlet/ServletTempFileContext.html">ServletTempFileContext</a>
+ *              that does not require <code>web.xml</code> configuration, supports additional scopes (application and session),
+ *              and registers a shutdown hook to delete on JVM exit.
  */
+@Deprecated
 public class TempFileContext implements Filter {
 
 	private static final Logger logger = Logger.getLogger(TempFileContext.class.getName());
