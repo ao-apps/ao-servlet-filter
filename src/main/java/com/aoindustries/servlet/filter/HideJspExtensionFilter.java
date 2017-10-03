@@ -42,6 +42,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
 
 /**
+ * TODO: Do not rewrite URLs going to external hosts, only URLs that begin with /, ./, ../,
+ * or this protocol//hostname:port/context/ (in case of absolute URL to self).
  * <p>
  * A servlet filter that hides the .jspx or .jsp extension from JSP-based sites.
  * It accomplishes this with the following steps:
