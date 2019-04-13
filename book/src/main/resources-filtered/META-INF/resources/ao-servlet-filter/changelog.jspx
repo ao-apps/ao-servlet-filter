@@ -37,7 +37,7 @@ along with ao-servlet-filter.  If not, see <http://www.gnu.org/licenses />.
 		shortTitle="Changelog"
 		tocLevels="1"
 		datePublished="2016-10-29T21:37:35-0500"
-		dateModified="2017-08-07T00:34:46-0500"
+		dateModified="2019-04-13T10:17:41-0500"
 	>
 		<!-- The current snapshot, unreleased version -->
 		<c:set var="version" value="@{com.aoindustries:ao-servlet-filter:pom.version}" />
@@ -59,6 +59,24 @@ along with ao-servlet-filter.  If not, see <http://www.gnu.org/licenses />.
 						in favor of new <ao:a href="https://aoindustries.com/ao-tempfiles/servlet/apidocs/com/aoindustries/tempfiles/servlet/ServletTempFileContext.html">ServletTempFileContext</ao:a>
 						that does not require <code>web.xml</code> configuration, supports additional scopes (application and session),
 						and registers a shutdown hook to delete on JVM exit.
+					</li>
+					<li>
+						Aligned the session URL rewriting excluded path extensions to match other projects.
+						The list is now:
+						<ol>
+							<li><code>*.bmp</code> (added this release)</li>
+							<li><code>*.css</code></li>
+							<li><code>*.exe</code> (added this release)</li>
+							<li><code>*.gif</code></li>
+							<li><code>*.ico</code></li>
+							<li><code>*.jpeg</code></li>
+							<li><code>*.jpg</code></li>
+							<li><code>*.js</code></li>
+							<li><code>*.png</code></li>
+							<li><code>*.svg</code> (added this release)</li>
+							<li><code>*.txt</code></li>
+							<li><code>*.zip</code></li>
+						</ol>
 					</li>
 				</ul>
 			</changelog:release>
