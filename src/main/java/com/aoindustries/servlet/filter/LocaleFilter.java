@@ -1,6 +1,6 @@
 /*
  * ao-servlet-filter - Reusable Java library of servlet filters.
- * Copyright (C) 2014, 2015, 2016  AO Industries, Inc.
+ * Copyright (C) 2014, 2015, 2016, 2019  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -469,7 +469,10 @@ abstract public class LocaleFilter implements Filter {
 		int questionPos = url.lastIndexOf('?');
 		String lowerPath = (questionPos==-1 ? url : url.substring(0, questionPos)).toLowerCase(Locale.ROOT);
 		return
-			!lowerPath.endsWith(".css")
+			// Matches SessionResponseWrapper
+			// Matches NoSessionFilter
+			!lowerPath.endsWith(".bmp")
+			&& !lowerPath.endsWith(".css")
 			&& !lowerPath.endsWith(".exe")
 			&& !lowerPath.endsWith(".gif")
 			&& !lowerPath.endsWith(".ico")
@@ -477,6 +480,7 @@ abstract public class LocaleFilter implements Filter {
 			&& !lowerPath.endsWith(".jpg")
 			&& !lowerPath.endsWith(".js")
 			&& !lowerPath.endsWith(".png")
+			&& !lowerPath.endsWith(".svg")
 			&& !lowerPath.endsWith(".txt")
 			&& !lowerPath.endsWith(".zip")
 		;
