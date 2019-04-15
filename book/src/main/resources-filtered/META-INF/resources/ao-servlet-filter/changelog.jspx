@@ -96,7 +96,7 @@ along with ao-servlet-filter.  If not, see <http://www.gnu.org/licenses />.
 					New <code>AddResponseHeaderFilter</code> filter to add response headers.
 					For when filter mappings are not expressive enough, supports both
 					lightning-fast <ao:a href="https://aoindustries.com/aocode-public/apidocs/com/aoindustries/util/WildcardPatternMatcher.html">WildcardPatternMatcher</ao:a>
-					and standard Java <ao:a rel="nofollow" href="@{javac.link.javaApi.jdk16}/java/util/regex/Pattern.html">Pattern</ao:a>.
+					and standard Java <ao:a rel="nofollow" href="@{javac.link.javaApi.jdk6}/java/util/regex/Pattern.html">Pattern</ao:a>.
 				</li>
 			</ul>
 		</changelog:release>
