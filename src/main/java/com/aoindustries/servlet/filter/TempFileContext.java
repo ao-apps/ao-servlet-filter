@@ -1,6 +1,6 @@
 /*
  * ao-servlet-filter - Reusable Java library of servlet filters.
- * Copyright (C) 2013, 2015, 2016, 2017  AO Industries, Inc.
+ * Copyright (C) 2013, 2015, 2016, 2017, 2019  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -22,7 +22,6 @@
  */
 package com.aoindustries.servlet.filter;
 
-import com.aoindustries.io.TempFileList;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -71,13 +70,13 @@ public class TempFileContext implements Filter {
 	/**
 	 * Gets the temp file list for the current request context or <code>null</code> if filter not active.
 	 */
-	public static TempFileList getTempFileList(ServletRequest request) {
-		return (TempFileList)request.getAttribute(REQUEST_ATTRIBUTE_NAME);
+	public static com.aoindustries.io.TempFileList getTempFileList(ServletRequest request) {
+		return (com.aoindustries.io.TempFileList)request.getAttribute(REQUEST_ATTRIBUTE_NAME);
 	}
 
 	// Java 1.8: @FunctionalInterface
 	public static interface Wrapper<T> {
-		T call(T original, TempFileList tempFileList);
+		T call(T original, com.aoindustries.io.TempFileList tempFileList);
 	}
 
 	private static class TempFileWarningLock {}
@@ -89,7 +88,7 @@ public class TempFileContext implements Filter {
 	 * When the context is inactive, the original object is returned unaltered.
 	 * This is logged as a warning the first time not wrapped.
 	 */
-	public static <T> T wrapTempFileList(T original, TempFileList tempFileList, Wrapper<T> wrapper) {
+	public static <T> T wrapTempFileList(T original, com.aoindustries.io.TempFileList tempFileList, Wrapper<T> wrapper) {
 		if(tempFileList != null) {
 			return wrapper.call(original, tempFileList);
 		} else {
@@ -130,10 +129,10 @@ public class TempFileContext implements Filter {
 		ServletResponse response,
 		FilterChain chain
 	) throws IOException, ServletException {
-		TempFileList list = (TempFileList)request.getAttribute(REQUEST_ATTRIBUTE_NAME);
+		com.aoindustries.io.TempFileList list = (com.aoindustries.io.TempFileList)request.getAttribute(REQUEST_ATTRIBUTE_NAME);
 		if(list==null) {
 			// Make new list and delete when done
-			list = new TempFileList(PREFIX);
+			list = new com.aoindustries.io.TempFileList(PREFIX);
 			try {
 				request.setAttribute(REQUEST_ATTRIBUTE_NAME, list);
 				chain.doFilter(request, response);
