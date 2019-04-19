@@ -1,6 +1,6 @@
 /*
  * ao-servlet-filter - Reusable Java library of servlet filters.
- * Copyright (C) 2017  AO Industries, Inc.
+ * Copyright (C) 2017, 2019  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -101,7 +101,7 @@ public class AddResponseHeaderFilter implements Filter {
 
 		// Find and sort any regular expressions
 		{
-			SortedMap<Integer,Pattern> regexsByNum = new TreeMap<Integer,Pattern>();
+			SortedMap<Integer,Pattern> regexsByNum = new TreeMap<>();
 			Enumeration<String> paramNames = config.getInitParameterNames();
 			while(paramNames.hasMoreElements()) {
 				String paramName = paramNames.nextElement();
@@ -127,13 +127,13 @@ public class AddResponseHeaderFilter implements Filter {
 			} if(regexsByNum.size() == 1) {
 				regexs = Collections.singletonList(regexsByNum.values().iterator().next());
 			} else {
-				regexs = new ArrayList<Pattern>(regexsByNum.values());
+				regexs = new ArrayList<>(regexsByNum.values());
 			}
 		}
 
 		// Find all headers
 		{
-			Map<String,String> foundHeaders = new LinkedHashMap<String,String>();
+			Map<String,String> foundHeaders = new LinkedHashMap<>();
 			Enumeration<String> paramNames = config.getInitParameterNames();
 			while(paramNames.hasMoreElements()) {
 				String paramName = paramNames.nextElement();

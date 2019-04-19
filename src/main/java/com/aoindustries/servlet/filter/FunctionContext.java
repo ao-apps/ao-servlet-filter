@@ -1,6 +1,6 @@
 /*
  * ao-servlet-filter - Reusable Java library of servlet filters.
- * Copyright (C) 2010, 2011, 2013, 2015, 2016  AO Industries, Inc.
+ * Copyright (C) 2010, 2011, 2013, 2015, 2016, 2019  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -45,9 +45,9 @@ public class FunctionContext implements Filter {
 
 	private static final String INIT_ERROR_MESSAGE = "Function context not initialized.  Please install FunctionContext filter to web.xml";
 
-	static final ThreadLocal<ServletContext> servletContextTL = new ThreadLocal<ServletContext>();
-	static final ThreadLocal<HttpServletRequest> requestTL = new ThreadLocal<HttpServletRequest>();
-	static final ThreadLocal<HttpServletResponse> responseTL = new ThreadLocal<HttpServletResponse>();
+	static final ThreadLocal<ServletContext> servletContextTL = new ThreadLocal<>();
+	static final ThreadLocal<HttpServletRequest> requestTL = new ThreadLocal<>();
+	static final ThreadLocal<HttpServletResponse> responseTL = new ThreadLocal<>();
 
 	public static ServletContext getServletContext() {
 		ServletContext servletContext = servletContextTL.get();
