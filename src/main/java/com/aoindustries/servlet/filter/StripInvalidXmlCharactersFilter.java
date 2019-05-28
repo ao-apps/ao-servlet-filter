@@ -50,7 +50,7 @@ import javax.servlet.http.HttpServletResponse;
  * </p>
  * <p>
  * This implementation supports UTF-16 surrogate pairs:
- * <a href="https://en.wikipedia.org/wiki/Universal_Character_Set_characters#Surrogates">https://en.wikipedia.org/wiki/Universal_Character_Set_characters#Surrogates</a>
+ * <a href="https://wikipedia.org/wiki/Universal_Character_Set_characters#Surrogates">https://wikipedia.org/wiki/Universal_Character_Set_characters#Surrogates</a>
  * </p>
  * <p>
  * The allowed characters defined by the specification at <a href="https://www.w3.org/TR/xml/#charsets">https://www.w3.org/TR/xml/#charsets</a>:
