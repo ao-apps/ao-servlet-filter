@@ -104,7 +104,7 @@ along with ao-servlet-filter.  If not, see <http://www.gnu.org/licenses />.
 		</dependency>
 		<!-- Dependency for dependencyversion-maven-plugin only -->
 		<dependency>
-			<groupId>com.aoindustries</groupId><artifactId>ao-servlet-filter</artifactId><version>1.6.1-SNAPSHOT</version>
+			<groupId>com.aoindustries</groupId><artifactId>ao-servlet-filter</artifactId><version>1.6.1-validation-SNAPSHOT</version>
 			<type>pom</type>
 			<scope>provided</scope>
 			<optional>true</optional>
