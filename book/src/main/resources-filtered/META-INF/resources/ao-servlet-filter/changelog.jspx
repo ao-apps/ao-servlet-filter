@@ -36,7 +36,7 @@ along with ao-servlet-filter.  If not, see <http://www.gnu.org/licenses />.
 		shortTitle="Changelog"
 		tocLevels="1"
 		datePublished="2016-10-29T21:37:35-0500"
-		dateModified="2019-06-19T09:48:11-0500"
+		dateModified="2019-08-10T05:57:22-0500"
 	>
 		<!-- The current snapshot, unreleased version -->
 		<c:set var="version" value="@{com.aoindustries:ao-servlet-filter:pom.version}" />
@@ -51,7 +51,15 @@ along with ao-servlet-filter.  If not, see <http://www.gnu.org/licenses />.
 				groupId="@{documented.groupId}"
 				artifactId="@{documented.artifactId}"
 				scmUrl="@{documented.scm.url}"
-			/>
+			>
+				<ul>
+					<li>
+						Case-insensitive matching of URL schemes.  Previously, URL schemes were matched case-sensitive,
+						while the spec is case-insensitive.  This has been OK given we only use lower-case schemes within our
+						code and tools, but this is now a correct implementation.
+					</li>
+				</ul>
+			</changelog:release>
 		</c:if>
 
 		<changelog:release
