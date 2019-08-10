@@ -53,7 +53,7 @@ import javax.servlet.http.HttpServletResponseWrapper;
  * crawl the site per-locale and does not depend on cookies.
  * </p>
  * <p>
- * Each URL (except javascript:, mailto:, telnet:, tel:, and cid: protocols) may be rewritten
+ * Each URL (except javascript:, mailto:, telnet:, tel:, and cid: protocols, case-insensitive) may be rewritten
  * using encodeURL to include a <code>paramName</code> parameter.  URLs to
  * non-localized resources are not rewritten.
  * </p>
@@ -199,8 +199,7 @@ abstract public class LocaleFilter implements Filter {
 					)
 				) {
 					if(DEBUG) servletContext.log("DEBUG: Redirecting to remove \"" + paramName + "\" parameter.");
-					StringBuilder url = new StringBuilder();
-					url.append(UrlUtils.decodeUrlPath(requestUri, requestEncoding));
+					StringBuilder url = new StringBuilder(requestUri);
 					boolean didOne = false;
 					for(Map.Entry<String,List<String>> entry : new ServletRequestParameters(request).getParameterMap().entrySet()) {
 						String name = entry.getKey();
@@ -280,8 +279,7 @@ abstract public class LocaleFilter implements Filter {
 						&& !localeString.equals(paramValue)
 					) {
 						if(DEBUG) servletContext.log("DEBUG: Redirecting for missing or mismatched locale parameter: " + localeString);
-						StringBuilder url = new StringBuilder();
-						url.append(UrlUtils.decodeUrlPath(requestUri, requestEncoding));
+						StringBuilder url = new StringBuilder(requestUri);
 						boolean didOne = false;
 						for(Map.Entry<String,List<String>> entry : new ServletRequestParameters(request).getParameterMap().entrySet()) {
 							String name = entry.getKey();
@@ -344,15 +342,13 @@ abstract public class LocaleFilter implements Filter {
 										remaining = url.substring(7);
 									} else if(url.length()>8 && (protocol=url.substring(0, 8)).equalsIgnoreCase("https://")) {
 										remaining = url.substring(8);
-									} else if(url.startsWith("javascript:")) {
-										return httpResponse.encodeRedirectURL(url);
-									} else if(url.startsWith("mailto:")) {
-										return httpResponse.encodeRedirectURL(url);
-									} else if(url.startsWith("telnet:")) {
-										return httpResponse.encodeRedirectURL(url);
-									} else if(url.startsWith("tel:")) {
-										return httpResponse.encodeRedirectURL(url);
-									} else if(url.startsWith("cid:")) {
+									} else if(
+										UrlUtils.isScheme(url, "javascript")
+										|| UrlUtils.isScheme(url, "mailto")
+										|| UrlUtils.isScheme(url, "telnet")
+										|| UrlUtils.isScheme(url, "tel")
+										|| UrlUtils.isScheme(url, "cid")
+									) {
 										return httpResponse.encodeRedirectURL(url);
 									} else {
 										String newUrl = addLocale(httpResponse.getLocale(), url, encodedParamName, httpResponse.getCharacterEncoding());
@@ -393,15 +389,13 @@ abstract public class LocaleFilter implements Filter {
 										remaining = url.substring(7);
 									} else if(url.length()>8 && (protocol=url.substring(0, 8)).equalsIgnoreCase("https://")) {
 										remaining = url.substring(8);
-									} else if(url.startsWith("javascript:")) {
-										return httpResponse.encodeURL(url);
-									} else if(url.startsWith("mailto:")) {
-										return httpResponse.encodeURL(url);
-									} else if(url.startsWith("telnet:")) {
-										return httpResponse.encodeURL(url);
-									} else if(url.startsWith("tel:")) {
-										return httpResponse.encodeURL(url);
-									} else if(url.startsWith("cid:")) {
+									} else if(
+										UrlUtils.isScheme(url, "javascript")
+										|| UrlUtils.isScheme(url, "mailto")
+										|| UrlUtils.isScheme(url, "telnet")
+										|| UrlUtils.isScheme(url, "tel")
+										|| UrlUtils.isScheme(url, "cid")
+									) {
 										return httpResponse.encodeURL(url);
 									} else {
 										String newUrl = addLocale(httpResponse.getLocale(), url, encodedParamName, httpResponse.getCharacterEncoding());

@@ -22,6 +22,7 @@
  */
 package com.aoindustries.servlet.filter;
 
+import com.aoindustries.net.UrlUtils;
 import com.aoindustries.util.StringUtility;
 import com.aoindustries.util.WrappedException;
 import java.io.IOException;
@@ -357,15 +358,13 @@ public class NoSessionFilter implements Filter {
 									remaining = url.substring(7);
 								} else if(url.length()>8 && (protocol=url.substring(0, 8)).equalsIgnoreCase("https://")) {
 									remaining = url.substring(8);
-								} else if(url.startsWith("javascript:")) {
-									return url;
-								} else if(url.startsWith("mailto:")) {
-									return url;
-								} else if(url.startsWith("telnet:")) {
-									return url;
-								} else if(url.startsWith("tel:")) {
-									return url;
-								} else if(url.startsWith("cid:")) {
+								} else if(
+									UrlUtils.isScheme(url, "javascript")
+									|| UrlUtils.isScheme(url, "mailto")
+									|| UrlUtils.isScheme(url, "telnet")
+									|| UrlUtils.isScheme(url, "tel")
+									|| UrlUtils.isScheme(url, "cid")
+								) {
 									return url;
 								} else {
 									return addCookieValues(originalRequest, newCookies, url, getCharacterEncoding());
@@ -407,11 +406,13 @@ public class NoSessionFilter implements Filter {
 									remaining = url.substring(7);
 								} else if(url.length()>8 && (protocol=url.substring(0, 8)).equalsIgnoreCase("https://")) {
 									remaining = url.substring(8);
-								} else if(url.startsWith("javascript:")) {
-									return url;
-								} else if(url.startsWith("tel:")) {
-									return url;
-								} else if(url.startsWith("cid:")) {
+								} else if(
+									UrlUtils.isScheme(url, "javascript")
+									|| UrlUtils.isScheme(url, "mailto")
+									|| UrlUtils.isScheme(url, "telnet")
+									|| UrlUtils.isScheme(url, "tel")
+									|| UrlUtils.isScheme(url, "cid")
+								) {
 									return url;
 								} else {
 									return addCookieValues(originalRequest, newCookies, url, getCharacterEncoding());
