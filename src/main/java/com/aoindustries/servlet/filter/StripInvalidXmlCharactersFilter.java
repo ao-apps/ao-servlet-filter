@@ -23,9 +23,9 @@
 package com.aoindustries.servlet.filter;
 
 import com.aoindustries.net.ServletRequestParameters;
+import com.aoindustries.net.UrlUtils;
 import com.aoindustries.servlet.http.ServletUtil;
 import java.io.IOException;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -49,6 +49,9 @@ import javax.servlet.http.HttpServletResponse;
  * All other methods, including POST requests, will have the invalid XML characters stripped.
  * </p>
  * <p>
+ * Parameters with invalid names are removed.
+ * </p>
+ * <p>
  * This implementation supports UTF-16 surrogate pairs:
  * <a href="https://wikipedia.org/wiki/Universal_Character_Set_characters#Surrogates">https://wikipedia.org/wiki/Universal_Character_Set_characters#Surrogates</a>
  * </p>
@@ -65,43 +68,22 @@ public class StripInvalidXmlCharactersFilter implements Filter {
 	/**
 	 * <pre>Char	   ::=   	#x9 | #xA | #xD | [#x20-#xD7FF] | [#xE000-#xFFFD] | [#x10000-#x10FFFF]</pre>
 	 */
-	private static boolean isValidCharacter(int ch) {
+	private static boolean isValidCharacter(int codePoint) {
 		return
-			(ch >= 0x20 && ch <= 0xD7FF) // Most common condition first
-			|| ch == 0x9
-			|| ch == 0xA
-			|| ch == 0xD
-			|| (ch >= 0xE000 && ch <= 0xFFFD)
-			|| (ch >= 0x10000 && ch <= 0x10FFFF)
+			(codePoint >= 0x20 && codePoint <= 0xD7FF) // Most common condition first
+			|| codePoint == 0x9
+			|| codePoint == 0xA
+			|| codePoint == 0xD
+			|| (codePoint >= 0xE000 && codePoint <= 0xFFFD)
+			|| (codePoint >= 0x10000 && codePoint <= 0x10FFFF)
 		;
 	}
 
 	private static boolean isValid(String s) {
-		int len = s.length();
-		int pos = 0;
-		while(pos < len) {
-			char ch1 = s.charAt(pos++);
-			int ch;
-			if(Character.isHighSurrogate(ch1)) {
-				// Handle surrogates
-				if(pos < len) {
-					char ch2 = s.charAt(pos++);
-					if(Character.isLowSurrogate(ch2)) {
-						ch = Character.toCodePoint(ch1, ch2);
-					} else {
-						// High surrogate not followed by low surrogate, invalid
-						return false;
-					}
-				} else {
-					// High surrogate at end of string, invalid
-					return false;
-				}
-			} else {
-				// Not surrogates
-				ch = ch1;
-			}
+		for (int i = 0, len = s.length(), codePoint; i < len; i += Character.charCount(codePoint)) {
+			codePoint = s.codePointAt(i);
 			// Check is valid
-			if(!isValidCharacter(ch)) {
+			if(!isValidCharacter(codePoint)) {
 				return false;
 			}
 		}
@@ -114,32 +96,20 @@ public class StripInvalidXmlCharactersFilter implements Filter {
 	private static String filter(String s) {
 		int len = s.length();
 		StringBuilder filtered = new StringBuilder(len);
-		int pos = 0;
-		while(pos < len) {
-			char ch1 = s.charAt(pos++);
-			if(Character.isHighSurrogate(ch1)) {
-				// Handle surrogates
-				if(pos < len) {
-					char ch2 = s.charAt(pos++);
-					if(Character.isLowSurrogate(ch2)) {
-						if(isValidCharacter(Character.toCodePoint(ch1, ch2))) {
-							filtered.append(ch1).append(ch2);
-						}
-					} else {
-						// High surrogate not followed by low surrogate, invalid
-					}
-				} else {
-					// High surrogate at end of string, invalid
-				}
-			} else {
-				// Not surrogates
-				if(isValidCharacter(ch1)) {
-					filtered.append(ch1);
-				}
+		for (int i = 0, codePoint; i < len; i += Character.charCount(codePoint)) {
+			codePoint = s.codePointAt(i);
+			// Check is valid
+			if(isValidCharacter(codePoint)) {
+				filtered.appendCodePoint(codePoint);
 			}
 		}
 		assert filtered.length() <= len;
-		return filtered.length() != len ? filtered.toString() : s;
+		if(filtered.length() == len) {
+			assert filtered.toString().equals(s);
+			return s;
+		} else {
+			return filtered.toString();
+		}
 	}
 
 	@Override
@@ -160,6 +130,10 @@ public class StripInvalidXmlCharactersFilter implements Filter {
 			Map<String,List<String>> paramMap = new ServletRequestParameters(request).getParameterMap();
 			boolean isValid = true;
 			for(Map.Entry<String,List<String>> entry : paramMap.entrySet()) {
+				if(!isValid(entry.getKey())) {
+					isValid = false;
+					break;
+				}
 				for(String paramValue : entry.getValue()) {
 					if(!isValid(paramValue)) {
 						isValid = false;
@@ -171,42 +145,46 @@ public class StripInvalidXmlCharactersFilter implements Filter {
 				HttpServletResponse httpResponse = (HttpServletResponse)response;
 				String responseEncoding = response.getCharacterEncoding();
 				if("GET".equals(httpRequest.getMethod())) {
-					// Redirect to same request but with special characters removed
+					// Redirect to same request but with invalid parameters and special characters removed
 					StringBuilder url = new StringBuilder();
 					ServletUtil.getAbsoluteURL(
 						httpRequest,
-						ServletUtil.getContextRequestUri(httpRequest),
+						httpRequest.getRequestURI(),
+						false,
 						url
 					);
 					// Add any parameters
 					boolean didOne = false;
 					for(Map.Entry<String,List<String>> entry : paramMap.entrySet()) {
 						String name = entry.getKey();
-						for(String value : entry.getValue()) {
-							if(didOne) {
-								url.append('&');
-							} else {
-								url.append('?');
-								didOne = true;
+						if(isValid(name)) {
+							for(String value : entry.getValue()) {
+								if(didOne) {
+									url.append('&');
+								} else {
+									url.append('?');
+									didOne = true;
+								}
+								UrlUtils.encodeURIComponent(name, responseEncoding, url);
+								url.append('=');
+								UrlUtils.encodeURIComponent(filter(value), responseEncoding, url);
 							}
-							url
-								.append(URLEncoder.encode(name, responseEncoding))
-								.append('=')
-								.append(URLEncoder.encode(filter(value), responseEncoding))
-							;
 						}
 					}
 					ServletUtil.sendRedirect(httpResponse, url.toString(), HttpServletResponse.SC_MOVED_PERMANENTLY);
 				} else {
-					// Filter invalid characters
+					// Filter invalid parameters and characters
 					final Map<String,List<String>> filteredMap = new LinkedHashMap<>(paramMap.size()*4/3+1);
 					for(Map.Entry<String,List<String>> entry : paramMap.entrySet()) {
-						List<String> values = entry.getValue();
-						List<String> filteredValues = new ArrayList<>(values.size());
-						for(String value : values) {
-							filteredValues.add(filter(value));
+						String name = entry.getKey();
+						if(isValid(name)) {
+							List<String> values = entry.getValue();
+							List<String> filteredValues = new ArrayList<>(values.size());
+							for(String value : values) {
+								filteredValues.add(filter(value));
+							}
+							filteredMap.put(name, filteredValues);
 						}
-						filteredMap.put(entry.getKey(), filteredValues);
 					}
 					// Dispatch with filtered values
 					chain.doFilter(
