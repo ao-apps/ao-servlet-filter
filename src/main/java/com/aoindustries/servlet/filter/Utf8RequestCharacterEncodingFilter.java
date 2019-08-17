@@ -1,6 +1,6 @@
 /*
  * ao-servlet-filter - Reusable Java library of servlet filters.
- * Copyright 2007, 2008, 2009, 2010, 2011, 2015, 2016 by AO Industries, Inc.,
+ * Copyright 2007, 2008, 2009, 2010, 2011, 2015, 2016, 2019 by AO Industries, Inc.,
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -23,6 +23,7 @@
 package com.aoindustries.servlet.filter;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -32,7 +33,7 @@ import javax.servlet.ServletResponse;
 
 /**
  * <p>
- * Sets the request encoding to "UTF-8" when encoding not provided by the client.
+ * Sets the request encoding to {@link StandardCharsets#UTF_8} when encoding not provided by the client.
  * </p>
  * <p>
  * This should be first in the filter chain and used for the REQUEST dispatcher only.
@@ -54,7 +55,7 @@ public class Utf8RequestCharacterEncodingFilter implements Filter {
 	) throws IOException, ServletException {
 		// Only override encoding when not provided by the client
 		if(request.getCharacterEncoding() == null) {
-			request.setCharacterEncoding("UTF-8");
+			request.setCharacterEncoding(StandardCharsets.UTF_8.name());
 		}
 		chain.doFilter(request, response);
 	}
