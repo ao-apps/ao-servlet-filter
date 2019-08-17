@@ -22,17 +22,18 @@
  */
 package com.aoindustries.servlet.filter;
 
+import com.aoindustries.net.HttpParametersMap;
+import com.aoindustries.net.MutableHttpParameters;
+import com.aoindustries.net.SplitUrl;
 import com.aoindustries.net.UrlUtils;
 import com.aoindustries.util.StringUtility;
 import com.aoindustries.util.WrappedException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.Locale;
 import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -55,10 +56,10 @@ import javax.servlet.http.HttpSession;
  * should be stored as cookies.  In the event cookies are disabled, this filter
  * also adds the cookie values during URL rewriting.  Any cookies added to the
  * URLs through rewriting will have a parameter name beginning with
- * <code>cookie:</code>
+ * <code>cookie:</code> (by default).
  * </p>
  * <p>
- * <b>Security implications!</b>  Since cookies may now come from the URL, they
+ * <strong>Security implications!</strong>  Since cookies may now come from the URL, they
  * may be added on links from other sites.  Thus, one cannot use cookies in
  * any Cross-Site Request Forgery (CSRF) detection or for any other purpose
  * that assumes the cookie may only be provided by the browser.
@@ -72,7 +73,7 @@ import javax.servlet.http.HttpSession;
  * </p>
  * <p>
  * To ensure no namespace conflicts with cookies potentially rewritten as URL
- * parameters, any parameter in the request beginning with <code>cookie:</code>
+ * parameters, any parameter in the request beginning with <code>cookie:</code> (by default)
  * is filtered, even if it doesn't currently match an allowed cookie name.
  * The result of <code>getQueryString</code>, however, is unaltered any may possibly
  * contain cookie parameters.
@@ -90,80 +91,94 @@ import javax.servlet.http.HttpSession;
  * Note: If using JSP, add <code>session="false"</code>, for example:
  * <pre>&lt;%@ page language="java" session="false" %&gt;</pre>
  * </p>
+ * <p>
+ * Consider using in conjunction with {@link NoEncodeUrlFilter} to ensure that
+ * <code>;jsessionid</code> is never added to the URLs.
+ * </p>
+ * <p>
+ * TODO: Idea:
+ * When only one cookie name is allowed, convert it to be just the cookie symbol itself?
+ * This would means cookies would be lost when a second cookie added, but would be a cool short URL otherwise.
+ * Or a second init parameter that specifies which cookie name is the "shortCookie".
+ * Or do we allow each cookie to mapped to a custom name instead of prefix + name.
+ * </p>
+ * <p>
+ * TODO: Support empty cookieUrlParamPrefix?  This would make it more difficult
+ * to separate cookies and parameters.  It would make it where any cookie name
+ * allowed here would effectively never be able to be used as a parameter.
+ * </p>
  */
 public class NoSessionFilter implements Filter {
 
 	private static final String FILTER_APPLIED_KEY = NoSessionFilter.class.getName()+".filterApplied";
 
-	public static final String COOKIE_URL_PARAM_PREFIX = "cookie:";
+	/**
+	 * The default symbol is used as prefix.
+	 */
+	private static final String DEFAULT_COOKIE_URL_PARAM_PREFIX = "cookie:";
 
 	/**
 	 * The maximum number of cookie names allowed.
 	 */
 	public static final int MAXIMUM_COOKIES = 20;
 
+	private String cookieUrlParamPrefix;
+
 	private final SortedSet<String> cookieNames = new TreeSet<>();
+
+	@Override
+	public void init(FilterConfig config) {
+		String cookieUrlParamPrefixInitParam = config.getInitParameter("cookieUrlParamPrefix");
+		cookieUrlParamPrefix = (cookieUrlParamPrefixInitParam != null && !cookieUrlParamPrefixInitParam.isEmpty()) ? cookieUrlParamPrefixInitParam : DEFAULT_COOKIE_URL_PARAM_PREFIX;
+		cookieNames.clear();
+		String cookieNamesInitParam = config.getInitParameter("cookieNames");
+		if(cookieNamesInitParam != null) cookieNames.addAll(StringUtility.splitStringCommaSpace(cookieNamesInitParam));
+		if(cookieNames.size() > MAXIMUM_COOKIES) throw new IllegalArgumentException("cookieNames.size() > " + MAXIMUM_COOKIES);
+	}
 
 	/**
 	 * Adds the values for any new cookies to the URL.  This handles cookie-based
 	 * session management through URL rewriting.
 	 */
-	private String addCookieValues(HttpServletRequest request, Map<String,Cookie> newCookies, String url, String encoding) {
-		// Split the anchor
-		int poundPos = url.lastIndexOf('#');
-		String anchor;
-		if(poundPos==-1) anchor = null;
-		else {
-			anchor = url.substring(poundPos);
-			url = url.substring(0, poundPos);
-		}
+	private SplitUrl addCookieValues(HttpServletRequest request, Map<String,Cookie> newCookies, SplitUrl url, String documentEncoding) {
+		assert !url.toString().isEmpty() && url.getFragmentIndex() != 0;
 		// Don't add for certains file types
-		int questionPos = url.lastIndexOf('?');
-		String lowerPath = (questionPos==-1 ? url : url.substring(0, questionPos)).toLowerCase(Locale.ROOT);
 		if(
 			// Matches SessionResponseWrapper
 			// Matches LocaleFilter
-			!lowerPath.endsWith(".bmp")
-			&& !lowerPath.endsWith(".css")
-			&& !lowerPath.endsWith(".exe")
-			&& !lowerPath.endsWith(".gif")
-			&& !lowerPath.endsWith(".ico")
-			&& !lowerPath.endsWith(".jpeg")
-			&& !lowerPath.endsWith(".jpg")
-			&& !lowerPath.endsWith(".js")
-			&& !lowerPath.endsWith(".png")
-			&& !lowerPath.endsWith(".svg")
-			&& !lowerPath.endsWith(".txt")
-			&& !lowerPath.endsWith(".zip")
+			// TODO: This will fail on overly %-encoded paths, but they would be an anomaly anyway
+			!url.pathEndsWithIgnoreCase(".bmp")
+			&& !url.pathEndsWithIgnoreCase(".css")
+			&& !url.pathEndsWithIgnoreCase(".exe")
+			&& !url.pathEndsWithIgnoreCase(".gif")
+			&& !url.pathEndsWithIgnoreCase(".ico")
+			&& !url.pathEndsWithIgnoreCase(".jpeg")
+			&& !url.pathEndsWithIgnoreCase(".jpg")
+			&& !url.pathEndsWithIgnoreCase(".js")
+			&& !url.pathEndsWithIgnoreCase(".png")
+			&& !url.pathEndsWithIgnoreCase(".svg")
+			&& !url.pathEndsWithIgnoreCase(".txt")
+			&& !url.pathEndsWithIgnoreCase(".zip")
 		) {
 			try {
 				Cookie[] oldCookies = null;
 				boolean oldCookiesSet = false;
-				StringBuilder urlSB = new StringBuilder(url);
-				boolean hasParam = questionPos!=-1;
+				MutableHttpParameters cookieParams = null;
 				for(String cookieName : cookieNames) {
 					if(newCookies.containsKey(cookieName)) {
 						Cookie newCookie = newCookies.get(cookieName);
-						if(newCookie!=null) {
-							if(hasParam) urlSB.append('&');
-							else {
-								urlSB.append('?');
-								hasParam = true;
-							}
-							urlSB
-								.append(URLEncoder.encode(COOKIE_URL_PARAM_PREFIX+cookieName, encoding))
-								.append('=')
-								.append(URLEncoder.encode(newCookie.getValue(), encoding))
-							;
+						if(newCookie != null) {
+							if(cookieParams == null) cookieParams = new HttpParametersMap();
+							cookieParams.addParameter(cookieUrlParamPrefix + cookieName, newCookie.getValue());
 						} else {
 							// Cookie was removed - do not add to URL
 						}
 					} else {
 						// Add each of the cookie values that were passed-in on the URL, were not removed or added,
 						// and were not included as a request cookie.
-						String paramName = COOKIE_URL_PARAM_PREFIX+cookieName;
+						String paramName = cookieUrlParamPrefix + cookieName;
 						String[] values = request.getParameterValues(paramName);
-						if(values!=null && values.length>0) {
+						if(values != null && values.length > 0) {
 							boolean found = false;
 							if(!oldCookiesSet) {
 								oldCookies = request.getCookies();
@@ -178,35 +193,22 @@ public class NoSessionFilter implements Filter {
 								}
 							}
 							if(!found) {
-								if(hasParam) urlSB.append('&');
-								else {
-									urlSB.append('?');
-									hasParam = true;
-								}
-								urlSB
-									.append(URLEncoder.encode(paramName, encoding))
-									.append('=')
-									.append(URLEncoder.encode(values[values.length-1], encoding))
-								;
+								if(cookieParams == null) cookieParams = new HttpParametersMap();
+								cookieParams.addParameter(paramName, values[values.length - 1]);
 							}
 						}
 					}
 				}
-				url = urlSB.toString();
+				url = url.addParameters(cookieParams, documentEncoding);
 			} catch(UnsupportedEncodingException err) {
 				throw new WrappedException(err);
 			}
 		}
-		if(anchor!=null) url += anchor;
 		return url;
 	}
 
-	@Override
-	public void init(FilterConfig config) {
-		cookieNames.clear();
-		String cookieNamesInitParam = config.getInitParameter("cookieNames");
-		if(cookieNamesInitParam != null) cookieNames.addAll(StringUtility.splitStringCommaSpace(cookieNamesInitParam));
-		if(cookieNames.size()>MAXIMUM_COOKIES) throw new IllegalArgumentException("cookieNames.size()>"+MAXIMUM_COOKIES);
+	private String addCookieValues(HttpServletRequest request, Map<String,Cookie> newCookies, String url, String documentEncoding) {
+		return addCookieValues(request, newCookies, new SplitUrl(url), documentEncoding).toString();
 	}
 
 	@Override
@@ -239,7 +241,7 @@ public class NoSessionFilter implements Filter {
 							/** Filter cookie parameters */
 							@Override
 							public String getParameter(String name) {
-								if(name.startsWith(COOKIE_URL_PARAM_PREFIX)) return null;
+								if(name.startsWith(cookieUrlParamPrefix)) return null;
 								return super.getParameter(name);
 							}
 							/** Filter cookie parameters */
@@ -249,7 +251,7 @@ public class NoSessionFilter implements Filter {
 								Map<String,String[]> completeMap = super.getParameterMap();
 								boolean needsFilter = false;
 								for(String paramName : completeMap.keySet()) {
-									if(paramName.startsWith(COOKIE_URL_PARAM_PREFIX)) {
+									if(paramName.startsWith(cookieUrlParamPrefix)) {
 										needsFilter = true;
 										break;
 									}
@@ -258,7 +260,7 @@ public class NoSessionFilter implements Filter {
 								Map<String,String[]> filteredMap = new LinkedHashMap<>(completeMap.size()*4/3); // No +1 on size since we will filter at least one - guaranteed no rehash
 								for(Map.Entry<String,String[]> entry : completeMap.entrySet()) {
 									String paramName = entry.getKey();
-									if(!paramName.startsWith(COOKIE_URL_PARAM_PREFIX)) filteredMap.put(paramName, entry.getValue());
+									if(!paramName.startsWith(cookieUrlParamPrefix)) filteredMap.put(paramName, entry.getValue());
 								}
 								return Collections.unmodifiableMap(filteredMap);
 							}
@@ -274,7 +276,7 @@ public class NoSessionFilter implements Filter {
 										if(nextName!=null) return true;
 										while(completeNames.hasMoreElements()) {
 											String name = completeNames.nextElement();
-											if(!name.startsWith(COOKIE_URL_PARAM_PREFIX)) {
+											if(!name.startsWith(cookieUrlParamPrefix)) {
 												nextName = name;
 												return true;
 											}
@@ -290,7 +292,7 @@ public class NoSessionFilter implements Filter {
 										}
 										while(true) {
 											name = completeNames.nextElement();
-											if(!name.startsWith(COOKIE_URL_PARAM_PREFIX)) return name;
+											if(!name.startsWith(cookieUrlParamPrefix)) return name;
 										}
 									}
 								};
@@ -298,7 +300,7 @@ public class NoSessionFilter implements Filter {
 							/** Filter cookie parameters */
 							@Override
 							public String[] getParameterValues(String name) {
-								if(name.startsWith(COOKIE_URL_PARAM_PREFIX)) return null;
+								if(name.startsWith(cookieUrlParamPrefix)) return null;
 								return super.getParameterValues(name);
 							}
 
@@ -320,8 +322,8 @@ public class NoSessionFilter implements Filter {
 								// Add parameter cookies
 								while(parameterNames.hasMoreElements()) {
 									String paramName = parameterNames.nextElement();
-									if(paramName.startsWith(COOKIE_URL_PARAM_PREFIX)) {
-										String cookieName = paramName.substring(COOKIE_URL_PARAM_PREFIX.length());
+									if(paramName.startsWith(cookieUrlParamPrefix)) {
+										String cookieName = paramName.substring(cookieUrlParamPrefix.length());
 										if(
 											!allCookies.containsKey(cookieName) // Header cookies have priority over parameter cookies
 											&& cookieNames.contains(cookieName) // Only add expected cookie names
@@ -329,7 +331,7 @@ public class NoSessionFilter implements Filter {
 											String value = originalRequest.getParameter(paramName);
 											assert value!=null;
 											Cookie newCookie = new Cookie(cookieName, value);
-											newCookie.setPath(originalRequest.getContextPath()+"/");
+											newCookie.setPath(UrlUtils.encodeURI(originalRequest.getContextPath() + "/"));
 											allCookies.put(cookieName, newCookie);
 										}
 									}
@@ -338,25 +340,33 @@ public class NoSessionFilter implements Filter {
 							}
 						},
 						new HttpServletResponseWrapper(originalResponse) {
-							@Override
-							@Deprecated
-							public String encodeRedirectUrl(String url) {
-								return encodeRedirectURL(url);
-							}
-
 							/**
 							 * TODO: Only add cookies if their domain and path would make the available to the given url.
 							 */
-							@Override
-							public String encodeRedirectURL(String url) {
-								// Don't rewrite anchor-only URLs
-								if(url.length()>0 && url.charAt(0)=='#') return url;
+							// TODO: org.xbib.net.URL or org.apache.http.client.utils.URIBuilder
+							private String encode(String url) {
+								// Don't rewrite empty or anchor-only URLs
+								if(url.isEmpty() || url.charAt(0) == '#') return url;
 								// If starts with http:// or https:// parse out the first part of the URL, encode the path, and reassemble.
 								String protocol;
 								String remaining;
-								if(url.length()>7 && (protocol=url.substring(0, 7)).equalsIgnoreCase("http://")) {
+								if(
+									// 7: "http://".length()
+									url.length() > 7
+									&& url.charAt(6) == '/'
+									&& url.charAt(7) == '/'
+									&& UrlUtils.isScheme(url, "http")
+								) {
+									protocol = url.substring(0, 7);
 									remaining = url.substring(7);
-								} else if(url.length()>8 && (protocol=url.substring(0, 8)).equalsIgnoreCase("https://")) {
+								} else if(
+									// 8: "https://".length()
+									url.length() > 8
+									&& url.charAt(7) == '/'
+									&& url.charAt(8) == '/'
+									&& UrlUtils.isScheme(url, "https")
+								) {
+									protocol = url.substring(0, 8);
 									remaining = url.substring(8);
 								} else if(
 									UrlUtils.isScheme(url, "javascript")
@@ -370,74 +380,61 @@ public class NoSessionFilter implements Filter {
 									return addCookieValues(originalRequest, newCookies, url, getCharacterEncoding());
 								}
 								int slashPos = remaining.indexOf('/');
-								if(slashPos==-1) {
+								if(slashPos == -1) {
 									return addCookieValues(originalRequest, newCookies, url, getCharacterEncoding());
 								}
 								String hostPort = remaining.substring(0, slashPos);
 								int colonPos = hostPort.indexOf(':');
-								String host = colonPos==-1 ? hostPort : hostPort.substring(0, colonPos);
+								String host = colonPos == -1 ? hostPort : hostPort.substring(0, colonPos);
 								String encoded;
-								if(host.equalsIgnoreCase(originalRequest.getServerName())) {
-									encoded = protocol + hostPort + addCookieValues(originalRequest, newCookies, remaining.substring(slashPos), getCharacterEncoding());
+								if(
+									// TODO: What about [...] IPv6 addresses?
+									host.equalsIgnoreCase(originalRequest.getServerName())
+								) {
+									String withCookies = addCookieValues(originalRequest, newCookies, remaining.substring(slashPos), getCharacterEncoding());
+									int encodedLen = protocol.length() + hostPort.length() + withCookies.length();
+									if(encodedLen == url.length()) {
+										assert url.equals(protocol + hostPort + withCookies);
+										encoded = url;
+									} else {
+										StringBuilder sb = new StringBuilder(encodedLen);
+										sb.append(protocol).append(hostPort).append(withCookies);
+										assert sb.length() == encodedLen;
+										encoded = sb.toString();
+									}
 								} else {
 									// Going to an different hostname, do not add request parameters
 									encoded = url;
 								}
 								return encoded;
+							}
+
+							@Override
+							@Deprecated
+							public String encodeRedirectUrl(String url) {
+								return super.encodeRedirectUrl(encode(url));
+							}
+
+							@Override
+							public String encodeRedirectURL(String url) {
+								return super.encodeRedirectURL(encode(url));
 							}
 
 							@Override
 							@Deprecated
 							public String encodeUrl(String url) {
-								return encodeURL(url);
+								return super.encodeUrl(encode(url));
 							}
 
-							/**
-							 * TODO: Only add cookies if their domain and path would make the available to the given url.
-							 */
 							@Override
 							public String encodeURL(String url) {
-								// Don't rewrite anchor-only URLs
-								if(url.length()>0 && url.charAt(0)=='#') return url;
-								// If starts with http:// or https:// parse out the first part of the URL, encode the path, and reassemble.
-								String protocol;
-								String remaining;
-								if(url.length()>7 && (protocol=url.substring(0, 7)).equalsIgnoreCase("http://")) {
-									remaining = url.substring(7);
-								} else if(url.length()>8 && (protocol=url.substring(0, 8)).equalsIgnoreCase("https://")) {
-									remaining = url.substring(8);
-								} else if(
-									UrlUtils.isScheme(url, "javascript")
-									|| UrlUtils.isScheme(url, "mailto")
-									|| UrlUtils.isScheme(url, "telnet")
-									|| UrlUtils.isScheme(url, "tel")
-									|| UrlUtils.isScheme(url, "cid")
-								) {
-									return url;
-								} else {
-									return addCookieValues(originalRequest, newCookies, url, getCharacterEncoding());
-								}
-								int slashPos = remaining.indexOf('/');
-								if(slashPos==-1) {
-									return addCookieValues(originalRequest, newCookies, url, getCharacterEncoding());
-								}
-								String hostPort = remaining.substring(0, slashPos);
-								int colonPos = hostPort.indexOf(':');
-								String host = colonPos==-1 ? hostPort : hostPort.substring(0, colonPos);
-								String encoded;
-								if(host.equalsIgnoreCase(originalRequest.getServerName())) {
-									encoded = protocol + hostPort + addCookieValues(originalRequest, newCookies, remaining.substring(slashPos), getCharacterEncoding());
-								} else {
-									// Going to an different hostname, do not add request parameters
-									encoded = url;
-								}
-								return encoded;
+								return super.encodeURL(encode(url));
 							}
 
 							@Override
 							public void addCookie(Cookie newCookie) {
 								String cookieName = newCookie.getName();
-								if(!cookieNames.contains(cookieName)) throw new IllegalArgumentException("Unexpected cookie name, add to cookieNames init parameter: "+cookieName);
+								if(!cookieNames.contains(cookieName)) throw new IllegalArgumentException("Unexpected cookie name, add to cookieNames init parameter: " + cookieName);
 								super.addCookie(newCookie);
 								if(newCookie.getMaxAge()==0) {
 									// Cookie deleted
@@ -472,6 +469,7 @@ public class NoSessionFilter implements Filter {
 
 	@Override
 	public void destroy() {
+		cookieUrlParamPrefix = null;
 		cookieNames.clear();
 	}
 }

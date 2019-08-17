@@ -36,7 +36,7 @@ along with ao-servlet-filter.  If not, see <http://www.gnu.org/licenses />.
 		shortTitle="Changelog"
 		tocLevels="1"
 		datePublished="2016-10-29T21:37:35-0500"
-		dateModified="2019-08-10T05:57:22-0500"
+		dateModified="2019-08-17T09:38:35-0500"
 	>
 		<!-- The current snapshot, unreleased version -->
 		<c:set var="version" value="@{com.aoindustries:ao-servlet-filter:pom.version}" />
@@ -57,6 +57,16 @@ along with ao-servlet-filter.  If not, see <http://www.gnu.org/licenses />.
 						Case-insensitive matching of URL schemes.  Previously, URL schemes were matched case-sensitive,
 						while the spec is case-insensitive.  This has been OK given we only use lower-case schemes within our
 						code and tools, but this is now a correct implementation.
+					</li>
+					<li>
+						<code>NoSessionFilter</code> now passes the URL encoding up the filter chain after its modifications.
+						Previously, the URL rewriting was stopped here.  To obtain the previous behavior, use in
+						conjunction with <code>NoEncodeUrlFilter</code>.
+					</li>
+					<li>
+						New context init parameter <code>com.aoindustries.servlet.filter.NoSessionFilter.cookieUrlParamPrefix</code>
+						that may be used to provide a custom cookie URL prefix.  A fun alternative is
+						<ao:a href="https://www.fileformat.info/info/unicode/char/1f36a/index.htm">Unicode Character 'COOKIE' (U+1F36A)</ao:a>.
 					</li>
 				</ul>
 			</changelog:release>
