@@ -36,7 +36,7 @@ along with ao-servlet-filter.  If not, see <http://www.gnu.org/licenses />.
 		shortTitle="Changelog"
 		tocLevels="1"
 		datePublished="2016-10-29T21:37:35-0500"
-		dateModified="2019-08-17T18:20:30-0500"
+		dateModified="2019-08-17T19:22:44-0500"
 	>
 		<!-- The current snapshot, unreleased version -->
 		<c:set var="version" value="@{com.aoindustries:ao-servlet-filter:pom.version}" />
@@ -69,6 +69,11 @@ along with ao-servlet-filter.  If not, see <http://www.gnu.org/licenses />.
 						<ao:a href="https://www.fileformat.info/info/unicode/char/1f36a/index.htm">Unicode Character 'COOKIE' (U+1F36A)</ao:a>.
 					</li>
 					<li><code>StripInvalidXmlCharactersFilter</code> now removes parameters that have invalid names.</li>
+					<li><code>HideJspExtensionFilter</code> no longer removes <code>index.jsp(x)</code> or <code>.jsp(x)</code> extensions
+						from URLs that have a scheme.  However, http:// and https:// links to the same host are still rewritten
+						in order to handle absolute URLs.
+					</li>
+					<li><code>HideJspExtensionFilter</code> now sends redirect in <code>UTF-8</code>.</li>
 				</ul>
 			</changelog:release>
 		</c:if>
