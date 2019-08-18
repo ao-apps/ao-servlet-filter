@@ -36,7 +36,7 @@ along with ao-servlet-filter.  If not, see <http://www.gnu.org/licenses />.
 		shortTitle="Changelog"
 		tocLevels="1"
 		datePublished="2016-10-29T21:37:35-0500"
-		dateModified="2019-08-17T22:57:35-0500"
+		dateModified="2019-08-18T01:00:05-0500"
 	>
 		<!-- The current snapshot, unreleased version -->
 		<c:set var="version" value="@{com.aoindustries:ao-servlet-filter:pom.version}" />
@@ -75,6 +75,7 @@ along with ao-servlet-filter.  If not, see <http://www.gnu.org/licenses />.
 					</li>
 					<li><code>HideJspExtensionFilter</code> now sends redirect in <code>UTF-8</code>.</li>
 					<li><code>LocaleFilter</code> now sends redirect in <code>UTF-8</code>.</li>
+					<li>Cookie names, values, comments, and paths are now URI-encoded.</li>
 				</ul>
 			</changelog:release>
 		</c:if>
