@@ -26,6 +26,7 @@ import com.aoindustries.net.HttpParametersMap;
 import com.aoindustries.net.MutableHttpParameters;
 import com.aoindustries.net.SplitUrl;
 import com.aoindustries.net.UrlUtils;
+import com.aoindustries.servlet.http.Cookies;
 import com.aoindustries.util.StringUtility;
 import com.aoindustries.util.WrappedException;
 import java.io.IOException;
@@ -110,7 +111,7 @@ import javax.servlet.http.HttpSession;
  */
 public class NoSessionFilter implements Filter {
 
-	private static final String FILTER_APPLIED_KEY = NoSessionFilter.class.getName()+".filterApplied";
+	private static final String FILTER_APPLIED_KEY = NoSessionFilter.class.getName() + ".filterApplied";
 
 	/**
 	 * The default symbol is used as prefix.
@@ -168,7 +169,7 @@ public class NoSessionFilter implements Filter {
 						Cookie newCookie = newCookies.get(cookieName);
 						if(newCookie != null) {
 							if(cookieParams == null) cookieParams = new HttpParametersMap();
-							cookieParams.addParameter(cookieUrlParamPrefix + cookieName, newCookie.getValue());
+							cookieParams.addParameter(cookieUrlParamPrefix + cookieName, Cookies.getValue(newCookie));
 						} else {
 							// Cookie was removed - do not add to URL
 						}
@@ -183,9 +184,10 @@ public class NoSessionFilter implements Filter {
 								oldCookies = request.getCookies();
 								oldCookiesSet = true;
 							}
-							if(oldCookies!=null) {
+							if(oldCookies != null) {
+								String encodedName = Cookies.encodeName(cookieName);
 								for(Cookie oldCookie : oldCookies) {
-									if(oldCookie.getName().equals(cookieName)) {
+									if(oldCookie.getName().equals(encodedName)) {
 										found = true;
 										break;
 									}
@@ -216,7 +218,7 @@ public class NoSessionFilter implements Filter {
 		ServletResponse response,
 		FilterChain chain
 	) throws IOException, ServletException {
-		if(request.getAttribute(FILTER_APPLIED_KEY)==null) {
+		if(request.getAttribute(FILTER_APPLIED_KEY) == null) {
 			try {
 				request.setAttribute(FILTER_APPLIED_KEY, Boolean.TRUE);
 				if(
@@ -272,7 +274,7 @@ public class NoSessionFilter implements Filter {
 									private String nextName = null;
 									@Override
 									public boolean hasMoreElements() {
-										if(nextName!=null) return true;
+										if(nextName != null) return true;
 										while(completeNames.hasMoreElements()) {
 											String name = completeNames.nextElement();
 											if(!name.startsWith(cookieUrlParamPrefix)) {
@@ -285,7 +287,7 @@ public class NoSessionFilter implements Filter {
 									@Override
 									public String nextElement() {
 										String name = nextName;
-										if(name!=null) {
+										if(name != null) {
 											nextName = null;
 											return name;
 										}
@@ -307,12 +309,12 @@ public class NoSessionFilter implements Filter {
 							public Cookie[] getCookies() {
 								Cookie[] headerCookies = originalRequest.getCookies();
 								Enumeration<String> parameterNames = originalRequest.getParameterNames();
-								if(headerCookies==null && !parameterNames.hasMoreElements()) return null; // Not possibly any cookies
+								if(headerCookies == null && !parameterNames.hasMoreElements()) return null; // Not possibly any cookies
 								// Add header cookies
 								Map<String,Cookie> allCookies = new LinkedHashMap<>(cookieNames.size()*4/3+1); // Worst-case map size is cookieNames
-								if(headerCookies!=null) {
+								if(headerCookies != null) {
 									for(Cookie cookie : headerCookies) {
-										String cookieName = cookie.getName();
+										String cookieName = Cookies.getName(cookie);
 										if(cookieNames.contains(cookieName)) { // Only add expected cookie names
 											allCookies.put(cookieName, cookie);
 										}
@@ -328,8 +330,8 @@ public class NoSessionFilter implements Filter {
 											&& cookieNames.contains(cookieName) // Only add expected cookie names
 										) {
 											String value = originalRequest.getParameter(paramName);
-											assert value!=null;
-											Cookie newCookie = new Cookie(cookieName, value);
+											assert value != null;
+											Cookie newCookie = Cookies.newCookie(cookieName, value);
 											newCookie.setPath(UrlUtils.encodeURI(originalRequest.getContextPath() + "/"));
 											allCookies.put(cookieName, newCookie);
 										}
@@ -430,7 +432,8 @@ public class NoSessionFilter implements Filter {
 
 							@Override
 							public void addCookie(Cookie newCookie) {
-								String cookieName = newCookie.getName();
+								String encodedName = newCookie.getName();
+								String cookieName = Cookies.decodeName(encodedName);
 								if(!cookieNames.contains(cookieName)) throw new IllegalArgumentException("Unexpected cookie name, add to cookieNames init parameter: " + cookieName);
 								super.addCookie(newCookie);
 								if(newCookie.getMaxAge()==0) {
@@ -439,9 +442,9 @@ public class NoSessionFilter implements Filter {
 								} else {
 									boolean found = false;
 									Cookie[] oldCookies = originalRequest.getCookies();
-									if(oldCookies!=null) {
+									if(oldCookies != null) {
 										for(Cookie oldCookie : oldCookies) {
-											if(oldCookie.getName().equals(cookieName)) {
+											if(oldCookie.getName().equals(encodedName)) {
 												found = true;
 												break;
 											}
