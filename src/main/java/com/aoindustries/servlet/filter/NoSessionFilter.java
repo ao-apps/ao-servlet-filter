@@ -141,7 +141,6 @@ public class NoSessionFilter implements Filter {
 	 * session management through URL rewriting.
 	 */
 	private SplitUrl addCookieValues(HttpServletRequest request, Map<String,Cookie> newCookies, SplitUrl url, String documentEncoding) {
-		assert !url.toString().isEmpty() && url.getFragmentIndex() != 0;
 		// Don't add for certains file types
 		if(
 			// Matches SessionResponseWrapper
@@ -353,8 +352,8 @@ public class NoSessionFilter implements Filter {
 								if(
 									// 7: "http://".length()
 									url.length() > 7
+									&& url.charAt(5) == '/'
 									&& url.charAt(6) == '/'
-									&& url.charAt(7) == '/'
 									&& UrlUtils.isScheme(url, "http")
 								) {
 									protocol = url.substring(0, 7);
@@ -362,8 +361,8 @@ public class NoSessionFilter implements Filter {
 								} else if(
 									// 8: "https://".length()
 									url.length() > 8
+									&& url.charAt(6) == '/'
 									&& url.charAt(7) == '/'
-									&& url.charAt(8) == '/'
 									&& UrlUtils.isScheme(url, "https")
 								) {
 									protocol = url.substring(0, 8);
@@ -380,9 +379,7 @@ public class NoSessionFilter implements Filter {
 									return addCookieValues(originalRequest, newCookies, url, getCharacterEncoding());
 								}
 								int slashPos = remaining.indexOf('/');
-								if(slashPos == -1) {
-									return addCookieValues(originalRequest, newCookies, url, getCharacterEncoding());
-								}
+								if(slashPos == -1) slashPos = remaining.length();
 								String hostPort = remaining.substring(0, slashPos);
 								int colonPos = hostPort.indexOf(':');
 								String host = colonPos == -1 ? hostPort : hostPort.substring(0, colonPos);
@@ -392,15 +389,15 @@ public class NoSessionFilter implements Filter {
 									host.equalsIgnoreCase(originalRequest.getServerName())
 								) {
 									String withCookies = addCookieValues(originalRequest, newCookies, remaining.substring(slashPos), getCharacterEncoding());
-									int encodedLen = protocol.length() + hostPort.length() + withCookies.length();
-									if(encodedLen == url.length()) {
+									int newUrlLen = protocol.length() + hostPort.length() + withCookies.length();
+									if(newUrlLen == url.length()) {
 										assert url.equals(protocol + hostPort + withCookies);
 										encoded = url;
 									} else {
-										StringBuilder sb = new StringBuilder(encodedLen);
-										sb.append(protocol).append(hostPort).append(withCookies);
-										assert sb.length() == encodedLen;
-										encoded = sb.toString();
+										StringBuilder newUrl = new StringBuilder(newUrlLen);
+										newUrl.append(protocol).append(hostPort).append(withCookies);
+										assert newUrl.length() == newUrlLen;
+										encoded = newUrl.toString();
 									}
 								} else {
 									// Going to an different hostname, do not add request parameters
