@@ -1,6 +1,6 @@
 /*
  * ao-servlet-filter - Reusable Java library of servlet filters.
- * Copyright (C) 2015, 2016, 2017  AO Industries, Inc.
+ * Copyright (C) 2015, 2016, 2017, 2019  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -22,6 +22,7 @@
  */
 package com.aoindustries.servlet.filter;
 
+import com.aoindustries.net.SplitUrl;
 import com.aoindustries.net.UrlUtils;
 import com.aoindustries.servlet.ServletContextCache;
 import com.aoindustries.servlet.http.Dispatcher;
@@ -30,6 +31,8 @@ import com.aoindustries.util.WildcardPatternMatcher;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -42,8 +45,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
 
 /**
- * TODO: Do not rewrite URLs going to external hosts, only URLs that begin with /, ./, ../,
- * or this protocol//hostname:port/context/ (in case of absolute URL to self).
  * <p>
  * A servlet filter that hides the .jspx or .jsp extension from JSP-based sites.
  * It accomplishes this with the following steps:
@@ -79,6 +80,8 @@ public class HideJspExtensionFilter implements Filter {
 
 	private static final String FILTER_APPLIED_KEY = HideJspExtensionFilter.class.getName()+".filterApplied";
 
+	private static final Charset ENCODING = StandardCharsets.UTF_8;
+
 	/**
 	 * The file extensions to rewrite, in priority order.
 	 */
@@ -98,7 +101,7 @@ public class HideJspExtensionFilter implements Filter {
 	private static final String[] SLASH_INDEXES = new String[EXTENSIONS.length];
 
 	static {
-		for(int i=0; i<EXTENSIONS.length; i++) {
+		for(int i = 0; i < EXTENSIONS.length; i++) {
 			String extension = EXTENSIONS[i];
 			String index = "index" + extension;
 			INDEXES[i] = index;
@@ -123,7 +126,8 @@ public class HideJspExtensionFilter implements Filter {
 	 * A folder can be represented by empty string or ending slash.
 	 */
 	private static boolean isFolder(String path) {
-		return path.isEmpty() || path.endsWith("/");
+		int len = path.length();
+		return len == 0 || path.charAt(len - 1) == '/';
 	}
 
 	@Override
@@ -141,7 +145,6 @@ public class HideJspExtensionFilter implements Filter {
 				) {
 					final HttpServletRequest httpRequest = (HttpServletRequest)request;
 					final HttpServletResponse httpResponse = (HttpServletResponse)response;
-					final String responseEncoding = response.getCharacterEncoding();
 
 					final ServletContextCache servletContextCache = ServletContextCache.getCache(servletContext);
 
@@ -152,23 +155,24 @@ public class HideJspExtensionFilter implements Filter {
 						// Only redirect GET requests
 						&& ServletUtil.METHOD_GET.equals(httpRequest.getMethod())
 					) {
-						for(int i=0; i<EXTENSIONS.length; i++) {
+						for(int i = 0; i < EXTENSIONS.length; i++) {
 							String slashIndex = SLASH_INDEXES[i];
 							// 301 redirect any incoming GET request ending in "/path/index.jsp(x)" to "/path/" (to not lose traffic after enabling the filter)
 							if(servletPath.endsWith(slashIndex)) {
 								// "index.jsp(x)" is added to the servlet path for requests ending in /, this
 								// uses the un-decoded requestUri to distinguish between the two
 								if(httpRequest.getRequestURI().endsWith(slashIndex)) {
+									httpResponse.setCharacterEncoding(ENCODING.name());
 									String queryString = httpRequest.getQueryString();
 									String path = servletPath.substring(0, servletPath.length() - INDEXES[i].length());
 									// Encode URL path elements (like Japanese filenames)
-									path = UrlUtils.encodeUrlPath(path, responseEncoding);
+									path = UrlUtils.encodeURI(path, ENCODING.name());
 									// Add any query string
 									if(queryString != null) {
 										path = path + '?' + queryString;
 									}
 									// Perform URL rewriting
-									path = httpResponse.encodeRedirectURL(path);
+									// No rewrite since we are sending the full original queryString: path = httpResponse.encodeRedirectURL(path);
 									// Convert to absolute URL
 									String location = ServletUtil.getAbsoluteURL(httpRequest, path);
 									ServletUtil.sendRedirect(httpResponse, location, HttpServletResponse.SC_MOVED_PERMANENTLY);
@@ -177,23 +181,24 @@ public class HideJspExtensionFilter implements Filter {
 							}
 						}
 
-						for(int i=0; i<EXTENSIONS.length; i++) {
+						for(int i = 0; i < EXTENSIONS.length; i++) {
 							String extension = EXTENSIONS[i];
 							// 301 redirect any incoming GET request ending in "/path/file.jsp(x)" to "/path/file" (to not lose traffic after enabling the filter)
 							if(servletPath.endsWith(extension)) {
 								// Do not redirect the index.jsp(x)
 								if(!servletPath.endsWith(SLASH_INDEXES[i])) {
+									httpResponse.setCharacterEncoding(ENCODING.name());
 									String queryString = httpRequest.getQueryString();
 									String path = servletPath.substring(0, servletPath.length() - extension.length());
 									if(!isFolder(path)) {
 										// Encode URL path elements (like Japanese filenames)
-										path = UrlUtils.encodeUrlPath(path, responseEncoding);
+										path = UrlUtils.encodeURI(path, ENCODING.name());
 										// Add any query string
 										if(queryString != null) {
 											path = path + '?' + queryString;
 										}
 										// Perform URL rewriting
-										path = httpResponse.encodeRedirectURL(path);
+										// No rewrite since we are sending the full original queryString: path = httpResponse.encodeRedirectURL(path);
 										// Convert to absolute URL
 										String location = ServletUtil.getAbsoluteURL(httpRequest, path);
 										ServletUtil.sendRedirect(httpResponse, location, HttpServletResponse.SC_MOVED_PERMANENTLY);
@@ -204,46 +209,34 @@ public class HideJspExtensionFilter implements Filter {
 						}
 					}
 					HttpServletResponse rewritingResponse = new HttpServletResponseWrapper(httpResponse) {
-						private String encode(final String url) {
-							final int urlLen = url.length();
-							final int pathEnd;
-							{
-								int questionPos = url.indexOf('?');
-								if(questionPos != -1) {
-									pathEnd = questionPos;
-								} else {
-									// Look for anchor
-									int anchorPos = url.lastIndexOf('#');
-									if(anchorPos != -1) {
-										pathEnd = anchorPos;
-									} else {
-										pathEnd = urlLen;
-									}
-								}
-							}
-							String path = url.substring(0, pathEnd);
-							if(!noRewritePatterns.isMatch(path)) {
-								for(int i=0; i<EXTENSIONS.length; i++) {
+						// TODO: org.xbib.net.URL or org.apache.http.client.utils.URIBuilder
+						private String rewrite(String url) {
+							assert !url.isEmpty() && url.charAt(0) != '#';
+							SplitUrl splitUrl = new SplitUrl(url);
+							String base = splitUrl.getBase();
+							if(
+								// TODO: This will fail on overly %-encoded paths, but they would be an anomaly anyway
+								!noRewritePatterns.isMatch(base)
+							) {
+								for(int i = 0; i < EXTENSIONS.length; i++) {
 									// Rewrite any URLs ending in "/path/index.jsp(x)" to "/path/", maintaining any query string
-									if(path.endsWith(SLASH_INDEXES[i])) {
-										String shortenedPath = path.substring(0, path.length() - INDEXES[i].length());
-										if(pathEnd == urlLen) {
-											return shortenedPath;
-										} else {
-											return shortenedPath + url.substring(pathEnd);
-										}
+									if(
+										// TODO: This will fail on overly %-encoded paths, but they would be an anomaly anyway
+										base.endsWith(SLASH_INDEXES[i])
+									) {
+										String shortenedBase = base.substring(0, base.length() - INDEXES[i].length());
+										return splitUrl.setBase(shortenedBase).toString();
 									}
 								}
-								for (String extension : EXTENSIONS) {
+								for(String extension : EXTENSIONS) {
 									// Rewrite any URLs ending in "/path/file.jsp(x)" to "/path/file", maintaining any query string
-									if(path.endsWith(extension)) {
-										String shortenedPath = path.substring(0, path.length() - extension.length());
-										if(!isFolder(shortenedPath)) {
-											if(pathEnd == urlLen) {
-												return shortenedPath;
-											} else {
-												return shortenedPath + url.substring(pathEnd);
-											}
+									if(
+										// TODO: This will fail on overly %-encoded paths, but they would be an anomaly anyway
+										base.endsWith(extension)
+									) {
+										String shortenedBase = base.substring(0, base.length() - extension.length());
+										if(!isFolder(shortenedBase)) {
+											return splitUrl.setBase(shortenedBase).toString();
 										}
 									}
 								}
@@ -251,25 +244,76 @@ public class HideJspExtensionFilter implements Filter {
 							// No rewriting
 							return url;
 						}
+						private String encode(String url) {
+							int urlLen = url.length();
+							// Don't rewrite empty or anchor-only URLs
+							if(urlLen == 0 || url.charAt(0) == '#') return url;
+							// Only rewrite URLs that do not include a scheme, it is to avoid rewriting URLs that go to other sites
+							if(UrlUtils.hasScheme(url)) {
+								String protocol;
+								String remaining;
+								if(
+									// 7: "http://".length()
+									url.length() > 7
+									&& url.charAt(5) == '/'
+									&& url.charAt(6) == '/'
+									&& UrlUtils.isScheme(url, "http")
+								) {
+									protocol = url.substring(0, 7);
+									remaining = url.substring(7);
+								} else if(
+									// 8: "https://".length()
+									url.length() > 8
+									&& url.charAt(6) == '/'
+									&& url.charAt(7) == '/'
+									&& UrlUtils.isScheme(url, "https")
+								) {
+									protocol = url.substring(0, 8);
+									remaining = url.substring(8);
+								} else {
+									// All other schemes are not altered
+									return url;
+								}
+								int slashPos = remaining.indexOf('/');
+								if(slashPos == -1) {
+									// No slash, no rewrite
+									return url;
+								}
+								String hostPort = remaining.substring(0, slashPos);
+								int colonPos = hostPort.indexOf(':');
+								String host = colonPos == -1 ? hostPort : hostPort.substring(0, colonPos);
+								if(
+									// TODO: What about [...] IPv6 addresses?
+									host.equalsIgnoreCase(httpRequest.getServerName())
+								) {
+									return rewrite(url);
+								} else {
+									// Going to an different hostname, no rewrite
+									return url;
+								}
+							} else {
+								return rewrite(url);
+							}
+						}
 
 						@Deprecated
 						@Override
 						public String encodeUrl(String url) {
-							return encode(url);
+							return httpResponse.encodeUrl(encode(url));
 						}
 						@Override
 						public String encodeURL(String url) {
-							return encode(url);
+							return httpResponse.encodeURL(encode(url));
 						}
 
 						@Deprecated
 						@Override
 						public String encodeRedirectUrl(String url) {
-							return encode(url);
+							return httpResponse.encodeRedirectUrl(encode(url));
 						}
 						@Override
 						public String encodeRedirectURL(String url) {
-							return encode(url);
+							return httpResponse.encodeRedirectURL(encode(url));
 						}
 					};
 					if(requestRewrite) {
@@ -277,7 +321,7 @@ public class HideJspExtensionFilter implements Filter {
 						// This is done by container with a welcome file list of index.jsp(x) in web.xml.
 
 						if(!isFolder(servletPath)) {
-							for(int i=0; i<EXTENSIONS.length; i++) {
+							for(int i = 0; i < EXTENSIONS.length; i++) {
 								// Forward incoming request of "/path/file" to "/path/file.jsp(x)", if the resource exists
 								String resourcePath = servletPath + EXTENSIONS[i];
 								// Do not forward index to index.jsp(x)
@@ -303,7 +347,7 @@ public class HideJspExtensionFilter implements Filter {
 							}
 						}
 					}
-					// Send any other request down the filter chain</li>
+					// Send any other request down the filter chain
 					chain.doFilter(httpRequest, rewritingResponse);
 				} else {
 					// Not HTTP protocol
