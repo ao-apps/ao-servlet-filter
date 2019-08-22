@@ -22,10 +22,10 @@
  */
 package com.aoindustries.servlet.filter;
 
-import com.aoindustries.net.HttpParametersMap;
-import com.aoindustries.net.MutableHttpParameters;
-import com.aoindustries.net.SplitUrl;
-import com.aoindustries.net.UrlUtils;
+import com.aoindustries.net.AnyURI;
+import com.aoindustries.net.MutableURIParameters;
+import com.aoindustries.net.URIParametersMap;
+import com.aoindustries.net.URIParser;
 import com.aoindustries.servlet.http.Cookies;
 import com.aoindustries.util.StringUtility;
 import com.aoindustries.util.WrappedException;
@@ -141,34 +141,34 @@ public class NoSessionFilter implements Filter {
 	 * Adds the values for any new cookies to the URL.  This handles cookie-based
 	 * session management through URL rewriting.
 	 */
-	private SplitUrl addCookieValues(HttpServletRequest request, Map<String,Cookie> newCookies, SplitUrl url, String documentEncoding) {
+	private AnyURI addCookieValues(HttpServletRequest request, Map<String,Cookie> newCookies, AnyURI uri, String documentEncoding) {
 		// Don't add for certains file types
 		if(
 			// Matches SessionResponseWrapper
 			// Matches LocaleFilter
 			// TODO: This will fail on overly %-encoded paths, but they would be an anomaly anyway
-			!url.pathEndsWithIgnoreCase(".bmp")
-			&& !url.pathEndsWithIgnoreCase(".css")
-			&& !url.pathEndsWithIgnoreCase(".exe")
-			&& !url.pathEndsWithIgnoreCase(".gif")
-			&& !url.pathEndsWithIgnoreCase(".ico")
-			&& !url.pathEndsWithIgnoreCase(".jpeg")
-			&& !url.pathEndsWithIgnoreCase(".jpg")
-			&& !url.pathEndsWithIgnoreCase(".js")
-			&& !url.pathEndsWithIgnoreCase(".png")
-			&& !url.pathEndsWithIgnoreCase(".svg")
-			&& !url.pathEndsWithIgnoreCase(".txt")
-			&& !url.pathEndsWithIgnoreCase(".zip")
+			!uri.pathEndsWithIgnoreCase(".bmp")
+			&& !uri.pathEndsWithIgnoreCase(".css")
+			&& !uri.pathEndsWithIgnoreCase(".exe")
+			&& !uri.pathEndsWithIgnoreCase(".gif")
+			&& !uri.pathEndsWithIgnoreCase(".ico")
+			&& !uri.pathEndsWithIgnoreCase(".jpeg")
+			&& !uri.pathEndsWithIgnoreCase(".jpg")
+			&& !uri.pathEndsWithIgnoreCase(".js")
+			&& !uri.pathEndsWithIgnoreCase(".png")
+			&& !uri.pathEndsWithIgnoreCase(".svg")
+			&& !uri.pathEndsWithIgnoreCase(".txt")
+			&& !uri.pathEndsWithIgnoreCase(".zip")
 		) {
 			try {
 				Cookie[] oldCookies = null;
 				boolean oldCookiesSet = false;
-				MutableHttpParameters cookieParams = null;
+				MutableURIParameters cookieParams = null;
 				for(String cookieName : cookieNames) {
 					if(newCookies.containsKey(cookieName)) {
 						Cookie newCookie = newCookies.get(cookieName);
 						if(newCookie != null) {
-							if(cookieParams == null) cookieParams = new HttpParametersMap();
+							if(cookieParams == null) cookieParams = new URIParametersMap();
 							cookieParams.addParameter(cookieUrlParamPrefix + cookieName, Cookies.getValue(newCookie));
 						} else {
 							// Cookie was removed - do not add to URL
@@ -194,22 +194,22 @@ public class NoSessionFilter implements Filter {
 								}
 							}
 							if(!found) {
-								if(cookieParams == null) cookieParams = new HttpParametersMap();
+								if(cookieParams == null) cookieParams = new URIParametersMap();
 								cookieParams.addParameter(paramName, values[values.length - 1]);
 							}
 						}
 					}
 				}
-				url = url.addParameters(cookieParams, documentEncoding);
+				uri = uri.addParameters(cookieParams, documentEncoding);
 			} catch(UnsupportedEncodingException err) {
 				throw new WrappedException(err);
 			}
 		}
-		return url;
+		return uri;
 	}
 
 	private String addCookieValues(HttpServletRequest request, Map<String,Cookie> newCookies, String url, String documentEncoding) {
-		return addCookieValues(request, newCookies, new SplitUrl(url), documentEncoding).toString();
+		return addCookieValues(request, newCookies, new AnyURI(url), documentEncoding).toString();
 	}
 
 	@Override
@@ -332,7 +332,7 @@ public class NoSessionFilter implements Filter {
 											String value = originalRequest.getParameter(paramName);
 											assert value != null;
 											Cookie newCookie = Cookies.newCookie(cookieName, value);
-											newCookie.setPath(UrlUtils.encodeURI(originalRequest.getContextPath() + "/"));
+											Cookies.setPath(newCookie, originalRequest.getContextPath() + "/");
 											allCookies.put(cookieName, newCookie);
 										}
 									}
@@ -356,7 +356,7 @@ public class NoSessionFilter implements Filter {
 									url.length() > 7
 									&& url.charAt(5) == '/'
 									&& url.charAt(6) == '/'
-									&& UrlUtils.isScheme(url, "http")
+									&& URIParser.isScheme(url, "http")
 								) {
 									protocol = url.substring(0, 7);
 									remaining = url.substring(7);
@@ -365,16 +365,16 @@ public class NoSessionFilter implements Filter {
 									url.length() > 8
 									&& url.charAt(6) == '/'
 									&& url.charAt(7) == '/'
-									&& UrlUtils.isScheme(url, "https")
+									&& URIParser.isScheme(url, "https")
 								) {
 									protocol = url.substring(0, 8);
 									remaining = url.substring(8);
 								} else if(
-									UrlUtils.isScheme(url, "javascript")
-									|| UrlUtils.isScheme(url, "mailto")
-									|| UrlUtils.isScheme(url, "telnet")
-									|| UrlUtils.isScheme(url, "tel")
-									|| UrlUtils.isScheme(url, "cid")
+									URIParser.isScheme(url, "javascript")
+									|| URIParser.isScheme(url, "mailto")
+									|| URIParser.isScheme(url, "telnet")
+									|| URIParser.isScheme(url, "tel")
+									|| URIParser.isScheme(url, "cid")
 								) {
 									return url;
 								} else {

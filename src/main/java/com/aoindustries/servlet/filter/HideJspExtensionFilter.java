@@ -22,11 +22,12 @@
  */
 package com.aoindustries.servlet.filter;
 
-import com.aoindustries.net.SplitUrl;
-import com.aoindustries.net.UrlUtils;
+import com.aoindustries.net.AnyURI;
+import com.aoindustries.net.URIEncoder;
+import com.aoindustries.net.URIParser;
 import com.aoindustries.servlet.ServletContextCache;
 import com.aoindustries.servlet.http.Dispatcher;
-import com.aoindustries.servlet.http.ServletUtil;
+import com.aoindustries.servlet.http.HttpServletUtil;
 import com.aoindustries.util.WildcardPatternMatcher;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -153,7 +154,7 @@ public class HideJspExtensionFilter implements Filter {
 					if(
 						requestRewrite
 						// Only redirect GET requests
-						&& ServletUtil.METHOD_GET.equals(httpRequest.getMethod())
+						&& HttpServletUtil.METHOD_GET.equals(httpRequest.getMethod())
 					) {
 						for(int i = 0; i < EXTENSIONS.length; i++) {
 							String slashIndex = SLASH_INDEXES[i];
@@ -166,7 +167,7 @@ public class HideJspExtensionFilter implements Filter {
 									String queryString = httpRequest.getQueryString();
 									String path = servletPath.substring(0, servletPath.length() - INDEXES[i].length());
 									// Encode URL path elements (like Japanese filenames)
-									path = UrlUtils.encodeURI(path, ENCODING.name());
+									path = URIEncoder.encodeURI(path, ENCODING.name());
 									// Add any query string
 									if(queryString != null) {
 										path = path + '?' + queryString;
@@ -174,8 +175,8 @@ public class HideJspExtensionFilter implements Filter {
 									// Perform URL rewriting
 									// No rewrite since we are sending the full original queryString: path = httpResponse.encodeRedirectURL(path);
 									// Convert to absolute URL
-									String location = ServletUtil.getAbsoluteURL(httpRequest, path);
-									ServletUtil.sendRedirect(httpResponse, location, HttpServletResponse.SC_MOVED_PERMANENTLY);
+									String location = HttpServletUtil.getAbsoluteURL(httpRequest, path);
+									HttpServletUtil.sendRedirect(httpResponse, location, HttpServletResponse.SC_MOVED_PERMANENTLY);
 									return;
 								}
 							}
@@ -192,7 +193,7 @@ public class HideJspExtensionFilter implements Filter {
 									String path = servletPath.substring(0, servletPath.length() - extension.length());
 									if(!isFolder(path)) {
 										// Encode URL path elements (like Japanese filenames)
-										path = UrlUtils.encodeURI(path, ENCODING.name());
+										path = URIEncoder.encodeURI(path, ENCODING.name());
 										// Add any query string
 										if(queryString != null) {
 											path = path + '?' + queryString;
@@ -200,8 +201,8 @@ public class HideJspExtensionFilter implements Filter {
 										// Perform URL rewriting
 										// No rewrite since we are sending the full original queryString: path = httpResponse.encodeRedirectURL(path);
 										// Convert to absolute URL
-										String location = ServletUtil.getAbsoluteURL(httpRequest, path);
-										ServletUtil.sendRedirect(httpResponse, location, HttpServletResponse.SC_MOVED_PERMANENTLY);
+										String location = HttpServletUtil.getAbsoluteURL(httpRequest, path);
+										HttpServletUtil.sendRedirect(httpResponse, location, HttpServletResponse.SC_MOVED_PERMANENTLY);
 										return;
 									}
 								}
@@ -212,31 +213,31 @@ public class HideJspExtensionFilter implements Filter {
 						// TODO: org.xbib.net.URL or org.apache.http.client.utils.URIBuilder
 						private String rewrite(String url) {
 							assert !url.isEmpty() && url.charAt(0) != '#';
-							SplitUrl splitUrl = new SplitUrl(url);
-							String base = splitUrl.getBase();
+							AnyURI anyURI = new AnyURI(url);
+							String hierPart = anyURI.getHierPart();
 							if(
 								// TODO: This will fail on overly %-encoded paths, but they would be an anomaly anyway
-								!noRewritePatterns.isMatch(base)
+								!noRewritePatterns.isMatch(hierPart)
 							) {
 								for(int i = 0; i < EXTENSIONS.length; i++) {
 									// Rewrite any URLs ending in "/path/index.jsp(x)" to "/path/", maintaining any query string
 									if(
 										// TODO: This will fail on overly %-encoded paths, but they would be an anomaly anyway
-										base.endsWith(SLASH_INDEXES[i])
+										hierPart.endsWith(SLASH_INDEXES[i])
 									) {
-										String shortenedBase = base.substring(0, base.length() - INDEXES[i].length());
-										return splitUrl.setBase(shortenedBase).toString();
+										String shortenedHierPart = hierPart.substring(0, hierPart.length() - INDEXES[i].length());
+										return anyURI.setHierPart(shortenedHierPart).toString();
 									}
 								}
 								for(String extension : EXTENSIONS) {
 									// Rewrite any URLs ending in "/path/file.jsp(x)" to "/path/file", maintaining any query string
 									if(
 										// TODO: This will fail on overly %-encoded paths, but they would be an anomaly anyway
-										base.endsWith(extension)
+										hierPart.endsWith(extension)
 									) {
-										String shortenedBase = base.substring(0, base.length() - extension.length());
-										if(!isFolder(shortenedBase)) {
-											return splitUrl.setBase(shortenedBase).toString();
+										String shortenedHierPart = hierPart.substring(0, hierPart.length() - extension.length());
+										if(!isFolder(shortenedHierPart)) {
+											return anyURI.setHierPart(shortenedHierPart).toString();
 										}
 									}
 								}
@@ -249,7 +250,8 @@ public class HideJspExtensionFilter implements Filter {
 							// Don't rewrite empty or anchor-only URLs
 							if(urlLen == 0 || url.charAt(0) == '#') return url;
 							// Only rewrite URLs that do not include a scheme, it is to avoid rewriting URLs that go to other sites
-							if(UrlUtils.hasScheme(url)) {
+							if(URIParser.hasScheme(url)) {
+								// TODO: AnyURI here and similar
 								String protocol;
 								String remaining;
 								if(
@@ -257,7 +259,7 @@ public class HideJspExtensionFilter implements Filter {
 									url.length() > 7
 									&& url.charAt(5) == '/'
 									&& url.charAt(6) == '/'
-									&& UrlUtils.isScheme(url, "http")
+									&& URIParser.isScheme(url, "http")
 								) {
 									protocol = url.substring(0, 7);
 									remaining = url.substring(7);
@@ -266,7 +268,7 @@ public class HideJspExtensionFilter implements Filter {
 									url.length() > 8
 									&& url.charAt(6) == '/'
 									&& url.charAt(7) == '/'
-									&& UrlUtils.isScheme(url, "https")
+									&& URIParser.isScheme(url, "https")
 								) {
 									protocol = url.substring(0, 8);
 									remaining = url.substring(8);
