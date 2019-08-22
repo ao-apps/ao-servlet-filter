@@ -22,13 +22,15 @@
  */
 package com.aoindustries.servlet.filter;
 
-import com.aoindustries.net.HttpParametersMap;
-import com.aoindustries.net.HttpParametersUtils;
-import com.aoindustries.net.MutableHttpParameters;
-import com.aoindustries.net.ServletRequestParameters;
-import com.aoindustries.net.SplitUrl;
-import com.aoindustries.net.UrlUtils;
-import com.aoindustries.servlet.http.ServletUtil;
+import com.aoindustries.net.AnyURI;
+import com.aoindustries.net.MutableURIParameters;
+import com.aoindustries.net.URI;
+import com.aoindustries.net.URIParametersMap;
+import com.aoindustries.net.URIParametersUtils;
+import com.aoindustries.net.URIParser;
+import com.aoindustries.servlet.ServletRequestParameters;
+import com.aoindustries.servlet.ServletUtil;
+import com.aoindustries.servlet.http.HttpServletUtil;
 import com.aoindustries.util.StringUtility;
 import com.aoindustries.util.WrappedException;
 import com.aoindustries.util.i18n.ThreadLocale;
@@ -103,20 +105,20 @@ abstract public class LocaleFilter implements Filter {
 	/**
 	 * Adds the current locale as a parameter to the URL.
 	 */
-	private SplitUrl addLocale(Locale locale, SplitUrl url, String paramName, String documentEncoding) throws UnsupportedEncodingException {
+	private AnyURI addLocale(Locale locale, AnyURI uri, String paramName, String documentEncoding) throws UnsupportedEncodingException {
 		if(
 			// Only add for non-excluded file types
-			isLocalizedPath(url)
+			isLocalizedPath(uri)
 			// Only rewrite a URL that does not already contain a paramName parameter.
-			&& !HttpParametersUtils.of(url.getQueryString(), documentEncoding).getParameterMap().containsKey(paramName)
+			&& !URIParametersUtils.of(uri.getQueryString(), documentEncoding).getParameterMap().containsKey(paramName)
 		) {
-			url = url.addParameter(paramName, toLocaleString(locale), documentEncoding);
+			uri = uri.addParameter(paramName, toLocaleString(locale), documentEncoding);
 		}
-		return url;
+		return uri;
 	}
 
 	private String addLocale(Locale locale, String url, String paramName, String documentEncoding) throws UnsupportedEncodingException {
-		return addLocale(locale, new SplitUrl(url), paramName, documentEncoding).toString();
+		return addLocale(locale, new AnyURI(url), paramName, documentEncoding).toString();
 	}
 
 	private ServletContext servletContext;
@@ -159,8 +161,8 @@ abstract public class LocaleFilter implements Filter {
 				final HttpServletRequest httpRequest = (HttpServletRequest)request;
 				final HttpServletResponse httpResponse = (HttpServletResponse)response;
 
-				SplitUrl url = new SplitUrl(httpRequest.getRequestURI());
-				final boolean isLocalized = isLocalizedPath(url);
+				URI uri = new URI(httpRequest.getRequestURI());
+				final boolean isLocalized = isLocalizedPath(uri);
 
 				final String paramName = getParamName();
 				final String paramValue = httpRequest.getParameter(paramName);
@@ -178,21 +180,21 @@ abstract public class LocaleFilter implements Filter {
 				) {
 					if(DEBUG) servletContext.log("DEBUG: Redirecting to remove \"" + paramName + "\" parameter.");
 					response.setCharacterEncoding(ENCODING.name());
-					MutableHttpParameters newParams = new HttpParametersMap();
+					MutableURIParameters newParams = new URIParametersMap();
 					for(Map.Entry<String,List<String>> entry : new ServletRequestParameters(request).getParameterMap().entrySet()) {
 						String name = entry.getKey();
 						if(!paramName.equals(name)) {
 							newParams.addParameters(name, entry.getValue());
 						}
 					}
-					String newUrl = url.addParameters(newParams, ENCODING.name()).toString();
+					String newUrl = uri.addParameters(newParams, ENCODING.name()).toString();
 					// Encode URI to ASCII format
 					newUrl = ServletUtil.encodeURI(newUrl, response);
 					// Perform URL rewriting
 					newUrl = httpResponse.encodeRedirectURL(newUrl);
 					// Convert to absolute URL
-					String location = ServletUtil.getAbsoluteURL(httpRequest, newUrl, false);
-					ServletUtil.sendRedirect(httpResponse, location, HttpServletResponse.SC_MOVED_PERMANENTLY);
+					String location = HttpServletUtil.getAbsoluteURL(httpRequest, newUrl, false);
+					HttpServletUtil.sendRedirect(httpResponse, location, HttpServletResponse.SC_MOVED_PERMANENTLY);
 					return;
 				}
 				if(
@@ -257,7 +259,7 @@ abstract public class LocaleFilter implements Filter {
 					) {
 						if(DEBUG) servletContext.log("DEBUG: Redirecting for missing or mismatched locale parameter: " + localeString);
 						response.setCharacterEncoding(ENCODING.name());
-						MutableHttpParameters newParams = new HttpParametersMap();
+						MutableURIParameters newParams = new URIParametersMap();
 						for(Map.Entry<String,List<String>> entry : new ServletRequestParameters(request).getParameterMap().entrySet()) {
 							String name = entry.getKey();
 							if(!paramName.equals(name)) {
@@ -265,14 +267,14 @@ abstract public class LocaleFilter implements Filter {
 							}
 						}
 						newParams.addParameter(paramName, localeString);
-						String newUrl = url.addParameters(newParams, ENCODING.name()).toString();
+						String newUrl = uri.addParameters(newParams, ENCODING.name()).toString();
 						// Encode URI to ASCII format
 						newUrl = ServletUtil.encodeURI(newUrl, response);
 						// Perform URL rewriting
 						newUrl = httpResponse.encodeRedirectURL(newUrl);
 						// Convert to absolute URL
-						String location = ServletUtil.getAbsoluteURL(httpRequest, newUrl, false);
-						ServletUtil.sendRedirect(httpResponse, location, HttpServletResponse.SC_MOVED_PERMANENTLY);
+						String location = HttpServletUtil.getAbsoluteURL(httpRequest, newUrl, false);
+						HttpServletUtil.sendRedirect(httpResponse, location, HttpServletResponse.SC_MOVED_PERMANENTLY);
 						return;
 					}
 					responseLocale = locale;
@@ -309,7 +311,7 @@ abstract public class LocaleFilter implements Filter {
 										url.length() > 7
 										&& url.charAt(5) == '/'
 										&& url.charAt(6) == '/'
-										&& UrlUtils.isScheme(url, "http")
+										&& URIParser.isScheme(url, "http")
 									) {
 										protocol = url.substring(0, 7);
 										remaining = url.substring(7);
@@ -318,16 +320,16 @@ abstract public class LocaleFilter implements Filter {
 										url.length() > 8
 										&& url.charAt(6) == '/'
 										&& url.charAt(7) == '/'
-										&& UrlUtils.isScheme(url, "https")
+										&& URIParser.isScheme(url, "https")
 									) {
 										protocol = url.substring(0, 8);
 										remaining = url.substring(8);
 									} else if(
-										UrlUtils.isScheme(url, "javascript")
-										|| UrlUtils.isScheme(url, "mailto")
-										|| UrlUtils.isScheme(url, "telnet")
-										|| UrlUtils.isScheme(url, "tel")
-										|| UrlUtils.isScheme(url, "cid")
+										URIParser.isScheme(url, "javascript")
+										|| URIParser.isScheme(url, "mailto")
+										|| URIParser.isScheme(url, "telnet")
+										|| URIParser.isScheme(url, "tel")
+										|| URIParser.isScheme(url, "cid")
 									) {
 										return url;
 									} else {
@@ -420,28 +422,29 @@ abstract public class LocaleFilter implements Filter {
 	 * This default implementation will cause the parameter to be added to any
 	 * URL that is not one of the excluded extensions (case-insensitive).
 	 */
-	protected boolean isLocalizedPath(SplitUrl url) {
+	// TODO: IRI to for decoding?  A normalize method?
+	protected boolean isLocalizedPath(AnyURI uri) {
 		return
 			// Matches SessionResponseWrapper
 			// Matches NoSessionFilter
 			// TODO: This will fail on overly %-encoded paths, but they would be an anomaly anyway
-			!url.pathEndsWithIgnoreCase(".bmp")
-			&& !url.pathEndsWithIgnoreCase(".css")
-			&& !url.pathEndsWithIgnoreCase(".exe")
-			&& !url.pathEndsWithIgnoreCase(".gif")
-			&& !url.pathEndsWithIgnoreCase(".ico")
-			&& !url.pathEndsWithIgnoreCase(".jpeg")
-			&& !url.pathEndsWithIgnoreCase(".jpg")
-			&& !url.pathEndsWithIgnoreCase(".js")
-			&& !url.pathEndsWithIgnoreCase(".png")
-			&& !url.pathEndsWithIgnoreCase(".svg")
-			&& !url.pathEndsWithIgnoreCase(".txt")
-			&& !url.pathEndsWithIgnoreCase(".zip")
+			!uri.pathEndsWithIgnoreCase(".bmp")
+			&& !uri.pathEndsWithIgnoreCase(".css")
+			&& !uri.pathEndsWithIgnoreCase(".exe")
+			&& !uri.pathEndsWithIgnoreCase(".gif")
+			&& !uri.pathEndsWithIgnoreCase(".ico")
+			&& !uri.pathEndsWithIgnoreCase(".jpeg")
+			&& !uri.pathEndsWithIgnoreCase(".jpg")
+			&& !uri.pathEndsWithIgnoreCase(".js")
+			&& !uri.pathEndsWithIgnoreCase(".png")
+			&& !uri.pathEndsWithIgnoreCase(".svg")
+			&& !uri.pathEndsWithIgnoreCase(".txt")
+			&& !uri.pathEndsWithIgnoreCase(".zip")
 		;
 	}
 
 	protected boolean isLocalizedPath(String url) {
-		return isLocalizedPath(new SplitUrl(url));
+		return isLocalizedPath(new AnyURI(url));
 	}
 
 	/**

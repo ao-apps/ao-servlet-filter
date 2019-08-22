@@ -22,9 +22,9 @@
  */
 package com.aoindustries.servlet.filter;
 
-import com.aoindustries.net.ServletRequestParameters;
-import com.aoindustries.net.UrlUtils;
-import com.aoindustries.servlet.http.ServletUtil;
+import com.aoindustries.servlet.ServletRequestParameters;
+import com.aoindustries.servlet.ServletUtil;
+import com.aoindustries.servlet.http.HttpServletUtil;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -143,11 +143,11 @@ public class StripInvalidXmlCharactersFilter implements Filter {
 			}
 			if(!isValid) {
 				HttpServletResponse httpResponse = (HttpServletResponse)response;
-				String responseEncoding = response.getCharacterEncoding();
+				// TODO: Set response encoding, UTF-8 or same as request?
 				if("GET".equals(httpRequest.getMethod())) {
 					// Redirect to same request but with invalid parameters and special characters removed
 					StringBuilder url = new StringBuilder();
-					ServletUtil.getAbsoluteURL(
+					HttpServletUtil.getAbsoluteURL(
 						httpRequest,
 						httpRequest.getRequestURI(),
 						false,
@@ -165,13 +165,13 @@ public class StripInvalidXmlCharactersFilter implements Filter {
 									url.append('?');
 									didOne = true;
 								}
-								UrlUtils.encodeURIComponent(name, responseEncoding, url);
+								ServletUtil.encodeURIComponent(name, response, url);
 								url.append('=');
-								UrlUtils.encodeURIComponent(filter(value), responseEncoding, url);
+								ServletUtil.encodeURIComponent(filter(value), response, url);
 							}
 						}
 					}
-					ServletUtil.sendRedirect(httpResponse, url.toString(), HttpServletResponse.SC_MOVED_PERMANENTLY);
+					HttpServletUtil.sendRedirect(httpResponse, url.toString(), HttpServletResponse.SC_MOVED_PERMANENTLY);
 				} else {
 					// Filter invalid parameters and characters
 					final Map<String,List<String>> filteredMap = new LinkedHashMap<>(paramMap.size()*4/3+1);
