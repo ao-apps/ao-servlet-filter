@@ -28,9 +28,7 @@ import com.aoindustries.net.URIParametersMap;
 import com.aoindustries.net.URIParser;
 import com.aoindustries.servlet.http.Cookies;
 import com.aoindustries.util.StringUtility;
-import com.aoindustries.util.WrappedException;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -141,7 +139,7 @@ public class NoSessionFilter implements Filter {
 	 * Adds the values for any new cookies to the URL.  This handles cookie-based
 	 * session management through URL rewriting.
 	 */
-	private AnyURI addCookieValues(HttpServletRequest request, Map<String,Cookie> newCookies, AnyURI uri, String documentEncoding) {
+	private AnyURI addCookieValues(HttpServletRequest request, Map<String,Cookie> newCookies, AnyURI uri) {
 		// Don't add for certains file types
 		if(
 			// Matches SessionResponseWrapper
@@ -160,56 +158,52 @@ public class NoSessionFilter implements Filter {
 			&& !uri.pathEndsWithIgnoreCase(".txt")
 			&& !uri.pathEndsWithIgnoreCase(".zip")
 		) {
-			try {
-				Cookie[] oldCookies = null;
-				boolean oldCookiesSet = false;
-				MutableURIParameters cookieParams = null;
-				for(String cookieName : cookieNames) {
-					if(newCookies.containsKey(cookieName)) {
-						Cookie newCookie = newCookies.get(cookieName);
-						if(newCookie != null) {
-							if(cookieParams == null) cookieParams = new URIParametersMap();
-							cookieParams.addParameter(cookieUrlParamPrefix + cookieName, Cookies.getValue(newCookie));
-						} else {
-							// Cookie was removed - do not add to URL
-						}
+			Cookie[] oldCookies = null;
+			boolean oldCookiesSet = false;
+			MutableURIParameters cookieParams = null;
+			for(String cookieName : cookieNames) {
+				if(newCookies.containsKey(cookieName)) {
+					Cookie newCookie = newCookies.get(cookieName);
+					if(newCookie != null) {
+						if(cookieParams == null) cookieParams = new URIParametersMap();
+						cookieParams.addParameter(cookieUrlParamPrefix + cookieName, Cookies.getValue(newCookie));
 					} else {
-						// Add each of the cookie values that were passed-in on the URL, were not removed or added,
-						// and were not included as a request cookie.
-						String paramName = cookieUrlParamPrefix + cookieName;
-						String[] values = request.getParameterValues(paramName);
-						if(values != null && values.length > 0) {
-							boolean found = false;
-							if(!oldCookiesSet) {
-								oldCookies = request.getCookies();
-								oldCookiesSet = true;
-							}
-							if(oldCookies != null) {
-								String encodedName = Cookies.encodeName(cookieName);
-								for(Cookie oldCookie : oldCookies) {
-									if(oldCookie.getName().equals(encodedName)) {
-										found = true;
-										break;
-									}
+						// Cookie was removed - do not add to URL
+					}
+				} else {
+					// Add each of the cookie values that were passed-in on the URL, were not removed or added,
+					// and were not included as a request cookie.
+					String paramName = cookieUrlParamPrefix + cookieName;
+					String[] values = request.getParameterValues(paramName);
+					if(values != null && values.length > 0) {
+						boolean found = false;
+						if(!oldCookiesSet) {
+							oldCookies = request.getCookies();
+							oldCookiesSet = true;
+						}
+						if(oldCookies != null) {
+							String encodedName = Cookies.encodeName(cookieName);
+							for(Cookie oldCookie : oldCookies) {
+								if(oldCookie.getName().equals(encodedName)) {
+									found = true;
+									break;
 								}
 							}
-							if(!found) {
-								if(cookieParams == null) cookieParams = new URIParametersMap();
-								cookieParams.addParameter(paramName, values[values.length - 1]);
-							}
+						}
+						if(!found) {
+							if(cookieParams == null) cookieParams = new URIParametersMap();
+							cookieParams.addParameter(paramName, values[values.length - 1]);
 						}
 					}
 				}
-				uri = uri.addParameters(cookieParams, documentEncoding);
-			} catch(UnsupportedEncodingException err) {
-				throw new WrappedException(err);
 			}
+			uri = uri.addParameters(cookieParams);
 		}
 		return uri;
 	}
 
-	private String addCookieValues(HttpServletRequest request, Map<String,Cookie> newCookies, String url, String documentEncoding) {
-		return addCookieValues(request, newCookies, new AnyURI(url), documentEncoding).toString();
+	private String addCookieValues(HttpServletRequest request, Map<String,Cookie> newCookies, String url) {
+		return addCookieValues(request, newCookies, new AnyURI(url)).toString();
 	}
 
 	@Override
@@ -378,7 +372,7 @@ public class NoSessionFilter implements Filter {
 								) {
 									return url;
 								} else {
-									return addCookieValues(originalRequest, newCookies, url, getCharacterEncoding());
+									return addCookieValues(originalRequest, newCookies, url);
 								}
 								int slashPos = remaining.indexOf('/');
 								if(slashPos == -1) slashPos = remaining.length();
@@ -390,7 +384,7 @@ public class NoSessionFilter implements Filter {
 									// TODO: What about [...] IPv6 addresses?
 									host.equalsIgnoreCase(originalRequest.getServerName())
 								) {
-									String withCookies = addCookieValues(originalRequest, newCookies, remaining.substring(slashPos), getCharacterEncoding());
+									String withCookies = addCookieValues(originalRequest, newCookies, remaining.substring(slashPos));
 									int newUrlLen = protocol.length() + hostPort.length() + withCookies.length();
 									if(newUrlLen == url.length()) {
 										assert url.equals(protocol + hostPort + withCookies);

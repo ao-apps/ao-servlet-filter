@@ -22,8 +22,8 @@
  */
 package com.aoindustries.servlet.filter;
 
+import com.aoindustries.net.URIEncoder;
 import com.aoindustries.servlet.ServletRequestParameters;
-import com.aoindustries.servlet.ServletUtil;
 import com.aoindustries.servlet.http.HttpServletUtil;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -165,9 +165,9 @@ public class StripInvalidXmlCharactersFilter implements Filter {
 									url.append('?');
 									didOne = true;
 								}
-								ServletUtil.encodeURIComponent(name, response, url);
+								URIEncoder.encodeURIComponent(name, url);
 								url.append('=');
-								ServletUtil.encodeURIComponent(filter(value), response, url);
+								URIEncoder.encodeURIComponent(filter(value), url);
 							}
 						}
 					}

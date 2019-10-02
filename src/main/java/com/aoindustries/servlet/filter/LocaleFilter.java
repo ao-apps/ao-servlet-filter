@@ -25,17 +25,15 @@ package com.aoindustries.servlet.filter;
 import com.aoindustries.net.AnyURI;
 import com.aoindustries.net.MutableURIParameters;
 import com.aoindustries.net.URI;
+import com.aoindustries.net.URIEncoder;
 import com.aoindustries.net.URIParametersMap;
 import com.aoindustries.net.URIParametersUtils;
 import com.aoindustries.net.URIParser;
 import com.aoindustries.servlet.ServletRequestParameters;
-import com.aoindustries.servlet.ServletUtil;
 import com.aoindustries.servlet.http.HttpServletUtil;
 import com.aoindustries.util.StringUtility;
-import com.aoindustries.util.WrappedException;
 import com.aoindustries.util.i18n.ThreadLocale;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Enumeration;
@@ -105,20 +103,20 @@ abstract public class LocaleFilter implements Filter {
 	/**
 	 * Adds the current locale as a parameter to the URL.
 	 */
-	private AnyURI addLocale(Locale locale, AnyURI uri, String paramName, String documentEncoding) throws UnsupportedEncodingException {
+	private AnyURI addLocale(Locale locale, AnyURI uri, String paramName) {
 		if(
 			// Only add for non-excluded file types
 			isLocalizedPath(uri)
 			// Only rewrite a URL that does not already contain a paramName parameter.
-			&& !URIParametersUtils.of(uri.getQueryString(), documentEncoding).getParameterMap().containsKey(paramName)
+			&& !URIParametersUtils.of(uri.getQueryString()).getParameterMap().containsKey(paramName)
 		) {
-			uri = uri.addParameter(paramName, toLocaleString(locale), documentEncoding);
+			uri = uri.addParameter(paramName, toLocaleString(locale));
 		}
 		return uri;
 	}
 
-	private String addLocale(Locale locale, String url, String paramName, String documentEncoding) throws UnsupportedEncodingException {
-		return addLocale(locale, new AnyURI(url), paramName, documentEncoding).toString();
+	private String addLocale(Locale locale, String url, String paramName) {
+		return addLocale(locale, new AnyURI(url), paramName).toString();
 	}
 
 	private ServletContext servletContext;
@@ -187,9 +185,9 @@ abstract public class LocaleFilter implements Filter {
 							newParams.addParameters(name, entry.getValue());
 						}
 					}
-					String newUrl = uri.addParameters(newParams, ENCODING.name()).toString();
+					String newUrl = uri.addParameters(newParams).toString();
 					// Encode URI to ASCII format
-					newUrl = ServletUtil.encodeURI(newUrl, response);
+					newUrl = URIEncoder.encodeURI(newUrl);
 					// Perform URL rewriting
 					newUrl = httpResponse.encodeRedirectURL(newUrl);
 					// Convert to absolute URL
@@ -267,9 +265,9 @@ abstract public class LocaleFilter implements Filter {
 							}
 						}
 						newParams.addParameter(paramName, localeString);
-						String newUrl = uri.addParameters(newParams, ENCODING.name()).toString();
+						String newUrl = uri.addParameters(newParams).toString();
 						// Encode URI to ASCII format
-						newUrl = ServletUtil.encodeURI(newUrl, response);
+						newUrl = URIEncoder.encodeURI(newUrl);
 						// Perform URL rewriting
 						newUrl = httpResponse.encodeRedirectURL(newUrl);
 						// Convert to absolute URL
@@ -333,12 +331,7 @@ abstract public class LocaleFilter implements Filter {
 									) {
 										return url;
 									} else {
-										String responseEncoding = httpResponse.getCharacterEncoding();
-										try {
-											return addLocale(httpResponse.getLocale(), url, paramName, responseEncoding);
-										} catch(UnsupportedEncodingException e) {
-											throw new WrappedException("ServletResponse encoding (" + responseEncoding + ") is expected to always exist", e);
-										}
+										return addLocale(httpResponse.getLocale(), url, paramName);
 									}
 									int slashPos = remaining.indexOf('/');
 									if(slashPos == -1) slashPos = remaining.length();
@@ -349,13 +342,7 @@ abstract public class LocaleFilter implements Filter {
 										// TODO: What about [...] IPv6 addresses?
 										host.equalsIgnoreCase(httpRequest.getServerName())
 									) {
-										String withLocale;
-										String responseEncoding = httpResponse.getCharacterEncoding();
-										try {
-											withLocale = addLocale(httpResponse.getLocale(), remaining.substring(slashPos), paramName, httpResponse.getCharacterEncoding());
-										} catch(UnsupportedEncodingException e) {
-											throw new WrappedException("ServletResponse encoding (" + responseEncoding + ") is expected to always exist", e);
-										}
+										String withLocale = addLocale(httpResponse.getLocale(), remaining.substring(slashPos), paramName);
 										int newUrlLen = protocol.length() + hostPort.length() + withLocale.length();
 										if(newUrlLen == url.length()) {
 											assert url.equals(protocol + hostPort + withLocale);
