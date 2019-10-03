@@ -22,7 +22,7 @@
  */
 package com.aoindustries.servlet.filter;
 
-import com.aoindustries.net.AnyURI;
+import com.aoindustries.net.IRI;
 import com.aoindustries.net.MutableURIParameters;
 import com.aoindustries.net.URIParametersMap;
 import com.aoindustries.net.URIParser;
@@ -139,24 +139,23 @@ public class NoSessionFilter implements Filter {
 	 * Adds the values for any new cookies to the URL.  This handles cookie-based
 	 * session management through URL rewriting.
 	 */
-	private AnyURI addCookieValues(HttpServletRequest request, Map<String,Cookie> newCookies, AnyURI uri) {
+	private IRI addCookieValues(HttpServletRequest request, Map<String,Cookie> newCookies, IRI iri) {
 		// Don't add for certains file types
 		if(
 			// Matches SessionResponseWrapper
 			// Matches LocaleFilter
-			// TODO: This will fail on overly %-encoded paths, but they would be an anomaly anyway
-			!uri.pathEndsWithIgnoreCase(".bmp")
-			&& !uri.pathEndsWithIgnoreCase(".css")
-			&& !uri.pathEndsWithIgnoreCase(".exe")
-			&& !uri.pathEndsWithIgnoreCase(".gif")
-			&& !uri.pathEndsWithIgnoreCase(".ico")
-			&& !uri.pathEndsWithIgnoreCase(".jpeg")
-			&& !uri.pathEndsWithIgnoreCase(".jpg")
-			&& !uri.pathEndsWithIgnoreCase(".js")
-			&& !uri.pathEndsWithIgnoreCase(".png")
-			&& !uri.pathEndsWithIgnoreCase(".svg")
-			&& !uri.pathEndsWithIgnoreCase(".txt")
-			&& !uri.pathEndsWithIgnoreCase(".zip")
+			!iri.pathEndsWithIgnoreCase(".bmp")
+			&& !iri.pathEndsWithIgnoreCase(".css")
+			&& !iri.pathEndsWithIgnoreCase(".exe")
+			&& !iri.pathEndsWithIgnoreCase(".gif")
+			&& !iri.pathEndsWithIgnoreCase(".ico")
+			&& !iri.pathEndsWithIgnoreCase(".jpeg")
+			&& !iri.pathEndsWithIgnoreCase(".jpg")
+			&& !iri.pathEndsWithIgnoreCase(".js")
+			&& !iri.pathEndsWithIgnoreCase(".png")
+			&& !iri.pathEndsWithIgnoreCase(".svg")
+			&& !iri.pathEndsWithIgnoreCase(".txt")
+			&& !iri.pathEndsWithIgnoreCase(".zip")
 		) {
 			Cookie[] oldCookies = null;
 			boolean oldCookiesSet = false;
@@ -197,13 +196,13 @@ public class NoSessionFilter implements Filter {
 					}
 				}
 			}
-			uri = uri.addParameters(cookieParams);
+			iri = iri.addParameters(cookieParams);
 		}
-		return uri;
+		return iri;
 	}
 
 	private String addCookieValues(HttpServletRequest request, Map<String,Cookie> newCookies, String url) {
-		return addCookieValues(request, newCookies, new AnyURI(url)).toString();
+		return addCookieValues(request, newCookies, new IRI(url)).toASCIIString();
 	}
 
 	@Override
@@ -338,7 +337,6 @@ public class NoSessionFilter implements Filter {
 							/**
 							 * TODO: Only add cookies if their domain and path would make the available to the given url.
 							 */
-							// TODO: org.xbib.net.URL or org.apache.http.client.utils.URIBuilder
 							private String encode(String url) {
 								// Don't rewrite empty or anchor-only URLs
 								if(url.isEmpty() || url.charAt(0) == '#') return url;

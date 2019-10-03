@@ -22,7 +22,7 @@
  */
 package com.aoindustries.servlet.filter;
 
-import com.aoindustries.net.AnyURI;
+import com.aoindustries.net.IRI;
 import com.aoindustries.net.URIEncoder;
 import com.aoindustries.net.URIParser;
 import com.aoindustries.servlet.ServletContextCache;
@@ -210,34 +210,30 @@ public class HideJspExtensionFilter implements Filter {
 						}
 					}
 					HttpServletResponse rewritingResponse = new HttpServletResponseWrapper(httpResponse) {
-						// TODO: org.xbib.net.URL or org.apache.http.client.utils.URIBuilder
 						private String rewrite(String url) {
 							assert !url.isEmpty() && url.charAt(0) != '#';
-							AnyURI anyURI = new AnyURI(url);
-							String hierPart = anyURI.getHierPart();
+							IRI iri = new IRI(url);
+							String hierPart = iri.getHierPart();
 							if(
-								// TODO: This will fail on overly %-encoded paths, but they would be an anomaly anyway
 								!noRewritePatterns.isMatch(hierPart)
 							) {
 								for(int i = 0; i < EXTENSIONS.length; i++) {
 									// Rewrite any URLs ending in "/path/index.jsp(x)" to "/path/", maintaining any query string
 									if(
-										// TODO: This will fail on overly %-encoded paths, but they would be an anomaly anyway
 										hierPart.endsWith(SLASH_INDEXES[i])
 									) {
 										String shortenedHierPart = hierPart.substring(0, hierPart.length() - INDEXES[i].length());
-										return anyURI.setHierPart(shortenedHierPart).toString();
+										return iri.setHierPart(shortenedHierPart).toASCIIString();
 									}
 								}
 								for(String extension : EXTENSIONS) {
 									// Rewrite any URLs ending in "/path/file.jsp(x)" to "/path/file", maintaining any query string
 									if(
-										// TODO: This will fail on overly %-encoded paths, but they would be an anomaly anyway
 										hierPart.endsWith(extension)
 									) {
 										String shortenedHierPart = hierPart.substring(0, hierPart.length() - extension.length());
 										if(!isFolder(shortenedHierPart)) {
-											return anyURI.setHierPart(shortenedHierPart).toString();
+											return iri.setHierPart(shortenedHierPart).toASCIIString();
 										}
 									}
 								}
@@ -251,7 +247,6 @@ public class HideJspExtensionFilter implements Filter {
 							if(urlLen == 0 || url.charAt(0) == '#') return url;
 							// Only rewrite URLs that do not include a scheme, it is to avoid rewriting URLs that go to other sites
 							if(URIParser.hasScheme(url)) {
-								// TODO: AnyURI here and similar
 								String protocol;
 								String remaining;
 								if(

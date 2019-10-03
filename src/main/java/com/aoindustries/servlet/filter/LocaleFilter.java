@@ -22,10 +22,8 @@
  */
 package com.aoindustries.servlet.filter;
 
-import com.aoindustries.net.AnyURI;
+import com.aoindustries.net.IRI;
 import com.aoindustries.net.MutableURIParameters;
-import com.aoindustries.net.URI;
-import com.aoindustries.net.URIEncoder;
 import com.aoindustries.net.URIParametersMap;
 import com.aoindustries.net.URIParametersUtils;
 import com.aoindustries.net.URIParser;
@@ -103,20 +101,20 @@ abstract public class LocaleFilter implements Filter {
 	/**
 	 * Adds the current locale as a parameter to the URL.
 	 */
-	private AnyURI addLocale(Locale locale, AnyURI uri, String paramName) {
+	private IRI addLocale(Locale locale, IRI iri, String paramName) {
 		if(
 			// Only add for non-excluded file types
-			isLocalizedPath(uri)
+			isLocalizedPath(iri)
 			// Only rewrite a URL that does not already contain a paramName parameter.
-			&& !URIParametersUtils.of(uri.getQueryString()).getParameterMap().containsKey(paramName)
+			&& !URIParametersUtils.of(iri.getQueryString()).getParameterMap().containsKey(paramName)
 		) {
-			uri = uri.addParameter(paramName, toLocaleString(locale));
+			iri = iri.addParameter(paramName, toLocaleString(locale));
 		}
-		return uri;
+		return iri;
 	}
 
 	private String addLocale(Locale locale, String url, String paramName) {
-		return addLocale(locale, new AnyURI(url), paramName).toString();
+		return addLocale(locale, new IRI(url), paramName).toASCIIString();
 	}
 
 	private ServletContext servletContext;
@@ -159,8 +157,8 @@ abstract public class LocaleFilter implements Filter {
 				final HttpServletRequest httpRequest = (HttpServletRequest)request;
 				final HttpServletResponse httpResponse = (HttpServletResponse)response;
 
-				URI uri = new URI(httpRequest.getRequestURI());
-				final boolean isLocalized = isLocalizedPath(uri);
+				IRI iri = new IRI(httpRequest.getRequestURI());
+				final boolean isLocalized = isLocalizedPath(iri);
 
 				final String paramName = getParamName();
 				final String paramValue = httpRequest.getParameter(paramName);
@@ -185,9 +183,8 @@ abstract public class LocaleFilter implements Filter {
 							newParams.addParameters(name, entry.getValue());
 						}
 					}
-					String newUrl = uri.addParameters(newParams).toString();
 					// Encode URI to ASCII format
-					newUrl = URIEncoder.encodeURI(newUrl);
+					String newUrl = iri.addParameters(newParams).toASCIIString();
 					// Perform URL rewriting
 					newUrl = httpResponse.encodeRedirectURL(newUrl);
 					// Convert to absolute URL
@@ -265,9 +262,8 @@ abstract public class LocaleFilter implements Filter {
 							}
 						}
 						newParams.addParameter(paramName, localeString);
-						String newUrl = uri.addParameters(newParams).toString();
 						// Encode URI to ASCII format
-						newUrl = URIEncoder.encodeURI(newUrl);
+						String newUrl = iri.addParameters(newParams).toASCIIString();
 						// Perform URL rewriting
 						newUrl = httpResponse.encodeRedirectURL(newUrl);
 						// Convert to absolute URL
@@ -296,7 +292,6 @@ abstract public class LocaleFilter implements Filter {
 						chain.doFilter(
 							httpRequest,
 							new HttpServletResponseWrapper(httpResponse) {
-								// TODO: org.xbib.net.URL or org.apache.http.client.utils.URIBuilder
 								private String encode(String url) {
 									// Don't rewrite empty or anchor-only URLs
 									if(url.isEmpty() || url.charAt(0) == '#') return url;
@@ -409,29 +404,27 @@ abstract public class LocaleFilter implements Filter {
 	 * This default implementation will cause the parameter to be added to any
 	 * URL that is not one of the excluded extensions (case-insensitive).
 	 */
-	// TODO: IRI to for decoding?  A normalize method?
-	protected boolean isLocalizedPath(AnyURI uri) {
+	protected boolean isLocalizedPath(IRI iri) {
 		return
 			// Matches SessionResponseWrapper
 			// Matches NoSessionFilter
-			// TODO: This will fail on overly %-encoded paths, but they would be an anomaly anyway
-			!uri.pathEndsWithIgnoreCase(".bmp")
-			&& !uri.pathEndsWithIgnoreCase(".css")
-			&& !uri.pathEndsWithIgnoreCase(".exe")
-			&& !uri.pathEndsWithIgnoreCase(".gif")
-			&& !uri.pathEndsWithIgnoreCase(".ico")
-			&& !uri.pathEndsWithIgnoreCase(".jpeg")
-			&& !uri.pathEndsWithIgnoreCase(".jpg")
-			&& !uri.pathEndsWithIgnoreCase(".js")
-			&& !uri.pathEndsWithIgnoreCase(".png")
-			&& !uri.pathEndsWithIgnoreCase(".svg")
-			&& !uri.pathEndsWithIgnoreCase(".txt")
-			&& !uri.pathEndsWithIgnoreCase(".zip")
+			!iri.pathEndsWithIgnoreCase(".bmp")
+			&& !iri.pathEndsWithIgnoreCase(".css")
+			&& !iri.pathEndsWithIgnoreCase(".exe")
+			&& !iri.pathEndsWithIgnoreCase(".gif")
+			&& !iri.pathEndsWithIgnoreCase(".ico")
+			&& !iri.pathEndsWithIgnoreCase(".jpeg")
+			&& !iri.pathEndsWithIgnoreCase(".jpg")
+			&& !iri.pathEndsWithIgnoreCase(".js")
+			&& !iri.pathEndsWithIgnoreCase(".png")
+			&& !iri.pathEndsWithIgnoreCase(".svg")
+			&& !iri.pathEndsWithIgnoreCase(".txt")
+			&& !iri.pathEndsWithIgnoreCase(".zip")
 		;
 	}
 
 	protected boolean isLocalizedPath(String url) {
-		return isLocalizedPath(new AnyURI(url));
+		return isLocalizedPath(new IRI(url));
 	}
 
 	/**
