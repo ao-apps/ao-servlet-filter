@@ -185,11 +185,11 @@ abstract public class LocaleFilter implements Filter {
 					}
 					// Encode URI to ASCII format
 					String newUrl = iri.addParameters(newParams).toASCIIString();
+					// Convert to absolute URL
+					newUrl = HttpServletUtil.getAbsoluteURL(httpRequest, newUrl, false);
 					// Perform URL rewriting
 					newUrl = httpResponse.encodeRedirectURL(newUrl);
-					// Convert to absolute URL
-					String location = HttpServletUtil.getAbsoluteURL(httpRequest, newUrl, false);
-					HttpServletUtil.sendRedirect(httpResponse, location, HttpServletResponse.SC_MOVED_PERMANENTLY);
+					HttpServletUtil.sendRedirect(httpResponse, newUrl, HttpServletResponse.SC_MOVED_PERMANENTLY);
 					return;
 				}
 				if(
@@ -264,11 +264,11 @@ abstract public class LocaleFilter implements Filter {
 						newParams.addParameter(paramName, localeString);
 						// Encode URI to ASCII format
 						String newUrl = iri.addParameters(newParams).toASCIIString();
+						// Convert to absolute URL
+						newUrl = HttpServletUtil.getAbsoluteURL(httpRequest, newUrl, false);
 						// Perform URL rewriting
 						newUrl = httpResponse.encodeRedirectURL(newUrl);
-						// Convert to absolute URL
-						String location = HttpServletUtil.getAbsoluteURL(httpRequest, newUrl, false);
-						HttpServletUtil.sendRedirect(httpResponse, location, HttpServletResponse.SC_MOVED_PERMANENTLY);
+						HttpServletUtil.sendRedirect(httpResponse, newUrl, HttpServletResponse.SC_MOVED_PERMANENTLY);
 						return;
 					}
 					responseLocale = locale;
