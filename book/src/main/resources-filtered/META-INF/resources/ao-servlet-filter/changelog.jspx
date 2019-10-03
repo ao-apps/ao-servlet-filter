@@ -36,7 +36,7 @@ along with ao-servlet-filter.  If not, see <http://www.gnu.org/licenses />.
 		shortTitle="Changelog"
 		tocLevels="1"
 		datePublished="2016-10-29T21:37:35-0500"
-		dateModified="2019-08-18T01:00:05-0500"
+		dateModified="2019-10-03T17:09:05-0500"
 	>
 		<!-- The current snapshot, unreleased version -->
 		<c:set var="version" value="@{com.aoindustries:ao-servlet-filter:pom.version}" />
@@ -76,6 +76,24 @@ along with ao-servlet-filter.  If not, see <http://www.gnu.org/licenses />.
 					<li><code>HideJspExtensionFilter</code> now sends redirect in <code>UTF-8</code>.</li>
 					<li><code>LocaleFilter</code> now sends redirect in <code>UTF-8</code>.</li>
 					<li>Cookie names, values, comments, and paths are now URI-encoded.</li>
+					<li>
+						<p>
+							New filter <code>EncodeURIFilter</code> which encodes the URL to either
+							<ao:a href="https://tools.ietf.org/html/rfc3986">RFC 3986 URI</ao:a> US-ASCII format
+							or <ao:a href="https://tools.ietf.org/html/rfc3987">RFC 3987 IRI</ao:a> Unicode format.
+						</p>
+						<p>
+							IRI support is disabled by default, and only recommended for development or
+							internal systems.  IRI may result in slightly smaller output, and more readable
+							HTML source, but for interoperability should be off in production systems.
+						</p>
+						<p>
+							<ao:a href="https://tools.ietf.org/html/rfc7231#section-7.1.2">RFC 7231 - 7.1.2.  Location</ao:a>
+							refers only to <ao:a href="https://tools.ietf.org/html/rfc3986">RFC 3986 URI</ao:a> for
+							URI-reference, thus redirects are always formatted as
+							<ao:a href="https://tools.ietf.org/html/rfc3986">RFC 3986 URI</ao:a>.
+						</p>
+					</li>
 				</ul>
 			</changelog:release>
 		</c:if>
