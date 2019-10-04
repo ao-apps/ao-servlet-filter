@@ -367,6 +367,8 @@ public class NoSessionFilter implements Filter {
 									|| URIParser.isScheme(url, "telnet")
 									|| URIParser.isScheme(url, "tel")
 									|| URIParser.isScheme(url, "cid")
+									|| URIParser.isScheme(url, "file")
+									|| URIParser.isScheme(url, "data")
 								) {
 									return url;
 								} else {

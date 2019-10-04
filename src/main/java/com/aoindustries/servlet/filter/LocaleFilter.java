@@ -56,7 +56,7 @@ import javax.servlet.http.HttpServletResponseWrapper;
  * crawl the site per-locale and does not depend on cookies.
  * </p>
  * <p>
- * Each URL (except javascript:, mailto:, telnet:, tel:, and cid: protocols, case-insensitive) may be rewritten
+ * Each URL (except javascript:, mailto:, telnet:, tel:, cid:, file:, and data: schemes, case-insensitive) may be rewritten
  * using encodeURL to include a <code>paramName</code> parameter.  URLs to
  * non-localized resources are not rewritten.
  * </p>
@@ -323,6 +323,8 @@ abstract public class LocaleFilter implements Filter {
 										|| URIParser.isScheme(url, "telnet")
 										|| URIParser.isScheme(url, "tel")
 										|| URIParser.isScheme(url, "cid")
+										|| URIParser.isScheme(url, "file")
+										|| URIParser.isScheme(url, "data")
 									) {
 										return url;
 									} else {
