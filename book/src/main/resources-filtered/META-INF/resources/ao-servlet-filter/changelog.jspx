@@ -36,7 +36,7 @@ along with ao-servlet-filter.  If not, see <http://www.gnu.org/licenses />.
 		shortTitle="Changelog"
 		tocLevels="1"
 		datePublished="2016-10-29T21:37:35-0500"
-		dateModified="2019-10-04T04:52:11-0500"
+		dateModified="2019-10-04T08:59:56-0500"
 	>
 		<!-- The current snapshot, unreleased version -->
 		<c:set var="version" value="@{com.aoindustries:ao-servlet-filter:pom.version}" />
@@ -110,6 +110,7 @@ along with ao-servlet-filter.  If not, see <http://www.gnu.org/licenses />.
 							<li><ao:a href="https://github.com/terasolunaorg/terasoluna-gfw-web-multi-blank/issues/179">Disable URL Rewriting by default with Servlet 3.0 config</ao:a></li>
 						</ol>
 					</li>
+					<li>No longer URL rewriting <code>*.dia</code> URLs.</li>
 				</ul>
 			</changelog:release>
 		</c:if>
