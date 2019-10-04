@@ -24,6 +24,7 @@ package com.aoindustries.servlet.filter;
 
 import com.aoindustries.net.IRI;
 import com.aoindustries.net.URI;
+import com.aoindustries.net.URIParser;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -41,6 +42,8 @@ import javax.servlet.http.HttpServletResponseWrapper;
  * Encodes the URL to either
  * <a href="https://tools.ietf.org/html/rfc3986">RFC 3986 URI</a> US-ASCII format
  * or <a href="https://tools.ietf.org/html/rfc3987">RFC 3987 IRI</a> Unicode format.
+ * If the URL begins with <code>javascript:</code>, <code>cid:</code>, or <code>data:</code>,
+ * (case-insensitive) it is not altered.
  * </p>
  * <p>
  * IRI support is disabled by default, and only recommended for development or
@@ -91,17 +94,25 @@ public class EncodeURIFilter implements Filter {
 					request,
 					new HttpServletResponseWrapper((HttpServletResponse)response) {
 						private String encode(String url, boolean enableIri) {
-							String characterEncoding;
 							if(
-								enableIri
-								&& (
-									(characterEncoding = getCharacterEncoding()).equalsIgnoreCase(StandardCharsets.UTF_8.name())
-									|| Charset.forName(characterEncoding) == StandardCharsets.UTF_8
-								)
+								URIParser.isScheme(url, "javascript")
+								|| URIParser.isScheme(url, "cid")
+								|| URIParser.isScheme(url, "data")
 							) {
-								return new IRI(url).toString();
+								return url;
 							} else {
-								return new URI(url).toASCIIString();
+								String characterEncoding;
+								if(
+									enableIri
+									&& (
+										(characterEncoding = getCharacterEncoding()).equalsIgnoreCase(StandardCharsets.UTF_8.name())
+										|| Charset.forName(characterEncoding) == StandardCharsets.UTF_8
+									)
+								) {
+									return new IRI(url).toString();
+								} else {
+									return new URI(url).toASCIIString();
+								}
 							}
 						}
 
