@@ -91,7 +91,7 @@ import javax.servlet.http.HttpSession;
  * <pre>&lt;%@ page language="java" session="false" %&gt;</pre>
  * </p>
  * <p>
- * Consider using in conjunction with {@link NoEncodeUrlFilter} to ensure that
+ * Consider using in conjunction with {@link NoEncodeUrlFilter} or <code>session-config</code> to ensure that
  * <code>;jsessionid</code> is never added to the URLs.
  * </p>
  * <p>
