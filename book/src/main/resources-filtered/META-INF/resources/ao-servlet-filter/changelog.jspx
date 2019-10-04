@@ -36,7 +36,7 @@ along with ao-servlet-filter.  If not, see <http://www.gnu.org/licenses />.
 		shortTitle="Changelog"
 		tocLevels="1"
 		datePublished="2016-10-29T21:37:35-0500"
-		dateModified="2019-10-04T01:31:12-0500"
+		dateModified="2019-10-04T01:48:34-0500"
 	>
 		<!-- The current snapshot, unreleased version -->
 		<c:set var="version" value="@{com.aoindustries:ao-servlet-filter:pom.version}" />
@@ -81,6 +81,8 @@ along with ao-servlet-filter.  If not, see <http://www.gnu.org/licenses />.
 							New filter <code>EncodeURIFilter</code> which encodes the URL to either
 							<ao:a href="https://tools.ietf.org/html/rfc3986">RFC 3986 URI</ao:a> US-ASCII format
 							or <ao:a href="https://tools.ietf.org/html/rfc3987">RFC 3987 IRI</ao:a> Unicode format.
+							If the URL begins with <code>javascript:</code>, <code>cid:</code>, or <code>data:</code>,
+							(case-insensitive) it is not altered.
 						</p>
 						<p>
 							IRI support is disabled by default, and only recommended for development or
