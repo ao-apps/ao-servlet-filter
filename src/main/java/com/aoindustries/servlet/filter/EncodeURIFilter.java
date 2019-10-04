@@ -59,12 +59,6 @@ import javax.servlet.http.HttpServletResponseWrapper;
  * <p>
  * This should be used for both the REQUEST and ERROR dispatchers.
  * </p>
- * <p>
- * <strong>This must be first URL-rewriting filter in the chain</strong>,
- * otherwise it may pass Unicode IRI to filters that are expecting US-ASCII,
- * and the other filters may undo our efforts by generating their response
- * in US-ASCII.
- * </p>
  */
 public class EncodeURIFilter implements Filter {
 
@@ -119,23 +113,23 @@ public class EncodeURIFilter implements Filter {
 						@Override
 						@Deprecated
 						public String encodeRedirectUrl(String url) {
-							return super.encodeRedirectUrl(encode(url, false));
+							return encode(super.encodeRedirectUrl(url), false);
 						}
 
 						@Override
 						public String encodeRedirectURL(String url) {
-							return super.encodeRedirectURL(encode(url, false));
+							return encode(super.encodeRedirectURL(url), false);
 						}
 
 						@Override
 						@Deprecated
 						public String encodeUrl(String url) {
-							return super.encodeUrl(encode(url, enableIRI));
+							return encode(super.encodeUrl(url), enableIRI);
 						}
 
 						@Override
 						public String encodeURL(String url) {
-							return super.encodeURL(encode(url, enableIRI));
+							return encode(super.encodeURL(url), enableIRI);
 						}
 					}
 				);
