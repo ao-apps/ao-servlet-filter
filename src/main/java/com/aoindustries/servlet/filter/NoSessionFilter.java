@@ -146,6 +146,7 @@ public class NoSessionFilter implements Filter {
 			// Matches LocaleFilter
 			!iri.pathEndsWithIgnoreCase(".bmp")
 			&& !iri.pathEndsWithIgnoreCase(".css")
+			&& !iri.pathEndsWithIgnoreCase(".dia")
 			&& !iri.pathEndsWithIgnoreCase(".exe")
 			&& !iri.pathEndsWithIgnoreCase(".gif")
 			&& !iri.pathEndsWithIgnoreCase(".ico")
