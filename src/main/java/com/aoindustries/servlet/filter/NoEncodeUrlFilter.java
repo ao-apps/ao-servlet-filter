@@ -46,7 +46,20 @@ import javax.servlet.http.HttpServletResponseWrapper;
  * rewriting up the filter chain, as it is intended to block default session
  * URL rewriting provided by servlet contains.
  * </p>
+ * @deprecated  As of Servlet 3.0, please use <code>session-config</code> in <code>WEB-INF/web.xml</code>:
+ * <pre>
+ * &lt;session-config&gt;
+ *     &lt;tracking-mode&gt;COOKIE&lt;/tracking-mode&gt;
+ * &lt;/session-config&gt;
+ * </pre>
+ * See also:
+ * <ol>
+ * <li><a href="https://fralef.me/tomcat-disable-jsessionid-in-url.html">Tomcat - Disable JSESSIONID in URL</a></li>
+ * <li><a href="https://access.redhat.com/solutions/338313">How to enable HttpOnly and Secure Session Cookies in EAP 6.x</a></li>
+ * <li><a href="https://github.com/terasolunaorg/terasoluna-gfw-web-multi-blank/issues/179">Disable URL Rewriting by default with Servlet 3.0 config</a></li>
+ * </ol>
  */
+@Deprecated
 public class NoEncodeUrlFilter implements Filter {
 
 	private static final String REQUEST_ATTRIBUTE_KEY = NoEncodeUrlFilter.class.getName() + ".filter_applied";
