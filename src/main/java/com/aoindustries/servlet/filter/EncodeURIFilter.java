@@ -25,6 +25,7 @@ package com.aoindustries.servlet.filter;
 import com.aoindustries.net.IRI;
 import com.aoindustries.net.URI;
 import com.aoindustries.net.URIParser;
+import com.aoindustries.servlet.http.Canonical;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -44,6 +45,7 @@ import javax.servlet.http.HttpServletResponseWrapper;
  * or <a href="https://tools.ietf.org/html/rfc3987">RFC 3987 IRI</a> Unicode format.
  * If the URL begins with <code>javascript:</code>, <code>cid:</code>, or <code>data:</code>,
  * (case-insensitive) it is not altered.
+ * {@linkplain Canonical Canonical URLs} are always encoded to US-ASCII format.
  * </p>
  * <p>
  * IRI support is disabled by default, and only recommended for development or
@@ -98,6 +100,7 @@ public class EncodeURIFilter implements Filter {
 								String characterEncoding;
 								if(
 									enableIri
+									&& !Canonical.get()
 									&& (
 										(characterEncoding = getCharacterEncoding()).equalsIgnoreCase(StandardCharsets.UTF_8.name())
 										|| Charset.forName(characterEncoding) == StandardCharsets.UTF_8

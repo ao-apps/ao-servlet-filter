@@ -36,7 +36,7 @@ along with ao-servlet-filter.  If not, see <http://www.gnu.org/licenses />.
 		shortTitle="Changelog"
 		tocLevels="1"
 		datePublished="2016-10-29T21:37:35-0500"
-		dateModified="2019-10-04T08:59:56-0500"
+		dateModified="2019-10-05T00:26:22-0500"
 	>
 		<!-- The current snapshot, unreleased version -->
 		<c:set var="version" value="@{com.aoindustries:ao-servlet-filter:pom.version}" />
@@ -83,6 +83,7 @@ along with ao-servlet-filter.  If not, see <http://www.gnu.org/licenses />.
 							or <ao:a href="https://tools.ietf.org/html/rfc3987">RFC 3987 IRI</ao:a> Unicode format.
 							If the URL begins with <code>javascript:</code>, <code>cid:</code>, or <code>data:</code>,
 							(case-insensitive) it is not altered.
+							<ao:a href="https://aoindustries.com/ao-servlet-util/apidocs/com/aoindustries/servlet/http/Canonical.html">Canonical URLs</ao:a> are always encoded to US-ASCII format.
 						</p>
 						<p>
 							IRI support is disabled by default, and only recommended for development or
@@ -111,6 +112,10 @@ along with ao-servlet-filter.  If not, see <http://www.gnu.org/licenses />.
 						</ol>
 					</li>
 					<li>No longer URL rewriting <code>*.dia</code> URLs.</li>
+					<li>
+						<code>NoSessionFilter</code> will now not write cookie parameters into
+						<ao:a href="https://aoindustries.com/ao-servlet-util/apidocs/com/aoindustries/servlet/http/Canonical.html">Canonical URLs</ao:a>.
+					</li>
 				</ul>
 			</changelog:release>
 		</c:if>

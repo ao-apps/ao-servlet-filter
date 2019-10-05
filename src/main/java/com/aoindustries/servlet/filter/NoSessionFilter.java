@@ -26,6 +26,7 @@ import com.aoindustries.net.IRI;
 import com.aoindustries.net.MutableURIParameters;
 import com.aoindustries.net.URIParametersMap;
 import com.aoindustries.net.URIParser;
+import com.aoindustries.servlet.http.Canonical;
 import com.aoindustries.servlet.http.Cookies;
 import com.aoindustries.util.StringUtility;
 import java.io.IOException;
@@ -339,6 +340,8 @@ public class NoSessionFilter implements Filter {
 							 * TODO: Only add cookies if their domain and path would make the available to the given url.
 							 */
 							private String encode(String url) {
+								// Don't rewrite canonical URLs
+								if(Canonical.get()) return url;
 								// Don't rewrite empty or anchor-only URLs
 								if(url.isEmpty() || url.charAt(0) == '#') return url;
 								// If starts with http:// or https:// parse out the first part of the URL, encode the path, and reassemble.
