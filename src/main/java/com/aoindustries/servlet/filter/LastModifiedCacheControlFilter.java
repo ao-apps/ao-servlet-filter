@@ -52,6 +52,7 @@ import javax.servlet.http.HttpServletResponse;
  *   <li><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control">Cache-Control - HTTP | MDN</a></li>
  *   <li><a href="https://web.dev/stale-while-revalidate">Keeping things fresh with stale-while-revalidate</a></li>
  *   <li><a href="https://ashton.codes/set-cache-control-max-age-1-year/">Why we set a `Cache-Control: Max-Age` of 1 year</a></li>
+ *   <li><a href="https://developers.google.com/web/tools/lighthouse/audits/cache-policy?utm_source=lighthouse&utm_medium=devtools">Uses inefficient cache policy on static assets</a></li>
  * </ol>
  * 
  * @see  WildcardPatternMatcher  for supported patterns
@@ -65,12 +66,12 @@ public class LastModifiedCacheControlFilter implements Filter {
 	public static final String DEFAULT_CACHE_CONTROL =
 		// Cacheability
 		"public"
-		// Expiration (1 year)
-		+ ",max-age=31536000"
-		//+ ",s-maxage=31536000" // Use same value for proxies
-		+ ",max-stale=31536000"
-		+ ",stale-while-revalidate=31536000"
-		+ ",stale-if-error=31536000"
+		// Expiration (1 year = 365.25 days)
+		+ ",max-age=31557600"
+		//+ ",s-maxage=31557600" // Use same value for proxies
+		+ ",max-stale=31557600"
+		+ ",stale-while-revalidate=31557600"
+		+ ",stale-if-error=31557600"
 		// Revalidation and reloading
 		+ ",immutable";
 
