@@ -103,7 +103,7 @@ public class LastModifiedCacheControlFilter implements Filter {
 			String lastModified = httpRequest.getParameter(LastModifiedServlet.LAST_MODIFIED_PARAMETER_NAME);
 			if(lastModified != null && !lastModified.isEmpty()) {
 				HttpServletResponse httpResponse = (HttpServletResponse)response;
-				httpResponse.addHeader("Cache-Control", cacheControl);
+				httpResponse.setHeader("Cache-Control", cacheControl);
 			}
 		}
 		chain.doFilter(request, response);
