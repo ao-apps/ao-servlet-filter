@@ -36,7 +36,7 @@ along with ao-servlet-filter.  If not, see <http://www.gnu.org/licenses />.
 		shortTitle="Changelog"
 		tocLevels="1"
 		datePublished="2016-10-29T21:37:35-0500"
-		dateModified="2019-10-06T10:04:42-0500"
+		dateModified="2019-10-06T10:51:01-0500"
 	>
 		<!-- The current snapshot, unreleased version -->
 		<c:set var="version" value="@{com.aoindustries:ao-servlet-filter:pom.version}" />
@@ -121,6 +121,12 @@ along with ao-servlet-filter.  If not, see <http://www.gnu.org/licenses />.
 						that adds a <ao:a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control">Cache-Control</ao:a> header to any request with a 
 						<ao:a href="https://aoindustries.com/ao-servlet-util/apidocs/com/aoindustries/servlet/http/LastModifiedServlet.html#LAST_MODIFIED_PARAMETER_NAME">LAST_MODIFIED_PARAMETER_NAME</ao:a>
 						parameter.  Defaults to a very aggressive setting of public, one-year, allowing stale, and immutable.
+					</li>
+					<li>
+						New optional init parameter <code>allowMultiple</code>
+						on <ao:a href="apidocs/com/aoindustries/servlet/filter/AddResponseHeaderFilter.html">AddResponseHeaderFilter</ao:a>
+						allows multiple headers of the same name.  When <code>true</code>, the header will not be added when a header
+						of the same name already exists on the response.  Defaults to <code>true</code> for compatibility.
 					</li>
 				</ul>
 			</changelog:release>
