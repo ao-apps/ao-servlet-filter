@@ -201,14 +201,9 @@ public class AddResponseHeaderFilter implements Filter {
 				HttpServletResponse httpResponse = (HttpServletResponse)response;
 				for(Map.Entry<String,String> entry : headers.entrySet()) {
 					String name = entry.getKey();
-					boolean doAdd;
-					if(allowMultiples) {
-						doAdd = true;
-					} else {
-						// Only add if not present
-						doAdd = httpResponse.getHeader(name) == null;
+					if(allowMultiples || !httpResponse.containsHeader(name)) {
+						httpResponse.addHeader(name, entry.getValue());
 					}
-					httpResponse.addHeader(name, entry.getValue());
 				}
 			}
 		}
