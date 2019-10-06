@@ -66,11 +66,50 @@ public class EncodeURIFilter implements Filter {
 
 	private static final String REQUEST_ATTRIBUTE_KEY = EncodeURIFilter.class.getName() + ".filter_applied";
 
+	/**
+	 * Gets the filter active on the given request.
+	 *
+	 * @return  The currently active filter or {@code null} for none active.
+	 */
+	public static EncodeURIFilter getActiveFilter(ServletRequest request) {
+		return (EncodeURIFilter)request.getAttribute(REQUEST_ATTRIBUTE_KEY);
+	}
+
 	private boolean enableIRI;
 
 	@Override
 	public void init(FilterConfig config) {
 		enableIRI = Boolean.parseBoolean(config.getInitParameter("enableIRI"));
+	}
+
+	private static String encode(String url, boolean enableIri, String characterEncoding) {
+		if(
+			URIParser.isScheme(url, "javascript")
+			|| URIParser.isScheme(url, "cid")
+			|| URIParser.isScheme(url, "data")
+		) {
+			return url;
+		} else {
+			if(
+				enableIri
+				&& !Canonical.get()
+				&& (
+					characterEncoding.equalsIgnoreCase(StandardCharsets.UTF_8.name())
+					|| Charset.forName(characterEncoding) == StandardCharsets.UTF_8
+				)
+			) {
+				return new IRI(url).toString();
+			} else {
+				return new URI(url).toASCIIString();
+			}
+		}
+	}
+
+	/**
+	 * Performs encoding on the given URL in the given response encoding.
+	 */
+	public String encode(String url, String characterEncoding) {
+		return encode(url, enableIRI, characterEncoding);
 	}
 
 	@Override
@@ -89,50 +128,26 @@ public class EncodeURIFilter implements Filter {
 				chain.doFilter(
 					request,
 					new HttpServletResponseWrapper((HttpServletResponse)response) {
-						private String encode(String url, boolean enableIri) {
-							if(
-								URIParser.isScheme(url, "javascript")
-								|| URIParser.isScheme(url, "cid")
-								|| URIParser.isScheme(url, "data")
-							) {
-								return url;
-							} else {
-								String characterEncoding;
-								if(
-									enableIri
-									&& !Canonical.get()
-									&& (
-										(characterEncoding = getCharacterEncoding()).equalsIgnoreCase(StandardCharsets.UTF_8.name())
-										|| Charset.forName(characterEncoding) == StandardCharsets.UTF_8
-									)
-								) {
-									return new IRI(url).toString();
-								} else {
-									return new URI(url).toASCIIString();
-								}
-							}
-						}
-
 						@Override
 						@Deprecated
 						public String encodeRedirectUrl(String url) {
-							return encode(super.encodeRedirectUrl(url), false);
+							return encode(super.encodeRedirectUrl(url), false, getCharacterEncoding());
 						}
 
 						@Override
 						public String encodeRedirectURL(String url) {
-							return encode(super.encodeRedirectURL(url), false);
+							return encode(super.encodeRedirectURL(url), false, getCharacterEncoding());
 						}
 
 						@Override
 						@Deprecated
 						public String encodeUrl(String url) {
-							return encode(super.encodeUrl(url), enableIRI);
+							return encode(super.encodeUrl(url), enableIRI, getCharacterEncoding());
 						}
 
 						@Override
 						public String encodeURL(String url) {
-							return encode(super.encodeURL(url), enableIRI);
+							return encode(super.encodeURL(url), enableIRI, getCharacterEncoding());
 						}
 					}
 				);
