@@ -60,6 +60,7 @@ import javax.servlet.http.HttpServletResponse;
  * </p>
  * <pre>
  * Init Parameters:
+ *    allowMultiple (Optional) Allow multiple headers of the same name?  Defaults to "true".
  *    Request filter:
  *        patterns  (Optional) Comma/space-separated list of patterns (default to *)
  *        regex     (Optional) zeroth regular expression to match
@@ -80,11 +81,15 @@ import javax.servlet.http.HttpServletResponse;
 */
 public class AddResponseHeaderFilter implements Filter {
 
+	private static final String ALLOW_MULTIPLE_PARAM_NAME = "allowMultiple";
+
 	private static final String PATTERNS_PARAM_NAME = "patterns";
 
 	private static final String REGEX_PARAM_NAME = "regex";
 
 	private static final String REGEX_PARAM_PREFIX = REGEX_PARAM_NAME + '.';
+
+	private boolean allowMultiples;
 
 	private WildcardPatternMatcher patterns;
 
@@ -94,6 +99,11 @@ public class AddResponseHeaderFilter implements Filter {
 
 	@Override
 	public void init(FilterConfig config) {
+		// Parse allowMultiple
+		String allowMultiplesParam = config.getInitParameter(ALLOW_MULTIPLE_PARAM_NAME);
+		if(allowMultiplesParam != null) allowMultiplesParam = allowMultiplesParam.trim();
+		allowMultiples = !"false".equalsIgnoreCase(allowMultiplesParam);
+
 		// Parse patterns
 		String patternsParam = config.getInitParameter(PATTERNS_PARAM_NAME);
 		if(patternsParam == null) patterns = WildcardPatternMatcher.matchAll();
@@ -138,7 +148,8 @@ public class AddResponseHeaderFilter implements Filter {
 			while(paramNames.hasMoreElements()) {
 				String paramName = paramNames.nextElement();
 				if(
-					!PATTERNS_PARAM_NAME.equals(paramName)
+					!ALLOW_MULTIPLE_PARAM_NAME.equals(paramName)
+					&& !PATTERNS_PARAM_NAME.equals(paramName)
 					&& !REGEX_PARAM_NAME.equals(paramName)
 					&& !paramName.startsWith(REGEX_PARAM_PREFIX)
 				) {
@@ -189,7 +200,15 @@ public class AddResponseHeaderFilter implements Filter {
 			if(matched) {
 				HttpServletResponse httpResponse = (HttpServletResponse)response;
 				for(Map.Entry<String,String> entry : headers.entrySet()) {
-					httpResponse.addHeader(entry.getKey(), entry.getValue());
+					String name = entry.getKey();
+					boolean doAdd;
+					if(allowMultiples) {
+						doAdd = true;
+					} else {
+						// Only add if not present
+						doAdd = httpResponse.getHeader(name) == null;
+					}
+					httpResponse.addHeader(name, entry.getValue());
 				}
 			}
 		}
