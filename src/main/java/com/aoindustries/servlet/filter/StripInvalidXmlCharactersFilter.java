@@ -143,7 +143,6 @@ public class StripInvalidXmlCharactersFilter implements Filter {
 			}
 			if(!isValid) {
 				HttpServletResponse httpResponse = (HttpServletResponse)response;
-				// TODO: Set response encoding, UTF-8 or same as request?
 				if("GET".equals(httpRequest.getMethod())) {
 					// Redirect to same request but with invalid parameters and special characters removed
 					StringBuilder url = new StringBuilder();
