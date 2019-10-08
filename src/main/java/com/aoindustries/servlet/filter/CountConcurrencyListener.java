@@ -30,7 +30,6 @@ import javax.servlet.ServletRequestListener;
 /**
  * Tracks the request concurrency, used to decide to use concurrent or sequential implementations.
  */
-// TODO: Move to ao-servlet-util now that is not a filter?
 public class CountConcurrencyListener implements ServletRequestListener {
 
 	private static final String REQUEST_ATTRIBUTE_NAME = CountConcurrencyListener.class.getName()+".concurrency";
