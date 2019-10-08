@@ -36,7 +36,7 @@ along with ao-servlet-filter.  If not, see <http://www.gnu.org/licenses />.
 		shortTitle="Changelog"
 		tocLevels="1"
 		datePublished="2016-10-29T21:37:35-0500"
-		dateModified="2019-10-08T01:38:29-0500"
+		dateModified="2019-10-08T03:02:12-0500"
 	>
 		<!-- The current snapshot, unreleased version -->
 		<c:set var="version" value="@{com.aoindustries:ao-servlet-filter:pom.version}" />
@@ -132,6 +132,11 @@ along with ao-servlet-filter.  If not, see <http://www.gnu.org/licenses />.
 						Changed <code>CountConcurrencyFilter</code> from a <code><![CDATA[&lt;filter&gt;]]></code>
 						to a <code><![CDATA[&lt;listener&gt;]]></code> named
 						<ao:a href="apidocs/com/aoindustries/servlet/filter/CountConcurrencyListener.html">CountConcurrencyListener</ao:a>.
+					</li>
+					<li>
+						Changed <code>Utf8RequestCharacterEncodingFilter</code> from a <code><![CDATA[&lt;filter&gt;]]></code>
+						to a <code><![CDATA[&lt;listener&gt;]]></code> named
+						<ao:a href="apidocs/com/aoindustries/servlet/filter/CountConcurrencyListener.html">Utf8RequestCharacterEncodingListener</ao:a>.
 					</li>
 				</ul>
 			</changelog:release>

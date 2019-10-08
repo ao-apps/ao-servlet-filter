@@ -22,46 +22,34 @@
  */
 package com.aoindustries.servlet.filter;
 
-import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
+import javax.servlet.ServletRequestEvent;
+import javax.servlet.ServletRequestListener;
 
 /**
- * <p>
  * Sets the request encoding to {@link StandardCharsets#UTF_8} when encoding not provided by the client.
- * </p>
- * <p>
- * This should be first in the filter chain and used for the REQUEST dispatcher only.
- * </p>
  *
  * @author  AO Industries, Inc.
  */
-// TODO: Change to ServletRequestListener
-public class Utf8RequestCharacterEncodingFilter implements Filter {
+public class Utf8RequestCharacterEncodingListener implements ServletRequestListener {
 
 	@Override
-	public void init(FilterConfig config) {
-	}
-
-	@Override
-	public void doFilter(
-		ServletRequest request,
-		ServletResponse response,
-		FilterChain chain
-	) throws IOException, ServletException {
+	public void requestInitialized(ServletRequestEvent sre) {
+		ServletRequest request = sre.getServletRequest();
 		// Only override encoding when not provided by the client
 		if(request.getCharacterEncoding() == null) {
-			request.setCharacterEncoding(StandardCharsets.UTF_8.name());
+			try {
+				request.setCharacterEncoding(StandardCharsets.UTF_8.name());
+			} catch(UnsupportedEncodingException e) {
+				throw new AssertionError("Standard encoding (" + StandardCharsets.UTF_8 + ") should always exist", e);
+			}
 		}
-		chain.doFilter(request, response);
 	}
 
 	@Override
-	public void destroy() {
+	public void requestDestroyed(ServletRequestEvent sre) {
+		// Do nothing
 	}
 }
