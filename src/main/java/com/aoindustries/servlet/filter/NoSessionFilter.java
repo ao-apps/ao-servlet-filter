@@ -99,8 +99,8 @@ import javax.servlet.http.HttpSession;
  * TODO: Idea:
  * When only one cookie name is allowed, convert it to be just the cookie symbol itself?
  * This would means cookies would be lost when a second cookie added, but would be a cool short URL otherwise.
- * Or a second init parameter that specifies which cookie name is the "shortCookie".
- * Or do we allow each cookie to mapped to a custom name instead of prefix + name.
+ * Or a second init parameter that specifies which cookie name is the "shortCookie"?
+ * Or do we allow each cookie to mapped to a custom name instead of prefix + name?
  * </p>
  * <p>
  * TODO: Support empty cookieUrlParamPrefix?  This would make it more difficult
