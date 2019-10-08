@@ -1,6 +1,6 @@
 /*
  * ao-servlet-filter - Reusable Java library of servlet filters.
- * Copyright (C) 2006, 2007, 2008, 2009, 2010, 2011, 2014, 2015, 2016  AO Industries, Inc.
+ * Copyright (C) 2006, 2007, 2008, 2009, 2010, 2011, 2014, 2015, 2016, 2019  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -39,10 +39,6 @@ import javax.servlet.http.HttpServletResponse;
  * The reason for the specific tag format is to simplify the implementation
  * for maximum performance.
  * </p>
- * <p>
- * This should be used for the REQUEST, FORWARD, and optionally ERROR dispatchers.  No benefit to have on INCLUDE.
- * </p>
- * // TODO: Why is filter not applied on ERROR (such as 404) in sites like aointernet.net?
  *
  * @author  AO Industries, Inc.
  */
