@@ -36,7 +36,7 @@ along with ao-servlet-filter.  If not, see <http://www.gnu.org/licenses />.
 		shortTitle="Changelog"
 		tocLevels="1"
 		datePublished="2016-10-29T21:37:35-0500"
-		dateModified="2019-10-08T03:43:47-0500"
+		dateModified="2019-10-08T03:49:24-0500"
 	>
 		<!-- The current snapshot, unreleased version -->
 		<c:set var="version" value="@{com.aoindustries:ao-servlet-filter:pom.version}" />
@@ -61,7 +61,7 @@ along with ao-servlet-filter.  If not, see <http://www.gnu.org/licenses />.
 					<li>
 						<code>NoSessionFilter</code> now passes the URL encoding up the filter chain after its modifications.
 						Previously, the URL rewriting was stopped here.  To obtain the previous behavior, use in
-						conjunction with <code>NoEncodeUrlFilter</code> or <code>session-config</code>.
+						conjunction with <code>session-config</code>.
 					</li>
 					<li>
 						New context init parameter <code>com.aoindustries.servlet.filter.NoSessionFilter.cookieUrlParamPrefix</code>
@@ -99,9 +99,13 @@ along with ao-servlet-filter.  If not, see <http://www.gnu.org/licenses />.
 					</li>
 					<li>No longer URL rewriting <code>file:</code> and <code>data:</code> URLs.</li>
 					<li>
-						Deprecated <code>NoEncodeUrlFilter</code> in favor of Servlet 3.0
+						Removed <code>NoEncodeUrlFilter</code> in favor of Servlet 3.0
 						<code>session-config</code> in <code>WEB-INF/web.xml</code>:
 <pre><![CDATA[&lt;session-config&gt;
+	&lt;cookie-config&gt;
+		&lt;http-only&gt;true&lt;/http-only&gt;
+		&lt;!-- &lt;secure&gt;true&lt;/secure&gt; --&gt;
+	&lt;/cookie-config&gt;
 	&lt;tracking-mode&gt;COOKIE&lt;/tracking-mode&gt;
 &lt;/session-config&gt;]]></pre>
 						See also:
