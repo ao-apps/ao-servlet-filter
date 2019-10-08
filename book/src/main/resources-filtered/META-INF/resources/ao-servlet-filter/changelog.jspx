@@ -36,7 +36,7 @@ along with ao-servlet-filter.  If not, see <http://www.gnu.org/licenses />.
 		shortTitle="Changelog"
 		tocLevels="1"
 		datePublished="2016-10-29T21:37:35-0500"
-		dateModified="2019-10-06T10:51:01-0500"
+		dateModified="2019-10-08T01:38:29-0500"
 	>
 		<!-- The current snapshot, unreleased version -->
 		<c:set var="version" value="@{com.aoindustries:ao-servlet-filter:pom.version}" />
@@ -127,6 +127,11 @@ along with ao-servlet-filter.  If not, see <http://www.gnu.org/licenses />.
 						on <ao:a href="apidocs/com/aoindustries/servlet/filter/AddResponseHeaderFilter.html">AddResponseHeaderFilter</ao:a>
 						allows multiple headers of the same name.  When <code>true</code>, the header will not be added when a header
 						of the same name already exists on the response.  Defaults to <code>true</code> for compatibility.
+					</li>
+					<li>
+						Changed <code>CountConcurrencyFilter</code> from a <code><![CDATA[&lt;filter&gt;]]></code>
+						to a <code><![CDATA[&lt;listener&gt;]]></code> named
+						<ao:a href="apidocs/com/aoindustries/servlet/filter/CountConcurrencyListener.html">CountConcurrencyListener</ao:a>.
 					</li>
 				</ul>
 			</changelog:release>

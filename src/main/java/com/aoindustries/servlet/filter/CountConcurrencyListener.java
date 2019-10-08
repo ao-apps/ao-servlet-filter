@@ -1,6 +1,6 @@
 /*
  * ao-servlet-filter - Reusable Java library of servlet filters.
- * Copyright (C) 2016, 2017  AO Industries, Inc.
+ * Copyright (C) 2016, 2017, 2019  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -22,27 +22,18 @@
  */
 package com.aoindustries.servlet.filter;
 
-import java.io.IOException;
 import java.util.concurrent.atomic.AtomicInteger;
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
+import javax.servlet.ServletRequestEvent;
 import javax.servlet.ServletRequestListener;
-import javax.servlet.ServletResponse;
 
 /**
  * Tracks the request concurrency, used to decide to use concurrent or sequential implementations.
- *
- * This should be on the REQUEST and ERROR dispatchers.
- * <p>
- * TODO: Convert to {@link ServletRequestListener}
- * </p>
  */
-public class CountConcurrencyFilter implements Filter {
+// TODO: Move to ao-servlet-util now that is not a filter?
+public class CountConcurrencyListener implements ServletRequestListener {
 
-	private static final String REQUEST_ATTRIBUTE_NAME = CountConcurrencyFilter.class.getName()+".concurrency";
+	private static final String REQUEST_ATTRIBUTE_NAME = CountConcurrencyListener.class.getName()+".concurrency";
 
 	/**
 	 * Gets the concurrency at the beginning of the request or <code>null</code> if filter not active.
@@ -54,33 +45,21 @@ public class CountConcurrencyFilter implements Filter {
 	private final AtomicInteger concurrency = new AtomicInteger();
 
 	@Override
-	public void init(FilterConfig config) {
-		concurrency.set(0);
+	public void requestInitialized(ServletRequestEvent sre) {
+		ServletRequest request = sre.getServletRequest();
+		// Increase concurrency
+		int newConcurrency = concurrency.incrementAndGet();
+		assert newConcurrency >= 1;
+		request.setAttribute(REQUEST_ATTRIBUTE_NAME, newConcurrency);
+		onConcurrencySet(request, newConcurrency);
 	}
 
 	@Override
-	public void doFilter(
-		ServletRequest request,
-		ServletResponse response,
-		FilterChain chain
-	) throws IOException, ServletException {
-		if(request.getAttribute(REQUEST_ATTRIBUTE_NAME) == null) {
-			// Increase concurrency
-			int newConcurrency = concurrency.incrementAndGet();
-			assert newConcurrency >= 1;
-			try {
-				request.setAttribute(REQUEST_ATTRIBUTE_NAME, newConcurrency);
-				onConcurrencySet(request, newConcurrency);
-				chain.doFilter(request, response);
-			} finally {
-				onConcurrencyRemove(request);
-				request.removeAttribute(REQUEST_ATTRIBUTE_NAME);
-				concurrency.getAndDecrement();
-			}
-		} else {
-			// Filter already active on this request, do not increase concurrency
-			chain.doFilter(request, response);
-		}
+	public void requestDestroyed(ServletRequestEvent sre) {
+		ServletRequest request = sre.getServletRequest();
+		onConcurrencyRemove(request);
+		request.removeAttribute(REQUEST_ATTRIBUTE_NAME);
+		concurrency.getAndDecrement();
 	}
 
 	/**
@@ -99,9 +78,5 @@ public class CountConcurrencyFilter implements Filter {
 	 */
 	protected void onConcurrencyRemove(ServletRequest request) {
 		// Do nothing
-	}
-
-	@Override
-	public void destroy() {
 	}
 }

@@ -41,6 +41,8 @@ import javax.servlet.ServletResponse;
  *
  * @author  AO Industries, Inc.
  */
+// TODO: Change to ServletRequestListener
+// TODO: Move to ao-servlet-util once is not a filter?
 public class Utf8RequestCharacterEncodingFilter implements Filter {
 
 	@Override
