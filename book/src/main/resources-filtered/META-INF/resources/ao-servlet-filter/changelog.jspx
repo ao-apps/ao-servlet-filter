@@ -36,7 +36,7 @@ along with ao-servlet-filter.  If not, see <http://www.gnu.org/licenses />.
 		shortTitle="Changelog"
 		tocLevels="1"
 		datePublished="2016-10-29T21:37:35-0500"
-		dateModified="2019-10-08T03:49:24-0500"
+		dateModified="2019-10-08T21:25:15-0500"
 	>
 		<!-- The current snapshot, unreleased version -->
 		<c:set var="version" value="@{com.aoindustries:ao-servlet-filter:pom.version}" />
@@ -51,56 +51,66 @@ along with ao-servlet-filter.  If not, see <http://www.gnu.org/licenses />.
 				groupId="@{documented.groupId}"
 				artifactId="@{documented.artifactId}"
 				scmUrl="@{documented.scm.url}"
-			>
-				<ul>
-					<li>
-						Case-insensitive matching of URL schemes.  Previously, URL schemes were matched case-sensitive,
-						while the spec is case-insensitive.  This has been OK given we only use lower-case schemes within our
-						code and tools, but this is now a correct implementation.
-					</li>
-					<li>
-						<code>NoSessionFilter</code> now passes the URL encoding up the filter chain after its modifications.
-						Previously, the URL rewriting was stopped here.  To obtain the previous behavior, use in
-						conjunction with <code>session-config</code>.
-					</li>
-					<li>
-						New context init parameter <code>com.aoindustries.servlet.filter.NoSessionFilter.cookieUrlParamPrefix</code>
-						that may be used to provide a custom cookie URL prefix.  A fun alternative is
-						<ao:a href="https://www.fileformat.info/info/unicode/char/1f36a/index.htm">Unicode Character 'COOKIE' (U+1F36A)</ao:a>.
-					</li>
-					<li><code>StripInvalidXmlCharactersFilter</code> now removes parameters that have invalid names.</li>
-					<li><code>HideJspExtensionFilter</code> no longer removes <code>index.jsp(x)</code> or <code>.jsp(x)</code> extensions
-						from URLs that have a scheme.  However, http:// and https:// links to the same host are still rewritten
-						in order to handle absolute URLs.
-					</li>
-					<li><code>HideJspExtensionFilter</code> now sends redirect in <code>UTF-8</code>.</li>
-					<li><code>LocaleFilter</code> now sends redirect in <code>UTF-8</code>.</li>
-					<li>Cookie names, values, comments, and paths are now URI-encoded.</li>
-					<li>
-						<p>
-							New filter <code>EncodeURIFilter</code> which encodes the URL to either
-							<ao:a href="https://tools.ietf.org/html/rfc3986">RFC 3986 URI</ao:a> US-ASCII format
-							or <ao:a href="https://tools.ietf.org/html/rfc3987">RFC 3987 IRI</ao:a> Unicode format.
-							If the URL begins with <code>javascript:</code>, <code>cid:</code>, or <code>data:</code>,
-							(case-insensitive) it is not altered.
-							<ao:a href="https://aoindustries.com/ao-servlet-util/apidocs/com/aoindustries/servlet/http/Canonical.html">Canonical URLs</ao:a> are always encoded to US-ASCII format.
-						</p>
-						<p>
-							IRI support is disabled by default, and only recommended for development or
-							internal systems.  IRI may result in slightly smaller output, and more readable
-							HTML source, but for interoperability should be off in production systems.
-						</p>
-						<p>
-							<ao:a href="https://tools.ietf.org/html/rfc7231#section-7.1.2">RFC 7231 - 7.1.2.  Location</ao:a>
-							refers only to <ao:a href="https://tools.ietf.org/html/rfc3986">RFC 3986 URI</ao:a> for
-							URI-reference, thus redirects are always formatted as
-							<ao:a href="https://tools.ietf.org/html/rfc3986">RFC 3986 URI</ao:a>.
-						</p>
-					</li>
-					<li>No longer URL rewriting <code>file:</code> and <code>data:</code> URLs.</li>
-					<li>
-						Removed <code>NoEncodeUrlFilter</code> in favor of Servlet 3.0
-						<code>session-config</code> in <code>WEB-INF/web.xml</code>:
+			/>
+		</c:if>
+
+		<changelog:release
+			projectName="@{documented.name}"
+			version="2.0.0"
+			datePublished="2019-10-08T21:25:15-0500"
+			groupId="@{documented.groupId}"
+			artifactId="@{documented.artifactId}"
+			scmUrl="@{documented.scm.url}"
+		>
+			<ul>
+				<li>
+					Case-insensitive matching of URL schemes.  Previously, URL schemes were matched case-sensitive,
+					while the spec is case-insensitive.  This has been OK given we only use lower-case schemes within our
+					code and tools, but this is now a correct implementation.
+				</li>
+				<li>
+					<code>NoSessionFilter</code> now passes the URL encoding up the filter chain after its modifications.
+					Previously, the URL rewriting was stopped here.  To obtain the previous behavior, use in
+					conjunction with <code>session-config</code>.
+				</li>
+				<li>
+					New context init parameter <code>com.aoindustries.servlet.filter.NoSessionFilter.cookieUrlParamPrefix</code>
+					that may be used to provide a custom cookie URL prefix.  A fun alternative is
+					<ao:a href="https://www.fileformat.info/info/unicode/char/1f36a/index.htm">Unicode Character 'COOKIE' (U+1F36A)</ao:a>.
+				</li>
+				<li><code>StripInvalidXmlCharactersFilter</code> now removes parameters that have invalid names.</li>
+				<li><code>HideJspExtensionFilter</code> no longer removes <code>index.jsp(x)</code> or <code>.jsp(x)</code> extensions
+					from URLs that have a scheme.  However, http:// and https:// links to the same host are still rewritten
+					in order to handle absolute URLs.
+				</li>
+				<li><code>HideJspExtensionFilter</code> now sends redirect in <code>UTF-8</code>.</li>
+				<li><code>LocaleFilter</code> now sends redirect in <code>UTF-8</code>.</li>
+				<li>Cookie names, values, comments, and paths are now URI-encoded.</li>
+				<li>
+					<p>
+						New filter <code>EncodeURIFilter</code> which encodes the URL to either
+						<ao:a href="https://tools.ietf.org/html/rfc3986">RFC 3986 URI</ao:a> US-ASCII format
+						or <ao:a href="https://tools.ietf.org/html/rfc3987">RFC 3987 IRI</ao:a> Unicode format.
+						If the URL begins with <code>javascript:</code>, <code>cid:</code>, or <code>data:</code>,
+						(case-insensitive) it is not altered.
+						<ao:a href="https://aoindustries.com/ao-servlet-util/apidocs/com/aoindustries/servlet/http/Canonical.html">Canonical URLs</ao:a> are always encoded to US-ASCII format.
+					</p>
+					<p>
+						IRI support is disabled by default, and only recommended for development or
+						internal systems.  IRI may result in slightly smaller output, and more readable
+						HTML source, but for interoperability should be off in production systems.
+					</p>
+					<p>
+						<ao:a href="https://tools.ietf.org/html/rfc7231#section-7.1.2">RFC 7231 - 7.1.2.  Location</ao:a>
+						refers only to <ao:a href="https://tools.ietf.org/html/rfc3986">RFC 3986 URI</ao:a> for
+						URI-reference, thus redirects are always formatted as
+						<ao:a href="https://tools.ietf.org/html/rfc3986">RFC 3986 URI</ao:a>.
+					</p>
+				</li>
+				<li>No longer URL rewriting <code>file:</code> and <code>data:</code> URLs.</li>
+				<li>
+					Removed <code>NoEncodeUrlFilter</code> in favor of Servlet 3.0
+					<code>session-config</code> in <code>WEB-INF/web.xml</code>:
 <pre><![CDATA[&lt;session-config&gt;
 	&lt;cookie-config&gt;
 		&lt;http-only&gt;true&lt;/http-only&gt;
@@ -108,49 +118,48 @@ along with ao-servlet-filter.  If not, see <http://www.gnu.org/licenses />.
 	&lt;/cookie-config&gt;
 	&lt;tracking-mode&gt;COOKIE&lt;/tracking-mode&gt;
 &lt;/session-config&gt;]]></pre>
-						See also:
-						<ol>
-							<li><ao:a href="https://fralef.me/tomcat-disable-jsessionid-in-url.html">Tomcat - Disable JSESSIONID in URL</ao:a></li>
-							<li><ao:a href="https://access.redhat.com/solutions/338313">How to enable HttpOnly and Secure Session Cookies in EAP 6.x</ao:a></li>
-							<li><ao:a href="https://github.com/terasolunaorg/terasoluna-gfw-web-multi-blank/issues/179">Disable URL Rewriting by default with Servlet 3.0 config</ao:a></li>
-						</ol>
-					</li>
-					<li>No longer URL rewriting <code>*.dia</code> URLs.</li>
-					<li>
-						<code>NoSessionFilter</code> will now not write cookie parameters into
-						<ao:a href="https://aoindustries.com/ao-servlet-util/apidocs/com/aoindustries/servlet/http/Canonical.html">Canonical URLs</ao:a>.
-					</li>
-					<li>
-						New filter <ao:a href="apidocs/com/aoindustries/servlet/filter/LastModifiedCacheControlFilter.html">LastModifiedCacheControlFilter</ao:a>
-						that adds a <ao:a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control">Cache-Control</ao:a> header to any request with a 
-						<ao:a href="https://aoindustries.com/ao-servlet-util/apidocs/com/aoindustries/servlet/http/LastModifiedServlet.html#LAST_MODIFIED_PARAMETER_NAME">LAST_MODIFIED_PARAMETER_NAME</ao:a>
-						parameter.  Defaults to a very aggressive setting of public, one-year, allowing stale, and immutable.
-					</li>
-					<li>
-						New optional init parameter <code>allowMultiple</code>
-						on <ao:a href="apidocs/com/aoindustries/servlet/filter/AddResponseHeaderFilter.html">AddResponseHeaderFilter</ao:a>
-						allows multiple headers of the same name.  When <code>true</code>, the header will not be added when a header
-						of the same name already exists on the response.  Defaults to <code>true</code> for compatibility.
-					</li>
-					<li>
-						Changed <code>CountConcurrencyFilter</code> from a <code><![CDATA[&lt;filter&gt;]]></code>
-						to a <code><![CDATA[&lt;listener&gt;]]></code> named
-						<ao:a href="apidocs/com/aoindustries/servlet/filter/CountConcurrencyListener.html">CountConcurrencyListener</ao:a>.
-					</li>
-					<li>
-						Changed <code>Utf8RequestCharacterEncodingFilter</code> from a <code><![CDATA[&lt;filter&gt;]]></code>
-						to a <code><![CDATA[&lt;listener&gt;]]></code> named
-						<ao:a href="apidocs/com/aoindustries/servlet/filter/CountConcurrencyListener.html">Utf8RequestCharacterEncodingListener</ao:a>.
-					</li>
-					<li>
-						Removed deprecated <code>com.aoindustries.servlet.filter.TempFileContext</code>
-						in favor of new <ao:a href="https://aoindustries.com/ao-tempfiles/servlet/apidocs/com/aoindustries/tempfiles/servlet/ServletTempFileContext.html">ServletTempFileContext</ao:a>
-						that does not require <code>web.xml</code> configuration, supports additional scopes (application and session),
-						and registers a shutdown hook to delete on JVM exit.
-					</li>
-				</ul>
-			</changelog:release>
-		</c:if>
+					See also:
+					<ol>
+						<li><ao:a href="https://fralef.me/tomcat-disable-jsessionid-in-url.html">Tomcat - Disable JSESSIONID in URL</ao:a></li>
+						<li><ao:a href="https://access.redhat.com/solutions/338313">How to enable HttpOnly and Secure Session Cookies in EAP 6.x</ao:a></li>
+						<li><ao:a href="https://github.com/terasolunaorg/terasoluna-gfw-web-multi-blank/issues/179">Disable URL Rewriting by default with Servlet 3.0 config</ao:a></li>
+					</ol>
+				</li>
+				<li>No longer URL rewriting <code>*.dia</code> URLs.</li>
+				<li>
+					<code>NoSessionFilter</code> will now not write cookie parameters into
+					<ao:a href="https://aoindustries.com/ao-servlet-util/apidocs/com/aoindustries/servlet/http/Canonical.html">Canonical URLs</ao:a>.
+				</li>
+				<li>
+					New filter <ao:a href="apidocs/com/aoindustries/servlet/filter/LastModifiedCacheControlFilter.html">LastModifiedCacheControlFilter</ao:a>
+					that adds a <ao:a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control">Cache-Control</ao:a> header to any request with a 
+					<ao:a href="https://aoindustries.com/ao-servlet-util/apidocs/com/aoindustries/servlet/http/LastModifiedServlet.html#LAST_MODIFIED_PARAMETER_NAME">LAST_MODIFIED_PARAMETER_NAME</ao:a>
+					parameter.  Defaults to a very aggressive setting of public, one-year, allowing stale, and immutable.
+				</li>
+				<li>
+					New optional init parameter <code>allowMultiple</code>
+					on <ao:a href="apidocs/com/aoindustries/servlet/filter/AddResponseHeaderFilter.html">AddResponseHeaderFilter</ao:a>
+					allows multiple headers of the same name.  When <code>true</code>, the header will not be added when a header
+					of the same name already exists on the response.  Defaults to <code>true</code> for compatibility.
+				</li>
+				<li>
+					Changed <code>CountConcurrencyFilter</code> from a <code><![CDATA[&lt;filter&gt;]]></code>
+					to a <code><![CDATA[&lt;listener&gt;]]></code> named
+					<ao:a href="apidocs/com/aoindustries/servlet/filter/CountConcurrencyListener.html">CountConcurrencyListener</ao:a>.
+				</li>
+				<li>
+					Changed <code>Utf8RequestCharacterEncodingFilter</code> from a <code><![CDATA[&lt;filter&gt;]]></code>
+					to a <code><![CDATA[&lt;listener&gt;]]></code> named
+					<ao:a href="apidocs/com/aoindustries/servlet/filter/CountConcurrencyListener.html">Utf8RequestCharacterEncodingListener</ao:a>.
+				</li>
+				<li>
+					Removed deprecated <code>com.aoindustries.servlet.filter.TempFileContext</code>
+					in favor of new <ao:a href="https://aoindustries.com/ao-tempfiles/servlet/apidocs/com/aoindustries/tempfiles/servlet/ServletTempFileContext.html">ServletTempFileContext</ao:a>
+					that does not require <code>web.xml</code> configuration, supports additional scopes (application and session),
+					and registers a shutdown hook to delete on JVM exit.
+				</li>
+			</ul>
+		</changelog:release>
 
 		<changelog:release
 			projectName="@{documented.name}"
