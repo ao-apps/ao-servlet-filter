@@ -64,7 +64,7 @@ import javax.servlet.http.HttpServletResponseWrapper;
  * When both *.jspx and *.jsp resources exist, the *.jspx is used.
  * </p>
  * <p>
- * This should be used for the REQUEST dispatcher only.
+ * This should be used for the REQUEST and ERROR dispatchers.
  * </p>
  * <p>
  * In the filter chain, it is important to consider the forwarding performed by this filter.  Subsequent filters
