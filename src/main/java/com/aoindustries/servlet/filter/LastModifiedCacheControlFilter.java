@@ -1,6 +1,6 @@
 /*
  * ao-servlet-filter - Reusable Java library of servlet filters.
- * Copyright (C) 2019  AO Industries, Inc.
+ * Copyright (C) 2019, 2020  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -23,6 +23,7 @@
 package com.aoindustries.servlet.filter;
 
 import com.aoindustries.servlet.http.LastModifiedServlet;
+import com.aoindustries.util.StringUtility;
 import com.aoindustries.util.WildcardPatternMatcher;
 import java.io.IOException;
 import javax.servlet.Filter;
@@ -35,7 +36,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Adds a <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control">Cache-Control</a>
+ * Adds a <code><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control">cache-control</a></code>
  * header to any request with a {@link LastModifiedServlet#LAST_MODIFIED_PARAMETER_NAME} parameter.
  * The header is added before the filter chain is called.
  * <p>
@@ -43,7 +44,7 @@ import javax.servlet.http.HttpServletResponse;
  * </p>
  * <pre>
  * Init Parameters:
- *    Cache-Control: The content of the Cache-Control header, defaults to 
+ *    cache-control: The content of the <code>cache-control</code> header, defaults to 
  * </pre>
  * <p>
  * See also:
@@ -60,7 +61,7 @@ import javax.servlet.http.HttpServletResponse;
 public class LastModifiedCacheControlFilter implements Filter {
 
 	/**
-	 * The default, very aggressive, Cache-Control header value.
+	 * The default, very aggressive, <code>cache-control</code> header value.
 	 */
 	// In order documented at https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control
 	public static final String DEFAULT_CACHE_CONTROL =
@@ -79,13 +80,12 @@ public class LastModifiedCacheControlFilter implements Filter {
 
 	@Override
 	public void init(FilterConfig config) {
-		String cacheControlParam = config.getInitParameter("Cache-Control");
-		if(cacheControlParam != null) cacheControlParam = cacheControlParam.trim();
-		if(cacheControlParam == null || cacheControlParam.isEmpty()) {
-			this.cacheControl = DEFAULT_CACHE_CONTROL;
-		} else {
-			this.cacheControl = cacheControlParam;
+		String cacheControlParam = StringUtility.trimNullIfEmpty(config.getInitParameter("cache-control"));
+		if(cacheControlParam == null) {
+			// Compatibility with old parameter case
+			cacheControlParam = StringUtility.trimNullIfEmpty(config.getInitParameter("Cache-Control"));
 		}
+		this.cacheControl = (cacheControlParam == null) ? DEFAULT_CACHE_CONTROL : cacheControlParam;
 	}
 
 	@Override
@@ -103,7 +103,7 @@ public class LastModifiedCacheControlFilter implements Filter {
 			String lastModified = httpRequest.getParameter(LastModifiedServlet.LAST_MODIFIED_PARAMETER_NAME);
 			if(lastModified != null && !lastModified.isEmpty()) {
 				HttpServletResponse httpResponse = (HttpServletResponse)response;
-				httpResponse.setHeader("Cache-Control", cacheControl);
+				httpResponse.setHeader("cache-control", cacheControl);
 			}
 		}
 		chain.doFilter(request, response);
