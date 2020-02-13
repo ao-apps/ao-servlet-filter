@@ -1,6 +1,6 @@
 /*
  * ao-servlet-filter - Reusable Java library of servlet filters.
- * Copyright (C) 2006, 2007, 2008, 2009, 2010, 2011, 2013, 2014, 2016  AO Industries, Inc.
+ * Copyright (C) 2006, 2007, 2008, 2009, 2010, 2011, 2013, 2014, 2016, 2020  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -22,6 +22,7 @@
  */
 package com.aoindustries.servlet.filter;
 
+import com.aoindustries.io.ContentType;
 import com.aoindustries.util.BufferManager;
 import java.io.IOException;
 import javax.servlet.ServletOutputStream;
@@ -70,6 +71,7 @@ public class TrimFilterOutputStream extends ServletOutputStream {
 	 * 
 	 * @see  TrimFilterWriter#isTrimEnabled()  for same method implemented
 	 */
+	@SuppressWarnings("deprecation")
 	private boolean isTrimEnabled() {
 		String contentType = response.getContentType();
 		// If the contentType is the same string (by identity), return the previously determined value.
@@ -77,14 +79,14 @@ public class TrimFilterOutputStream extends ServletOutputStream {
 		if(contentType!=isTrimEnabledCacheContentType) {
 			isTrimEnabledCacheResult =
 				contentType==null
-				|| contentType.equals("application/xhtml+xml")
-				|| contentType.startsWith("application/xhtml+xml;")
-				|| contentType.equals("text/html")
-				|| contentType.startsWith("text/html;")
-				|| contentType.equals("application/xml")
-				|| contentType.startsWith("application/xml;")
-				|| contentType.equals("text/xml")
-				|| contentType.startsWith("text/xml;")
+				|| contentType.equals(ContentType.XHTML)
+				|| contentType.startsWith(ContentType.XHTML + ";")
+				|| contentType.equals(ContentType.HTML)
+				|| contentType.startsWith(ContentType.HTML + ";")
+				|| contentType.equals(ContentType.XML)
+				|| contentType.startsWith(ContentType.XML + ";")
+				|| contentType.equals(ContentType.XML_OLD)
+				|| contentType.startsWith(ContentType.XML_OLD + ";")
 			;
 			isTrimEnabledCacheContentType = contentType;
 		}
