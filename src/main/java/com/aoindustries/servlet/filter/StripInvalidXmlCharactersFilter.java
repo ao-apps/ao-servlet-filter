@@ -1,6 +1,6 @@
 /*
  * ao-servlet-filter - Reusable Java library of servlet filters.
- * Copyright (C) 2016, 2019  AO Industries, Inc.
+ * Copyright (C) 2016, 2019, 2020  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -32,6 +32,7 @@ import java.util.Enumeration;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import javax.servlet.DispatcherType;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -45,8 +46,8 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * <p>
  * Strips all invalid XML characters on incoming parameters.
- * GET requests will be 301-redirected to the same URL without the invalid XML characters.
- * All other methods, including POST requests, will have the invalid XML characters stripped.
+ * GET requests on the REQUEST dispatcher will be 301-redirected to the same URL without the invalid XML characters.
+ * All other methods and all other dispatchers, including POST requests, will have the invalid XML characters stripped.
  * </p>
  * <p>
  * Parameters with invalid names are removed.
@@ -143,7 +144,10 @@ public class StripInvalidXmlCharactersFilter implements Filter {
 			}
 			if(!isValid) {
 				HttpServletResponse httpResponse = (HttpServletResponse)response;
-				if("GET".equals(httpRequest.getMethod())) {
+				if(
+					httpRequest.getDispatcherType() == DispatcherType.REQUEST
+					&& HttpServletUtil.METHOD_GET.equals(httpRequest.getMethod())
+				) {
 					// Redirect to same request but with invalid parameters and special characters removed
 					StringBuilder url = new StringBuilder();
 					HttpServletUtil.getAbsoluteURL(
