@@ -46,7 +46,7 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * <p>
  * Strips all invalid XML characters on incoming parameters.
- * GET requests on the REQUEST dispatcher will be 301-redirected to the same URL without the invalid XML characters.
+ * GET requests on the {@link DispatcherType#REQUEST} dispatcher will be 301-redirected to the same URL without the invalid XML characters.
  * All other methods and all other dispatchers, including POST requests, will have the invalid XML characters stripped.
  * </p>
  * <p>
@@ -62,6 +62,9 @@ import javax.servlet.http.HttpServletResponse;
  * <pre>Char	   ::=   	#x9 | #xA | #xD | [#x20-#xD7FF] | [#xE000-#xFFFD] | [#x10000-#x10FFFF]</pre>
  * <p>
  * Only HTTP/HTTPS requests are filtered.
+ * </p>
+ * <p>
+ * This should be used for both the {@link DispatcherType#REQUEST} and {@link DispatcherType#ERROR} dispatchers.
  * </p>
  */
 public class StripInvalidXmlCharactersFilter implements Filter {

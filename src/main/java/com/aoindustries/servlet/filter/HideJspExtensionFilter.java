@@ -1,6 +1,6 @@
 /*
  * ao-servlet-filter - Reusable Java library of servlet filters.
- * Copyright (C) 2015, 2016, 2017, 2019  AO Industries, Inc.
+ * Copyright (C) 2015, 2016, 2017, 2019, 2020  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -34,6 +34,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import javax.servlet.DispatcherType;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -64,11 +65,11 @@ import javax.servlet.http.HttpServletResponseWrapper;
  * When both *.jspx and *.jsp resources exist, the *.jspx is used.
  * </p>
  * <p>
- * This should be used for the REQUEST and ERROR dispatchers.
+ * This should be used for the {@link DispatcherType#REQUEST} and {@link DispatcherType#ERROR} dispatchers.
  * </p>
  * <p>
  * In the filter chain, it is important to consider the forwarding performed by this filter.  Subsequent filters
- * may need FORWARD dispatcher in addition to REQUEST to see the forwarded requests.
+ * may need {@link DispatcherType#FORWARD} dispatcher in addition to {@link DispatcherType#REQUEST} to see the forwarded requests.
  * </p>
  * <p>
  * Note: When testing in Tomcat 7, /WEB-INF/ protection was not compromised by the forwarding.

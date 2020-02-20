@@ -1,6 +1,6 @@
 /*
  * ao-servlet-filter - Reusable Java library of servlet filters.
- * Copyright (C) 2010, 2011, 2013, 2015, 2016, 2019  AO Industries, Inc.
+ * Copyright (C) 2010, 2011, 2013, 2015, 2016, 2019, 2020  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -23,6 +23,7 @@
 package com.aoindustries.servlet.filter;
 
 import java.io.IOException;
+import javax.servlet.DispatcherType;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -38,7 +39,7 @@ import javax.servlet.http.HttpServletResponse;
  * Provides static access to the current request state via thread local variables.
  * </p>
  * <p>
- * This should be used for the REQUEST, FORWARD, INCLUDE and ERROR dispatchers.
+ * This should be used for the {@link DispatcherType#REQUEST}, {@link DispatcherType#FORWARD}, {@link DispatcherType#INCLUDE} and {@link DispatcherType#ERROR} dispatchers.
  * </p>
  */
 public class FunctionContext implements Filter {
