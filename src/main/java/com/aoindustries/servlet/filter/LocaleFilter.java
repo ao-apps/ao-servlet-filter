@@ -1,6 +1,6 @@
 /*
  * ao-servlet-filter - Reusable Java library of servlet filters.
- * Copyright (C) 2014, 2015, 2016, 2019  AO Industries, Inc.
+ * Copyright (C) 2014, 2015, 2016, 2019, 2020  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -166,7 +166,7 @@ abstract public class LocaleFilter implements Filter {
 				if(
 					// 301 redirect if paramName should not be on request, stripping paramName
 					paramValue != null
-					&& httpRequest.getMethod().equals("GET")
+					&& HttpServletUtil.METHOD_GET.equals(httpRequest.getMethod())
 					&& (
 						// Never allow paramName on non-localized paths
 						!isLocalized
@@ -249,7 +249,7 @@ abstract public class LocaleFilter implements Filter {
 					if(
 						// 301 redirect if paramName not on GET request
 						// or if the parameter value doesn't match the resolved locale
-						httpRequest.getMethod().equals("GET")
+						HttpServletUtil.METHOD_GET.equals(httpRequest.getMethod())
 						&& !localeString.equals(paramValue)
 					) {
 						if(DEBUG) servletContext.log("DEBUG: Redirecting for missing or mismatched locale parameter: " + localeString);
