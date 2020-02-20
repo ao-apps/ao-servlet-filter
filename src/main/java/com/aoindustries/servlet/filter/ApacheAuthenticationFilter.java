@@ -154,7 +154,10 @@ public class ApacheAuthenticationFilter implements Filter {
 			Principal userPrincipal = httpRequest.getUserPrincipal();
 			final Set<String> groups;
 			if(userPrincipal != null) {
-				Set<String> parsed = getUserGroups().get(userPrincipal.getName());
+				String user = userPrincipal.getName();
+				// servletContext.log("ApacheAuthenticationFilter: user = " + user);
+				Set<String> parsed = getUserGroups().get(user);
+				// servletContext.log("ApacheAuthenticationFilter: parsed = " + parsed);
 				if(parsed != null) {
 					groups = parsed;
 				} else {
@@ -163,6 +166,7 @@ public class ApacheAuthenticationFilter implements Filter {
 				}
 			} else {
 				// Not logged-in
+				// servletContext.log("ApacheAuthenticationFilter: No user principal");
 				groups = Collections.emptySet();
 			}
 			Object oldAttribute = request.getAttribute(groupsRequestAttribute);
