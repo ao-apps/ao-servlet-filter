@@ -26,6 +26,7 @@ import com.aoindustries.servlet.http.LastModifiedServlet;
 import com.aoindustries.util.StringUtility;
 import com.aoindustries.util.WildcardPatternMatcher;
 import java.io.IOException;
+import javax.servlet.DispatcherType;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -40,7 +41,7 @@ import javax.servlet.http.HttpServletResponse;
  * header to any request with a {@link LastModifiedServlet#LAST_MODIFIED_PARAMETER_NAME} parameter.
  * The header is added before the filter chain is called.
  * <p>
- * This should be used for the REQUEST dispatcher only.
+ * This should be used for the {@link DispatcherType#REQUEST} dispatcher only.
  * </p>
  * <pre>
  * Init Parameters:

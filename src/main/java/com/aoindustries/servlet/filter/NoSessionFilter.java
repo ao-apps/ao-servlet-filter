@@ -1,6 +1,6 @@
 /*
  * ao-servlet-filter - Reusable Java library of servlet filters.
- * Copyright (C) 2010, 2011, 2013, 2016, 2019  AO Industries, Inc.
+ * Copyright (C) 2010, 2011, 2013, 2016, 2019, 2020  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -37,6 +37,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import javax.servlet.DispatcherType;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -65,7 +66,7 @@ import javax.servlet.http.HttpSession;
  * that assumes the cookie may only be provided by the browser.
  * </p>
  * <p>
- * This should be used for both the REQUEST and ERROR dispatchers.
+ * This should be used for both the {@link DispatcherType#REQUEST} and {@link DispatcherType#ERROR} dispatchers.
  * </p>
  * <p>
  * Only cookie names and values are encoded as URL parameters.  Comments, paths,

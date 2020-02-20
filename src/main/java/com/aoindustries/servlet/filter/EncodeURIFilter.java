@@ -1,6 +1,6 @@
 /*
  * ao-servlet-filter - Reusable Java library of servlet filters.
- * Copyright (C) 2019  AO Industries, Inc.
+ * Copyright (C) 2019, 2020  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -29,6 +29,7 @@ import com.aoindustries.servlet.http.Canonical;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import javax.servlet.DispatcherType;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -59,7 +60,7 @@ import javax.servlet.http.HttpServletResponseWrapper;
  * <a href="https://tools.ietf.org/html/rfc3986">RFC 3986 URI</a>.
  * </p>
  * <p>
- * This should be used for both the REQUEST and ERROR dispatchers.
+ * This should be used for both the {@link DispatcherType#REQUEST} and {@link DispatcherType#ERROR} dispatchers.
  * </p>
  */
 public class EncodeURIFilter implements Filter {

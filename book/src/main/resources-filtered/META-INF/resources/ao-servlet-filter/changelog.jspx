@@ -36,7 +36,7 @@ along with ao-servlet-filter.  If not, see <http://www.gnu.org/licenses />.
 		shortTitle="Changelog"
 		tocLevels="1"
 		datePublished="2016-10-29T21:37:35-0500"
-		dateModified="2020-02-19T18:26:35-0600"
+		dateModified="2020-02-19T19:19:14-0600"
 	>
 		<!-- The current snapshot, unreleased version -->
 		<c:set var="version" value="@{com.aoindustries:ao-servlet-filter:pom.version}" />
@@ -60,6 +60,17 @@ along with ao-servlet-filter.  If not, see <http://www.gnu.org/licenses />.
 						<ao:a href="apidocs/com/aoindustries/servlet/filter/StripInvalidXmlCharactersFilter.html">StripInvalidXmlCharactersFilter</ao:a>
 						now supports the REQUEST dispatcher, too.  It is recommended that all uses of this
 						filter include <![CDATA[&lt;dispatcher&gt;ERROR&lt;/dispatcher&gt;]]>
+					</li>
+					<li>
+						<p>
+							New filter <ao:a href="apidocs/com/aoindustries/servlet/filter/ApacheAuthenticationFilter.html">ApacheAuthenticationFilter</ao:a>
+							that parses Apache group file for role information while under Apache authentication.
+						</p>
+						<p>
+							When <ao:a href="https://tomcat.apache.org/tomcat-9.0-doc/config/ajp.html"><code>tomcatAuthentication</code></ao:a>
+							is set to <code>false</code>, user information is passed to Tomcat while group membership is not.
+							The filter parses the Apache group file and grants access to the roles corresponding to group names.
+						</p>
 					</li>
 				</ul>
 			</changelog:release>

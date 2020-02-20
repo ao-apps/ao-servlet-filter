@@ -1,6 +1,6 @@
 /*
  * ao-servlet-filter - Reusable Java library of servlet filters.
- * Copyright (C) 2013, 2015, 2016, 2017  AO Industries, Inc.
+ * Copyright (C) 2013, 2015, 2016, 2017, 2020  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -24,6 +24,7 @@ package com.aoindustries.servlet.filter;
 
 import com.aoindustries.util.WildcardPatternMatcher;
 import java.io.IOException;
+import javax.servlet.DispatcherType;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -42,7 +43,7 @@ import javax.servlet.http.HttpServletResponse;
  * handled by this filter itself.
  * </p>
  * <p>
- * This should be used for the REQUEST dispatcher only.
+ * This should be used for the {@link DispatcherType#REQUEST} dispatcher only.
  * </p>
  * <pre>
  * Init Parameters:
