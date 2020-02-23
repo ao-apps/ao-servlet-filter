@@ -36,7 +36,7 @@ along with ao-servlet-filter.  If not, see <http://www.gnu.org/licenses />.
 		shortTitle="Changelog"
 		tocLevels="1"
 		datePublished="2016-10-29T21:37:35-0500"
-		dateModified="2020-02-19T19:19:14-0600"
+		dateModified="2020-02-23T01:47:03-0600"
 	>
 		<!-- The current snapshot, unreleased version -->
 		<c:set var="version" value="@{com.aoindustries:ao-servlet-filter:pom.version}" />
@@ -71,6 +71,11 @@ along with ao-servlet-filter.  If not, see <http://www.gnu.org/licenses />.
 							is set to <code>false</code>, user information is passed to Tomcat while group membership is not.
 							The filter parses the Apache group file and grants access to the roles corresponding to group names.
 						</p>
+					</li>
+					<li>
+						<ao:a href="apidocs/com/aoindustries/servlet/filter/Utf8RequestCharacterEncodingListener.html">Utf8RequestCharacterEncodingListener</ao:a>
+						is now enabled via <code>@WebListener</code> annotation, and thus does not need to be included
+						in <code>web.xml</code> or <code>web-fragment.xml</code> when <code>metadata-complete="false"</code>.
 					</li>
 				</ul>
 			</changelog:release>
