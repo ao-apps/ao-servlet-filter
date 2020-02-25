@@ -1,6 +1,6 @@
 /*
  * ao-servlet-filter - Reusable Java library of servlet filters.
- * Copyright (C) 2016, 2017, 2019  AO Industries, Inc.
+ * Copyright (C) 2016, 2017, 2019, 2020  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -26,16 +26,18 @@ import java.util.concurrent.atomic.AtomicInteger;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletRequestEvent;
 import javax.servlet.ServletRequestListener;
+import javax.servlet.annotation.WebListener;
 
 /**
  * Tracks the request concurrency, used to decide to use concurrent or sequential implementations.
  */
+@WebListener
 public class CountConcurrencyListener implements ServletRequestListener {
 
-	private static final String REQUEST_ATTRIBUTE_NAME = CountConcurrencyListener.class.getName()+".concurrency";
+	public static final String REQUEST_ATTRIBUTE_NAME = CountConcurrencyListener.class.getName() + ".concurrency";
 
 	/**
-	 * Gets the concurrency at the beginning of the request or <code>null</code> if filter not active.
+	 * Gets the concurrency at the beginning of the request or {@code null} when listener not active.
 	 */
 	public static Integer getConcurrency(ServletRequest request) {
 		return (Integer)request.getAttribute(REQUEST_ATTRIBUTE_NAME);
@@ -44,38 +46,18 @@ public class CountConcurrencyListener implements ServletRequestListener {
 	private final AtomicInteger concurrency = new AtomicInteger();
 
 	@Override
-	public void requestInitialized(ServletRequestEvent sre) {
-		ServletRequest request = sre.getServletRequest();
+	public void requestInitialized(ServletRequestEvent event) {
 		// Increase concurrency
 		int newConcurrency = concurrency.incrementAndGet();
-		assert newConcurrency >= 1;
-		request.setAttribute(REQUEST_ATTRIBUTE_NAME, newConcurrency);
-		onConcurrencySet(request, newConcurrency);
+		if(newConcurrency < 1) throw new IllegalStateException("Concurrency < 1: " + newConcurrency);
+		event.getServletRequest().setAttribute(REQUEST_ATTRIBUTE_NAME, newConcurrency);
 	}
 
 	@Override
-	public void requestDestroyed(ServletRequestEvent sre) {
-		ServletRequest request = sre.getServletRequest();
-		onConcurrencyRemove(request);
-		request.removeAttribute(REQUEST_ATTRIBUTE_NAME);
-		concurrency.getAndDecrement();
-	}
-
-	/**
-	 * Called just after the concurrency of this request is set.
-	 *
-	 * Empty method, overriding methods do not need to call this method via {@code super}.
-	 */
-	protected void onConcurrencySet(ServletRequest request, int newConcurrency) {
-		// Do nothing
-	}
-
-	/**
-	 * Called just before the concurrency of this request is removed.
-	 *
-	 * Empty method, overriding methods do not need to call this method via {@code super}.
-	 */
-	protected void onConcurrencyRemove(ServletRequest request) {
-		// Do nothing
+	public void requestDestroyed(ServletRequestEvent event) {
+		// Decrease concurrency
+		event.getServletRequest().removeAttribute(REQUEST_ATTRIBUTE_NAME);
+		int oldConcurrency = concurrency.getAndDecrement();
+		if(oldConcurrency < 1) throw new IllegalStateException("Concurrency < 1: " + oldConcurrency);
 	}
 }
