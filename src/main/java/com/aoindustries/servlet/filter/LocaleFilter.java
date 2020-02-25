@@ -189,7 +189,7 @@ abstract public class LocaleFilter implements Filter {
 					newUrl = HttpServletUtil.getAbsoluteURL(httpRequest, newUrl, false);
 					// Perform URL rewriting
 					newUrl = httpResponse.encodeRedirectURL(newUrl);
-					HttpServletUtil.sendRedirect(httpResponse, newUrl, HttpServletResponse.SC_MOVED_PERMANENTLY);
+					HttpServletUtil.sendRedirect(HttpServletResponse.SC_MOVED_PERMANENTLY, httpResponse, newUrl);
 					return;
 				}
 				if(
@@ -268,7 +268,7 @@ abstract public class LocaleFilter implements Filter {
 						newUrl = HttpServletUtil.getAbsoluteURL(httpRequest, newUrl, false);
 						// Perform URL rewriting
 						newUrl = httpResponse.encodeRedirectURL(newUrl);
-						HttpServletUtil.sendRedirect(httpResponse, newUrl, HttpServletResponse.SC_MOVED_PERMANENTLY);
+						HttpServletUtil.sendRedirect(HttpServletResponse.SC_MOVED_PERMANENTLY, httpResponse, newUrl);
 						return;
 					}
 					responseLocale = locale;

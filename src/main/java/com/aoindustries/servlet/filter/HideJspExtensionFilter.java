@@ -177,7 +177,7 @@ public class HideJspExtensionFilter implements Filter {
 									String location = HttpServletUtil.getAbsoluteURL(httpRequest, path);
 									// Perform URL rewriting
 									// No rewrite since we are sending the full original queryString: path = httpResponse.encodeRedirectURL(path);
-									HttpServletUtil.sendRedirect(httpResponse, location, HttpServletResponse.SC_MOVED_PERMANENTLY);
+									HttpServletUtil.sendRedirect(HttpServletResponse.SC_MOVED_PERMANENTLY, httpResponse, location);
 									return;
 								}
 							}
@@ -203,7 +203,7 @@ public class HideJspExtensionFilter implements Filter {
 										String location = HttpServletUtil.getAbsoluteURL(httpRequest, path);
 										// Perform URL rewriting
 										// No rewrite since we are sending the full original queryString: path = httpResponse.encodeRedirectURL(path);
-										HttpServletUtil.sendRedirect(httpResponse, location, HttpServletResponse.SC_MOVED_PERMANENTLY);
+										HttpServletUtil.sendRedirect(HttpServletResponse.SC_MOVED_PERMANENTLY, httpResponse, location);
 										return;
 									}
 								}

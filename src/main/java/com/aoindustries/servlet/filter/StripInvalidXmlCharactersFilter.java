@@ -177,7 +177,7 @@ public class StripInvalidXmlCharactersFilter implements Filter {
 							}
 						}
 					}
-					HttpServletUtil.sendRedirect(httpResponse, url.toString(), HttpServletResponse.SC_MOVED_PERMANENTLY);
+					HttpServletUtil.sendRedirect(HttpServletResponse.SC_MOVED_PERMANENTLY, httpResponse, url.toString());
 				} else {
 					// Filter invalid parameters and characters
 					final Map<String,List<String>> filteredMap = new LinkedHashMap<>(paramMap.size()*4/3+1);
