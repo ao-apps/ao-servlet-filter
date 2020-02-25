@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ao-servlet-filter - Reusable Java library of servlet filters.
+Copyright (C) 2020  AO Industries, Inc.
+    support@aoindustries.com
+    7262 Bull Pen Cir
+    Mobile, AL 36695
+
+This file is part of ao-servlet-filter.
+
+ao-servlet-filter is free software: you can redistribute it and/or modify
+it under the terms of the GNU Lesser General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+ao-servlet-filter is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public License
+along with ao-servlet-filter.  If not, see <http://www.gnu.org/licenses />.
+-->
+<web-fragment xmlns="http://java.sun.com/xml/ns/javaee"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
+                      http://java.sun.com/xml/ns/javaee/web-fragment_3_0.xsd"
+  version="3.0"
+  metadata-complete="false">
+	<name>@{project.artifactId}</name>
+	<!-- Causes error: "The display name was defined in multiple fragments with different value"
+	<display-name>@{project.name}</display-name>
+	-->
+	<description>@{project.description}</description>
+
+	<!--
+		The strip invalid XML filter must be first, declared before all other
+		fragments.  This is because it is responsible for protecting the entire
+		application from unexpected input.
+	-->
+	<ordering>
+		<before>
+			<others />
+		</before>
+	</ordering>
+
+	<!-- Filter to strip invalid XML characters from incoming parameters -->
+	<filter>
+		<filter-name>com.aoindustries.servlet.filter.StripInvalidXmlCharactersFilter</filter-name>
+		<filter-class>com.aoindustries.servlet.filter.StripInvalidXmlCharactersFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>com.aoindustries.servlet.filter.StripInvalidXmlCharactersFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+		<dispatcher>REQUEST</dispatcher>
+		<dispatcher>ERROR</dispatcher>
+	</filter-mapping>
+
+	<!-- Perform final URI/IRI encoding -->
+	<context-param>
+		<description>
+			IRI support is disabled by default, and only recommended for
+			development or internal systems.  IRI may result in slightly
+			smaller output, and more readable HTML source, but for
+			interoperability should be off in production systems.
+		</description>
+		<param-name>com.aoindustries.servlet.filter.EncodeURIFilter.enableIRI</param-name>
+		<!-- TODO: Enable IRI by default (since is not restricted to HTML 5)? (Check with validators) -->
+		<param-value>false</param-value>
+	</context-param>
+	<filter>
+		<description>
+			Encodes the URL to either RFC 3986 URI US-ASCII format or RFC 3987
+			IRI Unicode format.  Redirects are always formatted as RFC 3986 URI.
+		</description>
+		<filter-name>com.aoindustries.servlet.filter.EncodeURIFilter</filter-name>
+		<filter-class>com.aoindustries.servlet.filter.EncodeURIFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>com.aoindustries.servlet.filter.EncodeURIFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+		<dispatcher>REQUEST</dispatcher>
+		<dispatcher>ERROR</dispatcher>
+	</filter-mapping>
+
+</web-fragment>

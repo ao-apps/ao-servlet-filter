@@ -36,7 +36,7 @@ along with ao-servlet-filter.  If not, see <http://www.gnu.org/licenses />.
 		shortTitle="Changelog"
 		tocLevels="1"
 		datePublished="2016-10-29T21:37:35-0500"
-		dateModified="2020-02-24T18:58:10-0600"
+		dateModified="2020-02-24T21:13:41-0600"
 	>
 		<!-- The current snapshot, unreleased version -->
 		<c:set var="version" value="@{com.aoindustries:ao-servlet-filter:pom.version}" />
@@ -76,6 +76,25 @@ along with ao-servlet-filter.  If not, see <http://www.gnu.org/licenses />.
 						<ao:a href="apidocs/com/aoindustries/servlet/filter/Utf8RequestCharacterEncodingListener.html">Utf8RequestCharacterEncodingListener</ao:a>
 						is now enabled via <code>@WebListener</code> annotation, and thus does not need to be included
 						in <code>web.xml</code> or <code>web-fragment.xml</code> when <code>metadata-complete="false"</code>.
+					</li>
+					<li>
+						Now activating the following filters by default within a <code>META-INF/web-fragment.xml</code>,
+						with the fragment configured to be before all others:
+						<ol>
+							<li><ao:a href="apidocs/com/aoindustries/servlet/filter/StripInvalidXmlCharactersFilter.html">StripInvalidXmlCharactersFilter</ao:a></li>
+							<li><ao:a href="apidocs/com/aoindustries/servlet/filter/EncodeURIFilter.html">EncodeURIFilter</ao:a></li>
+						</ol>
+					</li>
+					<li>
+						<ao:a href="apidocs/com/aoindustries/servlet/filter/EncodeURIFilter.html">EncodeURIFilter</ao:a> configuration changed
+						to <![CDATA[&lt;context-param&gt;]]> named <code>com.aoindustries.servlet.filter.EncodeURIFilter.enableIRI</code>.
+						It is still off by default, but may be selectively enabled in development mode via <code>META-INF/context.xml</code>.
+					</li>
+					<li>
+						When <ao:a href="apidocs/com/aoindustries/servlet/filter/EncodeURIFilter.html">EncodeURIFilter</ao:a> has IRI support
+						enabled, it is now only activated when the current <ao:a href="https://aoindustries.com/ao-encoding/apidocs/com/aoindustries/encoding/Doctype.html">Doctype</ao:a>
+						supports <ao:a href="https://tools.ietf.org/html/rfc3987">RFC 3987 IRI</ao:a> Unicode format URLs, which currently
+						is only <ao:a href="https://aoindustries.com/ao-encoding/apidocs/com/aoindustries/encoding/Doctype.html#HTML5">HTML5</ao:a>.
 					</li>
 				</ul>
 			</changelog:release>
