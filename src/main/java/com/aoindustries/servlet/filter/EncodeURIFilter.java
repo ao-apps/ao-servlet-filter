@@ -22,6 +22,8 @@
  */
 package com.aoindustries.servlet.filter;
 
+import com.aoindustries.encoding.Doctype;
+import com.aoindustries.encoding.servlet.DoctypeEE;
 import com.aoindustries.net.IRI;
 import com.aoindustries.net.URI;
 import com.aoindustries.net.URIParser;
@@ -33,6 +35,7 @@ import javax.servlet.DispatcherType;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -76,15 +79,18 @@ public class EncodeURIFilter implements Filter {
 		return (EncodeURIFilter)request.getAttribute(REQUEST_ATTRIBUTE_KEY);
 	}
 
+	private ServletContext servletContext;
 	private boolean enableIRI;
 
 	@Override
 	public void init(FilterConfig config) {
-		enableIRI = Boolean.parseBoolean(config.getInitParameter("enableIRI"));
+		servletContext = config.getServletContext();
+		enableIRI = Boolean.parseBoolean(servletContext.getInitParameter(EncodeURIFilter.class.getName() + ".enableIRI"));
 	}
 
 	private static String encode(String url, boolean enableIri, String characterEncoding) {
 		if(
+			// Do nothing on these types of URI
 			URIParser.isScheme(url, "javascript")
 			|| URIParser.isScheme(url, "cid")
 			|| URIParser.isScheme(url, "data")
@@ -109,6 +115,21 @@ public class EncodeURIFilter implements Filter {
 	/**
 	 * Performs encoding on the given URL in the given response encoding.
 	 */
+	public String encode(String url, Doctype doctype, String characterEncoding) {
+		return encode(
+			url,
+			enableIRI && doctype.supportsIRI(),
+			characterEncoding
+		);
+	}
+
+	/**
+	 * Performs encoding on the given URL in the given response encoding.
+	 *
+	 * @deprecated  Please provide the current {@link Doctype} so can be enabled
+	 *              selectively via {@link Doctype#supportsIRI()}.
+	 */
+	@Deprecated
 	public String encode(String url, String characterEncoding) {
 		return encode(url, enableIRI, characterEncoding);
 	}
@@ -132,23 +153,41 @@ public class EncodeURIFilter implements Filter {
 						@Override
 						@Deprecated
 						public String encodeRedirectUrl(String url) {
-							return encode(super.encodeRedirectUrl(url), false, getCharacterEncoding());
+							return encode(
+								super.encodeRedirectUrl(url),
+								false,
+								null // characterEncoding not used with enableIri = false
+							);
 						}
 
 						@Override
 						public String encodeRedirectURL(String url) {
-							return encode(super.encodeRedirectURL(url), false, getCharacterEncoding());
+							return encode(
+								super.encodeRedirectURL(url),
+								false,
+								null // characterEncoding not used with enableIri = false
+							);
 						}
 
 						@Override
 						@Deprecated
 						public String encodeUrl(String url) {
-							return encode(super.encodeUrl(url), enableIRI, getCharacterEncoding());
+							boolean enableIri = enableIRI && DoctypeEE.get(servletContext, request).supportsIRI();
+							return encode(
+								super.encodeUrl(url),
+								enableIri,
+								enableIri ? getCharacterEncoding() : null
+							);
 						}
 
 						@Override
 						public String encodeURL(String url) {
-							return encode(super.encodeURL(url), enableIRI, getCharacterEncoding());
+							boolean enableIri = enableIRI && DoctypeEE.get(servletContext, request).supportsIRI();
+							return encode(
+								super.encodeURL(url),
+								enableIri,
+								enableIri ? getCharacterEncoding() : null
+							);
 						}
 					}
 				);
