@@ -32,15 +32,16 @@ import javax.servlet.annotation.WebListener;
  * Tracks the request concurrency, used to decide to use concurrent or sequential implementations.
  */
 @WebListener
+// TODO: Rename ConcurrencyCounter?
 public class CountConcurrencyListener implements ServletRequestListener {
 
-	public static final String REQUEST_ATTRIBUTE_NAME = CountConcurrencyListener.class.getName() + ".concurrency";
+	public static final String REQUEST_ATTRIBUTE = CountConcurrencyListener.class.getName() + ".concurrency";
 
 	/**
 	 * Gets the concurrency at the beginning of the request or {@code null} when listener not active.
 	 */
 	public static Integer getConcurrency(ServletRequest request) {
-		return (Integer)request.getAttribute(REQUEST_ATTRIBUTE_NAME);
+		return (Integer)request.getAttribute(REQUEST_ATTRIBUTE);
 	}
 
 	private final AtomicInteger concurrency = new AtomicInteger();
@@ -50,13 +51,13 @@ public class CountConcurrencyListener implements ServletRequestListener {
 		// Increase concurrency
 		int newConcurrency = concurrency.incrementAndGet();
 		if(newConcurrency < 1) throw new IllegalStateException("Concurrency < 1: " + newConcurrency);
-		event.getServletRequest().setAttribute(REQUEST_ATTRIBUTE_NAME, newConcurrency);
+		event.getServletRequest().setAttribute(REQUEST_ATTRIBUTE, newConcurrency);
 	}
 
 	@Override
 	public void requestDestroyed(ServletRequestEvent event) {
 		// Decrease concurrency
-		event.getServletRequest().removeAttribute(REQUEST_ATTRIBUTE_NAME);
+		event.getServletRequest().removeAttribute(REQUEST_ATTRIBUTE);
 		int oldConcurrency = concurrency.getAndDecrement();
 		if(oldConcurrency < 1) throw new IllegalStateException("Concurrency < 1: " + oldConcurrency);
 	}

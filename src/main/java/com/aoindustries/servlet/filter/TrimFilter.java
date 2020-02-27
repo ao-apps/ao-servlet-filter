@@ -1,6 +1,6 @@
 /*
  * ao-servlet-filter - Reusable Java library of servlet filters.
- * Copyright (C) 2006, 2007, 2008, 2009, 2010, 2011, 2014, 2015, 2016, 2019  AO Industries, Inc.
+ * Copyright (C) 2006, 2007, 2008, 2009, 2010, 2011, 2014, 2015, 2016, 2019, 2020  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -44,7 +44,7 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class TrimFilter implements Filter {
 
-	private static final String REQUEST_ATTRIBUTE_KEY = TrimFilter.class.getName()+".filter_applied";
+	private static final String REQUEST_ATTRIBUTE = TrimFilter.class.getName() + ".filter_applied";
 
 	private boolean enabled;
 
@@ -60,14 +60,14 @@ public class TrimFilter implements Filter {
 		// Makes sure only one filter is applied per request
 		if(
 			enabled
-			&& request.getAttribute(REQUEST_ATTRIBUTE_KEY)==null
+			&& request.getAttribute(REQUEST_ATTRIBUTE)==null
 			&& (response instanceof HttpServletResponse)
 		) {
-			request.setAttribute(REQUEST_ATTRIBUTE_KEY, Boolean.TRUE);
+			request.setAttribute(REQUEST_ATTRIBUTE, Boolean.TRUE);
 			try {
 				chain.doFilter(request, new TrimFilterResponse((HttpServletResponse)response));
 			} finally {
-				request.removeAttribute(REQUEST_ATTRIBUTE_KEY);
+				request.removeAttribute(REQUEST_ATTRIBUTE);
 			}
 		} else {
 			chain.doFilter(request, response);
