@@ -89,7 +89,7 @@ public class ApacheAuthenticationFilter implements Filter {
 	 */
 	private Map<String,Set<String>> getUserGroups() throws IOException {
 		synchronized(cacheLock) {
-			long lastModified = ServletContextCache.getCache(servletContext).getLastModified(groupFile);
+			long lastModified = ServletContextCache.getInstance(servletContext).getLastModified(groupFile);
 			if(cache == null || lastModified != cacheLastModified) {
 				try (InputStream in = servletContext.getResourceAsStream(groupFile)) {
 					if(in == null) throw new FileNotFoundException("Resource not found: " + groupFile);
