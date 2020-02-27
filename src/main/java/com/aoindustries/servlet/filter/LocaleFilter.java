@@ -96,7 +96,7 @@ abstract public class LocaleFilter implements Filter {
 	 */
 	private static final String DEFAULT_PARAM_NAME = "hl";
 
-	private static final String ENABLED_LOCALES_REQUEST_ATTRIBUTE_KEY = LocaleFilter.class.getName() + ".enabledLocales";
+	private static final String ENABLED_LOCALES_REQUEST_ATTRIBUTE = LocaleFilter.class.getName() + ".enabledLocales";
 
 	/**
 	 * Adds the current locale as a parameter to the URL.
@@ -133,7 +133,7 @@ abstract public class LocaleFilter implements Filter {
 	 */
 	public static Map<String,Locale> getEnabledLocales(ServletRequest request) {
 		@SuppressWarnings("unchecked")
-		Map<String,Locale> enabledLocales = (Map<String,Locale>)request.getAttribute(ENABLED_LOCALES_REQUEST_ATTRIBUTE_KEY);
+		Map<String,Locale> enabledLocales = (Map<String,Locale>)request.getAttribute(ENABLED_LOCALES_REQUEST_ATTRIBUTE);
 		if(enabledLocales==null) throw new IllegalStateException("Not in request filtered by LocaleFilter, unable to get enabled locales.");
 		return enabledLocales;
 	}
@@ -146,13 +146,13 @@ abstract public class LocaleFilter implements Filter {
 	) throws IOException, ServletException {
 		if(
 			// Makes sure only one locale filter is applied per request
-			request.getAttribute(ENABLED_LOCALES_REQUEST_ATTRIBUTE_KEY) == null
+			request.getAttribute(ENABLED_LOCALES_REQUEST_ATTRIBUTE) == null
 			// Must be HTTP protocol
 			&& (request instanceof HttpServletRequest)
 			&& (response instanceof HttpServletResponse)
 		) {
 			final Map<String,Locale> supportedLocales = getSupportedLocales(request);
-			request.setAttribute(ENABLED_LOCALES_REQUEST_ATTRIBUTE_KEY, supportedLocales);
+			request.setAttribute(ENABLED_LOCALES_REQUEST_ATTRIBUTE, supportedLocales);
 			try {
 				final HttpServletRequest httpRequest = (HttpServletRequest)request;
 				final HttpServletResponse httpResponse = (HttpServletResponse)response;
@@ -388,7 +388,7 @@ abstract public class LocaleFilter implements Filter {
 					ThreadLocale.set(oldThreadLocale);
 				}
 			} finally {
-				request.removeAttribute(ENABLED_LOCALES_REQUEST_ATTRIBUTE_KEY);
+				request.removeAttribute(ENABLED_LOCALES_REQUEST_ATTRIBUTE);
 			}
 		} else {
 			chain.doFilter(request, response);

@@ -68,7 +68,7 @@ import javax.servlet.http.HttpServletResponseWrapper;
  */
 public class EncodeURIFilter implements Filter {
 
-	private static final String REQUEST_ATTRIBUTE_KEY = EncodeURIFilter.class.getName();
+	private static final String REQUEST_ATTRIBUTE = EncodeURIFilter.class.getName();
 
 	/**
 	 * Gets the filter active on the given request.
@@ -76,7 +76,7 @@ public class EncodeURIFilter implements Filter {
 	 * @return  The currently active filter or {@code null} for none active.
 	 */
 	public static EncodeURIFilter getActiveFilter(ServletRequest request) {
-		return (EncodeURIFilter)request.getAttribute(REQUEST_ATTRIBUTE_KEY);
+		return (EncodeURIFilter)request.getAttribute(REQUEST_ATTRIBUTE);
 	}
 
 	private ServletContext servletContext;
@@ -142,10 +142,10 @@ public class EncodeURIFilter implements Filter {
 	) throws IOException, ServletException {
 		// Makes sure only one filter is applied per request
 		if(
-			request.getAttribute(REQUEST_ATTRIBUTE_KEY) == null
+			request.getAttribute(REQUEST_ATTRIBUTE) == null
 			&& (response instanceof HttpServletResponse)
 		) {
-			request.setAttribute(REQUEST_ATTRIBUTE_KEY, this);
+			request.setAttribute(REQUEST_ATTRIBUTE, this);
 			try {
 				chain.doFilter(
 					request,
@@ -192,7 +192,7 @@ public class EncodeURIFilter implements Filter {
 					}
 				);
 			} finally {
-				request.removeAttribute(REQUEST_ATTRIBUTE_KEY);
+				request.removeAttribute(REQUEST_ATTRIBUTE);
 			}
 		} else {
 			chain.doFilter(request, response);

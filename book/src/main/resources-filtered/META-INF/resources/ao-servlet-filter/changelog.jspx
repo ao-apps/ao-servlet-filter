@@ -37,7 +37,7 @@ along with ao-servlet-filter.  If not, see <http://www.gnu.org/licenses />.
 		shortTitle="Changelog"
 		tocLevels="1"
 		datePublished="2016-10-29T21:37:35-0500"
-		dateModified="2020-02-25T05:50:10-0600"
+		dateModified="2020-02-26T20:09:57-0600"
 	>
 		<!-- The current snapshot, unreleased version -->
 		<c:set var="version" value="@{com.aoindustries:ao-servlet-filter:pom.version}" />
@@ -98,6 +98,7 @@ along with ao-servlet-filter.  If not, see <http://www.gnu.org/licenses />.
 						is only <ao:a href="https://aoindustries.com/ao-encoding/apidocs/com/aoindustries/encoding/Doctype.html#HTML5">HTML5</ao:a>.
 					</li>
 					<li><ao:a href="apidocs/com/aoindustries/servlet/filter/CountConcurrencyListener.html">CountConcurrencyListener</ao:a> is now a <code>@WebListener</code>.</li>
+					<li>Optimized ServletContext attribute initialization and concurrency.</li>
 				</ul>
 			</changelog:release>
 		</c:if>
