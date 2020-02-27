@@ -148,7 +148,7 @@ public class HideJspExtensionFilter implements Filter {
 					final HttpServletRequest httpRequest = (HttpServletRequest)request;
 					final HttpServletResponse httpResponse = (HttpServletResponse)response;
 
-					final ServletContextCache servletContextCache = ServletContextCache.getCache(servletContext);
+					final ServletContextCache servletContextCache = ServletContextCache.getInstance(servletContext);
 
 					String servletPath = httpRequest.getServletPath();
 					boolean requestRewrite = !noRewritePatterns.isMatch(servletPath);
