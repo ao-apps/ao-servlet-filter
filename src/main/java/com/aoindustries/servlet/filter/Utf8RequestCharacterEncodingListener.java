@@ -38,8 +38,8 @@ import javax.servlet.annotation.WebListener;
 public class Utf8RequestCharacterEncodingListener implements ServletRequestListener {
 
 	@Override
-	public void requestInitialized(ServletRequestEvent sre) {
-		ServletRequest request = sre.getServletRequest();
+	public void requestInitialized(ServletRequestEvent event) {
+		ServletRequest request = event.getServletRequest();
 		// Only override encoding when not provided by the client
 		if(request.getCharacterEncoding() == null) {
 			try {
@@ -51,7 +51,7 @@ public class Utf8RequestCharacterEncodingListener implements ServletRequestListe
 	}
 
 	@Override
-	public void requestDestroyed(ServletRequestEvent sre) {
+	public void requestDestroyed(ServletRequestEvent event) {
 		// Do nothing
 	}
 }
