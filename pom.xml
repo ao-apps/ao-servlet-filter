@@ -40,15 +40,15 @@ along with ao-servlet-filter.  If not, see <http://www.gnu.org/licenses />.
 	</properties>
 
 	<name>AO Servlet Filter</name>
-	<url>https://aoindustries.com/${project.artifactId}/</url>
+	<url>https://aoindustries.com/ao-servlet-filter/</url>
 	<description>Reusable Java library of servlet filters.</description>
 	<inceptionYear>2006</inceptionYear>
 
 	<scm>
 		<!-- Can't inherit due to multi-module -->
-		<connection>scm:git:git://github.com/aoindustries/${project.artifactId}.git</connection>
-		<developerConnection>scm:git:git@github.com:aoindustries/${project.artifactId}.git</developerConnection>
-		<url>https://github.com/aoindustries/${project.artifactId}</url>
+		<connection>scm:git:git://github.com/aoindustries/ao-servlet-filter.git</connection>
+		<developerConnection>scm:git:git@github.com:aoindustries/ao-servlet-filter.git</developerConnection>
+		<url>https://github.com/aoindustries/ao-servlet-filter</url>
 		<tag>HEAD</tag>
 	</scm>
 
@@ -83,7 +83,7 @@ along with ao-servlet-filter.  If not, see <http://www.gnu.org/licenses />.
 		<dependencies>
 			<!-- Java EE -->
 			<dependency>
-				<groupId>com.aoindustries</groupId><artifactId>javaee-web-api-bom</artifactId><version>6.0.0${POST-SNAPSHOT}</version>
+				<groupId>com.aoindustries</groupId><artifactId>javaee-web-api-bom</artifactId><version>6.0.1-SNAPSHOT<!-- ${POST-SNAPSHOT} --></version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
