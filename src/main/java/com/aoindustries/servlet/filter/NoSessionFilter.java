@@ -28,7 +28,7 @@ import com.aoindustries.net.URIParametersMap;
 import com.aoindustries.net.URIParser;
 import com.aoindustries.servlet.http.Canonical;
 import com.aoindustries.servlet.http.Cookies;
-import com.aoindustries.util.StringUtility;
+import com.aoindustries.lang.Strings;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -133,7 +133,7 @@ public class NoSessionFilter implements Filter {
 		cookieUrlParamPrefix = (cookieUrlParamPrefixInitParam != null && !cookieUrlParamPrefixInitParam.isEmpty()) ? cookieUrlParamPrefixInitParam : DEFAULT_COOKIE_URL_PARAM_PREFIX;
 		cookieNames.clear();
 		String cookieNamesInitParam = config.getInitParameter("cookieNames");
-		if(cookieNamesInitParam != null) cookieNames.addAll(StringUtility.splitStringCommaSpace(cookieNamesInitParam));
+		if(cookieNamesInitParam != null) cookieNames.addAll(Strings.splitStringCommaSpace(cookieNamesInitParam));
 		if(cookieNames.size() > MAXIMUM_COOKIES) throw new IllegalArgumentException("cookieNames.size() > " + MAXIMUM_COOKIES);
 	}
 

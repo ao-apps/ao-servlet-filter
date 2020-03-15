@@ -29,7 +29,7 @@ import com.aoindustries.net.URIParametersUtils;
 import com.aoindustries.net.URIParser;
 import com.aoindustries.servlet.ServletRequestParameters;
 import com.aoindustries.servlet.http.HttpServletUtil;
-import com.aoindustries.util.StringUtility;
+import com.aoindustries.lang.Strings;
 import com.aoindustries.util.i18n.ThreadLocale;
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -467,7 +467,7 @@ abstract public class LocaleFilter implements Filter {
 		Locale bestApprox = null;
 		float bestApproxQ = Float.NaN;
 		while(acceptLanguages.hasMoreElements()) {
-			for(String pair : StringUtility.splitString(acceptLanguages.nextElement(), ',')) {
+			for(String pair : Strings.splitString(acceptLanguages.nextElement(), ',')) {
 				String acceptLanguage;
 				float q;
 				int semiPos = pair.indexOf(';');

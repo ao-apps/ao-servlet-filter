@@ -24,7 +24,7 @@ package com.aoindustries.servlet.filter;
 
 import com.aoindustries.servlet.ServletContextCache;
 import com.aoindustries.util.AoCollections;
-import com.aoindustries.util.StringUtility;
+import com.aoindustries.lang.Strings;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -72,9 +72,9 @@ public class ApacheAuthenticationFilter implements Filter {
 	public void init(FilterConfig config) {
 		servletContext = config.getServletContext();
 
-		groupFile = StringUtility.trimNullIfEmpty(config.getInitParameter("groupFile"));
+		groupFile = Strings.trimNullIfEmpty(config.getInitParameter("groupFile"));
 		if(groupFile == null) groupFile = "/WEB-INF/group";
-		groupsRequestAttribute = StringUtility.trimNullIfEmpty(config.getInitParameter("groupsRequestAttribute"));
+		groupsRequestAttribute = Strings.trimNullIfEmpty(config.getInitParameter("groupsRequestAttribute"));
 		if(groupsRequestAttribute == null) groupsRequestAttribute = ApacheAuthenticationFilter.class.getName() + ".groups";
 	}
 
@@ -107,7 +107,7 @@ public class ApacheAuthenticationFilter implements Filter {
 								if(pos != -1) {
 									String group = line.substring(0, pos).trim();
 									Set<String> usernames = new LinkedHashSet<>();
-									for(String username : StringUtility.splitString(line.substring(pos + 1).trim(), ' ')) {
+									for(String username : Strings.splitString(line.substring(pos + 1).trim(), ' ')) {
 										if(!username.isEmpty()) {
 											if(!usernames.add(username)) {
 												throw new IOException("Duplicate user \"" + username + "\" in group \"" + group + '"');
