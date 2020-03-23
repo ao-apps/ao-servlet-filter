@@ -22,13 +22,13 @@
  */
 package com.aoindustries.servlet.filter;
 
+import com.aoindustries.lang.Strings;
 import com.aoindustries.net.IRI;
 import com.aoindustries.net.MutableURIParameters;
 import com.aoindustries.net.URIParametersMap;
 import com.aoindustries.net.URIParser;
 import com.aoindustries.servlet.http.Canonical;
 import com.aoindustries.servlet.http.Cookies;
-import com.aoindustries.lang.Strings;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -90,8 +90,8 @@ import javax.servlet.http.HttpSession;
  * </p>
  * <p>
  * Note: If using JSP, add <code>session="false"</code>, for example:
- * <pre>&lt;%@ page language="java" session="false" %&gt;</pre>
  * </p>
+ * <pre>&lt;%@ page language="java" session="false" %&gt;</pre>
  * <p>
  * Consider using in conjunction with <code>session-config</code> to ensure that
  * <code>;jsessionid</code> is never added to the URLs.

@@ -22,6 +22,7 @@
  */
 package com.aoindustries.servlet.filter;
 
+import com.aoindustries.lang.Strings;
 import com.aoindustries.net.IRI;
 import com.aoindustries.net.MutableURIParameters;
 import com.aoindustries.net.URIParametersMap;
@@ -29,7 +30,6 @@ import com.aoindustries.net.URIParametersUtils;
 import com.aoindustries.net.URIParser;
 import com.aoindustries.servlet.ServletRequestParameters;
 import com.aoindustries.servlet.http.HttpServletUtil;
-import com.aoindustries.lang.Strings;
 import com.aoindustries.util.i18n.ThreadLocale;
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -62,12 +62,12 @@ import javax.servlet.http.HttpServletResponseWrapper;
  * </p>
  * <p>
  * During each request, the locale will be set according to:
+ * </p>
  * <ol>
  *   <li>If <code>paramName</code> parameter exists and is a supported locale, then set response locale to the exact match.</li>
  *   <li>If <code>paramName</code> parameter exists and can match a supported locale, then set response locale to the matched locale.</li>
  *   <li>Otherwise, select the best locale from the Accept headers.</li>
  * </ol>
- * </p>
  * <p>
  * Also sets the JSTL fmt tag locale as the <code>javax.servlet.jsp.jstl.fmt.locale.request (Config.FMT_LOCALE+Config.REQUEST_SCOPE_SUFFIX)</code> request attribute
  * to the current locale.
