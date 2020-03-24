@@ -22,9 +22,9 @@
  */
 package com.aoindustries.servlet.filter;
 
-import com.aoindustries.servlet.ServletContextCache;
-import com.aoindustries.util.AoCollections;
+import com.aoindustries.collections.AoCollections;
 import com.aoindustries.lang.Strings;
+import com.aoindustries.servlet.ServletContextCache;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
