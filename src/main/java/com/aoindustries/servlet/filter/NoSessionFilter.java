@@ -133,7 +133,7 @@ public class NoSessionFilter implements Filter {
 		cookieUrlParamPrefix = (cookieUrlParamPrefixInitParam != null && !cookieUrlParamPrefixInitParam.isEmpty()) ? cookieUrlParamPrefixInitParam : DEFAULT_COOKIE_URL_PARAM_PREFIX;
 		cookieNames.clear();
 		String cookieNamesInitParam = config.getInitParameter("cookieNames");
-		if(cookieNamesInitParam != null) cookieNames.addAll(Strings.splitStringCommaSpace(cookieNamesInitParam));
+		if(cookieNamesInitParam != null) cookieNames.addAll(Strings.splitCommaSpace(cookieNamesInitParam));
 		if(cookieNames.size() > MAXIMUM_COOKIES) throw new IllegalArgumentException("cookieNames.size() > " + MAXIMUM_COOKIES);
 	}
 

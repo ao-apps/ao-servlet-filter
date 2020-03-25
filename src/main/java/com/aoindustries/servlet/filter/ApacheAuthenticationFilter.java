@@ -107,7 +107,7 @@ public class ApacheAuthenticationFilter implements Filter {
 								if(pos != -1) {
 									String group = line.substring(0, pos).trim();
 									Set<String> usernames = new LinkedHashSet<>();
-									for(String username : Strings.splitString(line.substring(pos + 1).trim(), ' ')) {
+									for(String username : Strings.split(line.substring(pos + 1).trim(), ' ')) {
 										if(!username.isEmpty()) {
 											if(!usernames.add(username)) {
 												throw new IOException("Duplicate user \"" + username + "\" in group \"" + group + '"');

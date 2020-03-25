@@ -467,7 +467,7 @@ abstract public class LocaleFilter implements Filter {
 		Locale bestApprox = null;
 		float bestApproxQ = Float.NaN;
 		while(acceptLanguages.hasMoreElements()) {
-			for(String pair : Strings.splitString(acceptLanguages.nextElement(), ',')) {
+			for(String pair : Strings.split(acceptLanguages.nextElement(), ',')) {
 				String acceptLanguage;
 				float q;
 				int semiPos = pair.indexOf(';');
