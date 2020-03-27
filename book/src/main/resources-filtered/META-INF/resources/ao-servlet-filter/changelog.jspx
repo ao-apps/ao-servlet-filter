@@ -37,7 +37,7 @@ along with ao-servlet-filter.  If not, see <http://www.gnu.org/licenses />.
 		shortTitle="Changelog"
 		tocLevels="1"
 		datePublished="2016-10-29T21:37:35-0500"
-		dateModified="2020-03-07T06:01:29-0600"
+		dateModified="2020-03-26T19:28:23-05:00"
 	>
 		<!-- The current snapshot, unreleased version -->
 		<c:set var="version" value="@{com.aoindustries:ao-servlet-filter:pom.version}" />
@@ -52,60 +52,69 @@ along with ao-servlet-filter.  If not, see <http://www.gnu.org/licenses />.
 				groupId="@{project.groupId}"
 				artifactId="@{documented.artifactId}"
 				scmUrl="@{project.scm.url}"
-			>
-				<ul>
-					<li>Minimum Java version changed from 1.7 to 1.8.</li>
-					<li>
-						Reduced use of property substitutions in <code>pom.xml</code>.
-						This is to help 3rd-party parsers that fail to perform full Maven-compatible substitutions.
-					</li>
-					<li>Fixed <code>ClassCastException</code> in <code>EncodeURIFilter.getActiveFilter(ServletRequest)</code>.</li>
-					<li>"Cache-Control" init parameters renamed to "cache-control".  Old values still work for compatibility.</li>
-					<li>
-						<ao:a href="apidocs/com/aoindustries/servlet/filter/StripInvalidXmlCharactersFilter.html">StripInvalidXmlCharactersFilter</ao:a>
-						now supports the REQUEST dispatcher, too.  It is recommended that all uses of this
-						filter include <![CDATA[&lt;dispatcher&gt;ERROR&lt;/dispatcher&gt;]]>
-					</li>
-					<li>
-						<p>
-							New filter <ao:a href="apidocs/com/aoindustries/servlet/filter/ApacheAuthenticationFilter.html">ApacheAuthenticationFilter</ao:a>
-							that parses Apache group file for role information while under Apache authentication.
-						</p>
-						<p>
-							When <ao:a href="https://tomcat.apache.org/tomcat-9.0-doc/config/ajp.html"><code>tomcatAuthentication</code></ao:a>
-							is set to <code>false</code>, user information is passed to Tomcat while group membership is not.
-							The filter parses the Apache group file and grants access to the roles corresponding to group names.
-						</p>
-					</li>
-					<li>
-						<ao:a href="apidocs/com/aoindustries/servlet/filter/Utf8RequestCharacterEncodingListener.html">Utf8RequestCharacterEncodingListener</ao:a>
-						is now enabled via <code>@WebListener</code> annotation, and thus does not need to be included
-						in <code>web.xml</code> or <code>web-fragment.xml</code> when <code>metadata-complete="false"</code>.
-					</li>
-					<li>
-						Now activating the following filters by default within a <code>META-INF/web-fragment.xml</code>,
-						with the fragment configured to be before all others:
-						<ol>
-							<li><ao:a href="apidocs/com/aoindustries/servlet/filter/StripInvalidXmlCharactersFilter.html">StripInvalidXmlCharactersFilter</ao:a></li>
-							<li><ao:a href="apidocs/com/aoindustries/servlet/filter/EncodeURIFilter.html">EncodeURIFilter</ao:a></li>
-						</ol>
-					</li>
-					<li>
-						<ao:a href="apidocs/com/aoindustries/servlet/filter/EncodeURIFilter.html">EncodeURIFilter</ao:a> configuration changed
-						to <![CDATA[&lt;context-param&gt;]]> named <code>com.aoindustries.servlet.filter.EncodeURIFilter.enableIRI</code>.
-						It is still off by default, but may be selectively enabled in development mode via <code>META-INF/context.xml</code>.
-					</li>
-					<li>
-						When <ao:a href="apidocs/com/aoindustries/servlet/filter/EncodeURIFilter.html">EncodeURIFilter</ao:a> has IRI support
-						enabled, it is now only activated when the current <ao:a href="https://aoindustries.com/ao-encoding/apidocs/com/aoindustries/encoding/Doctype.html">Doctype</ao:a>
-						supports <ao:a href="https://tools.ietf.org/html/rfc3987">RFC 3987 IRI</ao:a> Unicode format URLs, which currently
-						is only <ao:a href="https://aoindustries.com/ao-encoding/apidocs/com/aoindustries/encoding/Doctype.html#HTML5">HTML5</ao:a>.
-					</li>
-					<li><ao:a href="apidocs/com/aoindustries/servlet/filter/CountConcurrencyListener.html">CountConcurrencyListener</ao:a> is now a <code>@WebListener</code>.</li>
-					<li>Optimized ServletContext attribute initialization and concurrency.</li>
-				</ul>
-			</changelog:release>
+			/>
 		</c:if>
+
+		<changelog:release
+			projectName="@{documented.name}"
+			version="2.1.0"
+			datePublished="2020-03-26T19:28:23-05:00"
+			groupId="@{project.groupId}"
+			artifactId="@{documented.artifactId}"
+			scmUrl="@{project.scm.url}"
+		>
+			<ul>
+				<li>Minimum Java version changed from 1.7 to 1.8.</li>
+				<li>
+					Reduced use of property substitutions in <code>pom.xml</code>.
+					This is to help 3rd-party parsers that fail to perform full Maven-compatible substitutions.
+				</li>
+				<li>Fixed <code>ClassCastException</code> in <code>EncodeURIFilter.getActiveFilter(ServletRequest)</code>.</li>
+				<li>"Cache-Control" init parameters renamed to "cache-control".  Old values still work for compatibility.</li>
+				<li>
+					<ao:a href="apidocs/com/aoindustries/servlet/filter/StripInvalidXmlCharactersFilter.html">StripInvalidXmlCharactersFilter</ao:a>
+					now supports the REQUEST dispatcher, too.  It is recommended that all uses of this
+					filter include <![CDATA[&lt;dispatcher&gt;ERROR&lt;/dispatcher&gt;]]>
+				</li>
+				<li>
+					<p>
+						New filter <ao:a href="apidocs/com/aoindustries/servlet/filter/ApacheAuthenticationFilter.html">ApacheAuthenticationFilter</ao:a>
+						that parses Apache group file for role information while under Apache authentication.
+					</p>
+					<p>
+						When <ao:a href="https://tomcat.apache.org/tomcat-9.0-doc/config/ajp.html"><code>tomcatAuthentication</code></ao:a>
+						is set to <code>false</code>, user information is passed to Tomcat while group membership is not.
+						The filter parses the Apache group file and grants access to the roles corresponding to group names.
+					</p>
+				</li>
+				<li>
+					<ao:a href="apidocs/com/aoindustries/servlet/filter/Utf8RequestCharacterEncodingListener.html">Utf8RequestCharacterEncodingListener</ao:a>
+					is now enabled via <code>@WebListener</code> annotation, and thus does not need to be included
+					in <code>web.xml</code> or <code>web-fragment.xml</code> when <code>metadata-complete="false"</code>.
+				</li>
+				<li>
+					Now activating the following filters by default within a <code>META-INF/web-fragment.xml</code>,
+					with the fragment configured to be before all others:
+					<ol>
+						<li><ao:a href="apidocs/com/aoindustries/servlet/filter/StripInvalidXmlCharactersFilter.html">StripInvalidXmlCharactersFilter</ao:a></li>
+						<li><ao:a href="apidocs/com/aoindustries/servlet/filter/EncodeURIFilter.html">EncodeURIFilter</ao:a></li>
+					</ol>
+				</li>
+				<li>
+					<ao:a href="apidocs/com/aoindustries/servlet/filter/EncodeURIFilter.html">EncodeURIFilter</ao:a> configuration changed
+					to <![CDATA[&lt;context-param&gt;]]> named <code>com.aoindustries.servlet.filter.EncodeURIFilter.enableIRI</code>.
+					It is still off by default, but may be selectively enabled in development mode via <code>META-INF/context.xml</code>.
+				</li>
+				<li>
+					When <ao:a href="apidocs/com/aoindustries/servlet/filter/EncodeURIFilter.html">EncodeURIFilter</ao:a> has IRI support
+					enabled, it is now only activated when the current <ao:a href="https://aoindustries.com/ao-encoding/apidocs/com/aoindustries/encoding/Doctype.html">Doctype</ao:a>
+					supports <ao:a href="https://tools.ietf.org/html/rfc3987">RFC 3987 IRI</ao:a> Unicode format URLs, which currently
+					is only <ao:a href="https://aoindustries.com/ao-encoding/apidocs/com/aoindustries/encoding/Doctype.html#HTML5">HTML5</ao:a>.
+				</li>
+				<li><ao:a href="apidocs/com/aoindustries/servlet/filter/CountConcurrencyListener.html">CountConcurrencyListener</ao:a> is now a <code>@WebListener</code>.</li>
+				<li>Optimized ServletContext attribute initialization and concurrency.</li>
+			</ul>
+		</changelog:release>
 
 		<changelog:release
 			projectName="@{documented.name}"
