@@ -32,7 +32,7 @@ import javax.servlet.annotation.WebListener;
  * Tracks the request concurrency, used to decide to use concurrent or sequential implementations.
  */
 @WebListener
-// TODO: Rename ConcurrencyCounter?
+// TODO: Rename ConcurrencyCounter or RequestConcurrency?
 public class CountConcurrencyListener implements ServletRequestListener {
 
 	public static final String REQUEST_ATTRIBUTE = CountConcurrencyListener.class.getName() + ".concurrency";
