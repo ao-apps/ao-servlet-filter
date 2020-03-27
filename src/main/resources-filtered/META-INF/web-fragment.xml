@@ -65,7 +65,6 @@ along with ao-servlet-filter.  If not, see <http://www.gnu.org/licenses />.
 			interoperability should be off in production systems.
 		</description>
 		<param-name>com.aoindustries.servlet.filter.EncodeURIFilter.enableIRI</param-name>
-		<!-- TODO: Enable IRI by default (since is not restricted to HTML 5)? (Check with validators) -->
 		<param-value>false</param-value>
 	</context-param>
 	<filter>
