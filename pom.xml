@@ -45,6 +45,11 @@ along with ao-servlet-filter.  If not, see <http://www.gnu.org/licenses />.
 		<tag>HEAD</tag>
 	</scm>
 
+	<issueManagement>
+		<system>GitHub Issues</system>
+		<url>https://github.com/aoindustries/ao-servlet-filter/issues</url>
+	</issueManagement>
+
 	<profiles>
 		<profile>
 			<id>release</id>
