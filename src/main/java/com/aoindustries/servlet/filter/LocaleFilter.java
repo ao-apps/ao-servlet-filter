@@ -422,6 +422,7 @@ abstract public class LocaleFilter implements Filter {
 			&& !iri.pathEndsWithIgnoreCase(".png")
 			&& !iri.pathEndsWithIgnoreCase(".svg")
 			&& !iri.pathEndsWithIgnoreCase(".txt")
+			&& !iri.pathEndsWithIgnoreCase(".webp")
 			&& !iri.pathEndsWithIgnoreCase(".zip")
 		;
 	}
