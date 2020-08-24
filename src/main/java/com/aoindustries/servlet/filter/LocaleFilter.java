@@ -38,6 +38,7 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import javax.servlet.DispatcherType;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -76,9 +77,10 @@ import javax.servlet.http.HttpServletResponseWrapper;
  * Also sets the ThreadLocale.
  * </p>
  * <p>
- * If the request is a GET request and the request parameter is missing, invalid, or does not match the
- * final resolved locale, the client is 301 redirected to the URL including the <code>paramName</code>
- * parameter.  This is to help avoid possible duplicate content penalties for search engines.
+ * If the request is a GET request, is not in the {@link DispatcherType#ERROR} dispatcher, and the request parameter is
+ * missing, invalid, or does not match the final resolved locale, the client is 301 redirected to the
+ * URL including the <var>paramName</var> parameter.  This is to help avoid possible duplicate content penalties for
+ * search engines.
  * </p>
  *
  * @see ThreadLocale
@@ -168,7 +170,7 @@ abstract public class LocaleFilter implements Filter {
 					// 301 redirect if paramName should not be on request, stripping paramName
 					paramValue != null
 					&& HttpServletUtil.METHOD_GET.equals(httpRequest.getMethod())
-					// TODO: && request.getDispatcherType() != DispatcherType.ERROR
+					&& request.getDispatcherType() != DispatcherType.ERROR
 					&& (
 						// Never allow paramName on non-localized paths
 						!isLocalized
@@ -249,10 +251,10 @@ abstract public class LocaleFilter implements Filter {
 					}
 					final String localeString = toLocaleString(locale);
 					if(
-						// 301 redirect if paramName not on GET request
+						// 301 redirect if paramName not on GET request and not in ERROR dispatcher
 						// or if the parameter value doesn't match the resolved locale
 						HttpServletUtil.METHOD_GET.equals(httpRequest.getMethod())
-						// TODO: && request.getDispatcherType() != DispatcherType.ERROR
+						&& request.getDispatcherType() != DispatcherType.ERROR
 						&& !localeString.equals(paramValue)
 					) {
 						if(DEBUG) servletContext.log("DEBUG: Redirecting for missing or mismatched locale parameter: " + localeString);
