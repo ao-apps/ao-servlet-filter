@@ -143,9 +143,15 @@ public class NoSessionFilter implements Filter {
 	 */
 	private IRI addCookieValues(HttpServletRequest request, Map<String,Cookie> newCookies, IRI iri) {
 		// Don't add for certains file types
+		// TODO: This list is getting long.  Use a map?
 		if(
-			// Matches SessionResponseWrapper
-			// Matches LocaleFilter
+			// Matches LocaleFilter.java
+			// Is NoSessionFilter.java
+			// Matches SessionResponseWrapper.java
+			// Related to LastModifiedServlet.java
+			// Related to ao-mime-types/…/web-fragment.xml
+			// Related to ContentType.java
+			// Related to MimeType.java
 			!iri.pathEndsWithIgnoreCase(".bmp")
 			&& !iri.pathEndsWithIgnoreCase(".css")
 			&& !iri.pathEndsWithIgnoreCase(".dia")
@@ -160,6 +166,12 @@ public class NoSessionFilter implements Filter {
 			&& !iri.pathEndsWithIgnoreCase(".txt")
 			&& !iri.pathEndsWithIgnoreCase(".webp")
 			&& !iri.pathEndsWithIgnoreCase(".zip")
+			// Web development
+			&& !iri.pathEndsWithIgnoreCase(".less")
+			&& !iri.pathEndsWithIgnoreCase(".sass")
+			&& !iri.pathEndsWithIgnoreCase(".scss")
+			&& !iri.pathEndsWithIgnoreCase(".css.map")
+			&& !iri.pathEndsWithIgnoreCase(".js.map")
 		) {
 			Cookie[] oldCookies = null;
 			boolean oldCookiesSet = false;

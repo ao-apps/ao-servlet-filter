@@ -37,7 +37,7 @@ along with ao-servlet-filter.  If not, see <http://www.gnu.org/licenses />.
 		shortTitle="Changelog"
 		tocLevels="1"
 		datePublished="2016-10-29T21:37:35-0500"
-		dateModified="2020-04-21T03:55:26-05:00"
+		dateModified="2020-08-24T01:49:03-05:00"
 	>
 		<!-- The current snapshot, unreleased version -->
 		<c:set var="version" value="@{com.aoindustries:ao-servlet-filter:pom.version}" />
@@ -52,7 +52,14 @@ along with ao-servlet-filter.  If not, see <http://www.gnu.org/licenses />.
 				groupId="@{project.groupId}"
 				artifactId="@{documented.artifactId}"
 				scmUrl="@{project.scm.url}"
-			/>
+			>
+				<ul>
+					<li>
+						Added support for Web development file types <code>*.less</code>, <code>*.sass</code>,
+						<code>*.scss</code>, <code>*.css.map</code>, and <code>*.js.map</code>.
+					</li>
+				</ul>
+			</changelog:release>
 		</c:if>
 
 		<changelog:release

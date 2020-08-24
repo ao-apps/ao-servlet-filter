@@ -83,6 +83,7 @@ import javax.servlet.http.HttpServletResponseWrapper;
  *
  * @see ThreadLocale
  */
+// TODO: Support devMode like other implementation of LocaleFilter
 abstract public class LocaleFilter implements Filter {
 
 	private static final boolean DEBUG = false;
@@ -167,6 +168,7 @@ abstract public class LocaleFilter implements Filter {
 					// 301 redirect if paramName should not be on request, stripping paramName
 					paramValue != null
 					&& HttpServletUtil.METHOD_GET.equals(httpRequest.getMethod())
+					// TODO: && request.getDispatcherType() != DispatcherType.ERROR
 					&& (
 						// Never allow paramName on non-localized paths
 						!isLocalized
@@ -250,6 +252,7 @@ abstract public class LocaleFilter implements Filter {
 						// 301 redirect if paramName not on GET request
 						// or if the parameter value doesn't match the resolved locale
 						HttpServletUtil.METHOD_GET.equals(httpRequest.getMethod())
+						// TODO: && request.getDispatcherType() != DispatcherType.ERROR
 						&& !localeString.equals(paramValue)
 					) {
 						if(DEBUG) servletContext.log("DEBUG: Redirecting for missing or mismatched locale parameter: " + localeString);
@@ -407,9 +410,15 @@ abstract public class LocaleFilter implements Filter {
 	 * URL that is not one of the excluded extensions (case-insensitive).
 	 */
 	protected boolean isLocalizedPath(IRI iri) {
+		// TODO: This list is getting long.  Use a map?
 		return
-			// Matches SessionResponseWrapper
-			// Matches NoSessionFilter
+			// Is LocaleFilter.java
+			// Matches NoSessionFilter.java
+			// Matches SessionResponseWrapper.java
+			// Related to LastModifiedServlet.java
+			// Related to ao-mime-types/…/web-fragment.xml
+			// Related to ContentType.java
+			// Related to MimeType.java
 			!iri.pathEndsWithIgnoreCase(".bmp")
 			&& !iri.pathEndsWithIgnoreCase(".css")
 			&& !iri.pathEndsWithIgnoreCase(".dia")
@@ -424,6 +433,12 @@ abstract public class LocaleFilter implements Filter {
 			&& !iri.pathEndsWithIgnoreCase(".txt")
 			&& !iri.pathEndsWithIgnoreCase(".webp")
 			&& !iri.pathEndsWithIgnoreCase(".zip")
+			// Web development
+			&& !iri.pathEndsWithIgnoreCase(".less")
+			&& !iri.pathEndsWithIgnoreCase(".sass")
+			&& !iri.pathEndsWithIgnoreCase(".scss")
+			&& !iri.pathEndsWithIgnoreCase(".css.map")
+			&& !iri.pathEndsWithIgnoreCase(".js.map")
 		;
 	}
 
