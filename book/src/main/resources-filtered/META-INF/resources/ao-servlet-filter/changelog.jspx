@@ -59,6 +59,12 @@ along with ao-servlet-filter.  If not, see <http://www.gnu.org/licenses />.
 						Added support for Web development file types <code>*.less</code>, <code>*.sass</code>,
 						<code>*.scss</code>, <code>*.css.map</code>, and <code>*.js.map</code>.
 					</li>
+					<li>
+						New init parameter <code>com.aoindustries.servlet.filter.LocaleFilter.redirectStatusCode</code>
+						that sets the HTTP status code used for redirects.  Defaults to 301, which is the value expected
+						to be used in production.  It is recommended to set to 302 in development mode, so that browser
+						caches will not get in the way.
+					</li>
 				</ul>
 			</changelog:release>
 		</c:if>

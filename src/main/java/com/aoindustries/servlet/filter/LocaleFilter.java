@@ -78,14 +78,13 @@ import javax.servlet.http.HttpServletResponseWrapper;
  * </p>
  * <p>
  * If the request is a GET request, is not in the {@link DispatcherType#ERROR} dispatcher, and the request parameter is
- * missing, invalid, or does not match the final resolved locale, the client is 301 redirected to the
+ * missing, invalid, or does not match the final resolved locale, the client is redirected to the
  * URL including the <var>paramName</var> parameter.  This is to help avoid possible duplicate content penalties for
  * search engines.
  * </p>
  *
  * @see ThreadLocale
  */
-// TODO: Support devMode like other implementation of LocaleFilter
 abstract public class LocaleFilter implements Filter {
 
 	private static final boolean DEBUG = false;
@@ -121,10 +120,17 @@ abstract public class LocaleFilter implements Filter {
 	}
 
 	private ServletContext servletContext;
+	private int redirectStatusCode;
 
 	@Override
 	public void init(FilterConfig config) throws ServletException {
-		this.servletContext = config.getServletContext();
+		servletContext = config.getServletContext();
+		String redirectStatusCodeStr = Strings.trimNullIfEmpty(
+			servletContext.getInitParameter(LocaleFilter.class.getName() + ".redirectStatusCode")
+		);
+		redirectStatusCode = (redirectStatusCodeStr == null)
+			? HttpServletResponse.SC_MOVED_PERMANENTLY
+			: Integer.parseInt(redirectStatusCodeStr);
 	}
 
 	/**
@@ -167,7 +173,7 @@ abstract public class LocaleFilter implements Filter {
 				final String paramValue = httpRequest.getParameter(paramName);
 
 				if(
-					// 301 redirect if paramName should not be on request, stripping paramName
+					// redirect if paramName should not be on request, stripping paramName
 					paramValue != null
 					&& HttpServletUtil.METHOD_GET.equals(httpRequest.getMethod())
 					&& request.getDispatcherType() != DispatcherType.ERROR
@@ -193,7 +199,7 @@ abstract public class LocaleFilter implements Filter {
 					newUrl = HttpServletUtil.getAbsoluteURL(httpRequest, newUrl, false);
 					// Perform URL rewriting
 					newUrl = httpResponse.encodeRedirectURL(newUrl);
-					HttpServletUtil.sendRedirect(HttpServletResponse.SC_MOVED_PERMANENTLY, httpResponse, newUrl);
+					HttpServletUtil.sendRedirect(redirectStatusCode, httpResponse, newUrl);
 					return;
 				}
 				if(
@@ -251,7 +257,7 @@ abstract public class LocaleFilter implements Filter {
 					}
 					final String localeString = toLocaleString(locale);
 					if(
-						// 301 redirect if paramName not on GET request and not in ERROR dispatcher
+						// redirect if paramName not on GET request and not in ERROR dispatcher
 						// or if the parameter value doesn't match the resolved locale
 						HttpServletUtil.METHOD_GET.equals(httpRequest.getMethod())
 						&& request.getDispatcherType() != DispatcherType.ERROR
@@ -273,7 +279,7 @@ abstract public class LocaleFilter implements Filter {
 						newUrl = HttpServletUtil.getAbsoluteURL(httpRequest, newUrl, false);
 						// Perform URL rewriting
 						newUrl = httpResponse.encodeRedirectURL(newUrl);
-						HttpServletUtil.sendRedirect(HttpServletResponse.SC_MOVED_PERMANENTLY, httpResponse, newUrl);
+						HttpServletUtil.sendRedirect(redirectStatusCode, httpResponse, newUrl);
 						return;
 					}
 					responseLocale = locale;
