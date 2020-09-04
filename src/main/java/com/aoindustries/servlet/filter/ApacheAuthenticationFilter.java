@@ -87,6 +87,7 @@ public class ApacheAuthenticationFilter implements Filter {
 	/**
 	 * Parses the Apache group file.
 	 */
+	@SuppressWarnings("ReturnOfCollectionOrArrayField") // Returning unmodifiable
 	private Map<String,Set<String>> getUserGroups() throws IOException {
 		synchronized(cacheLock) {
 			long lastModified = ServletContextCache.getInstance(servletContext).getLastModified(groupFile);

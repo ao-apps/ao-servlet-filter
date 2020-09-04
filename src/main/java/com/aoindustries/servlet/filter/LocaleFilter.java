@@ -407,6 +407,7 @@ abstract public class LocaleFilter implements Filter {
 	}
 
 	@Override
+	@SuppressWarnings("NoopMethodInAbstractClass")
 	public void destroy() {
 		// Do nothing
 	}

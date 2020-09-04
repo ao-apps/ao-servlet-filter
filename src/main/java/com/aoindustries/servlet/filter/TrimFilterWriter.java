@@ -42,7 +42,9 @@ public class TrimFilterWriter extends PrintWriter {
 	private static final String lineSeparator = System.getProperty("line.separator");
 
 	private final ServletResponse response;
+	@SuppressWarnings("PackageVisibleField")
 	boolean inTextArea = false;
+	@SuppressWarnings("PackageVisibleField")
 	boolean inPre = false;
 	private boolean atLineStart = true;
 
@@ -67,12 +69,11 @@ public class TrimFilterWriter extends PrintWriter {
 	 * 
 	 * @see  TrimFilterOutputStream#isTrimEnabled()  for same method implemented
 	 */
-	@SuppressWarnings("deprecation")
+	@SuppressWarnings({"deprecation", "StringEquality"})
 	private boolean isTrimEnabled() {
 		String contentType = response.getContentType();
-		// If the contentType is the same string (by identity), return the previously determined value.
-		// This assumes the same string instance is returned by the response when content type not changed between calls.
-		if(contentType!=isTrimEnabledCacheContentType) {
+		// Fast-path: If the contentType is the same string (by identity), return the previously determined value.
+		if(contentType != isTrimEnabledCacheContentType) {
 			isTrimEnabledCacheResult =
 				contentType==null
 				|| contentType.equals(ContentType.XHTML)
