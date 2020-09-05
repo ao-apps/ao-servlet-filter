@@ -42,7 +42,7 @@ import javax.servlet.ServletResponse;
  */
 public class TrimFilterOutputStream extends ServletOutputStream {
 
-	private static final String lineSeparator = System.getProperty("line.separator");
+	private static final String lineSeparator = System.lineSeparator();
 
 	private final ServletOutputStream wrapped;
 	private final ServletResponse response;

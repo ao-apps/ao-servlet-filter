@@ -39,7 +39,7 @@ import javax.servlet.ServletResponse;
  */
 public class TrimFilterWriter extends PrintWriter {
 
-	private static final String lineSeparator = System.getProperty("line.separator");
+	private static final String lineSeparator = System.lineSeparator();
 
 	private final ServletResponse response;
 	@SuppressWarnings("PackageVisibleField")
