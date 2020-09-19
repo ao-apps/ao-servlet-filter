@@ -22,6 +22,7 @@
  */
 package com.aoindustries.servlet.filter;
 
+import com.aoindustries.collections.AoCollections;
 import com.aoindustries.net.URIEncoder;
 import com.aoindustries.servlet.ServletRequestParameters;
 import com.aoindustries.servlet.http.HttpServletUtil;
@@ -29,7 +30,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.DispatcherType;
@@ -180,7 +180,7 @@ public class StripInvalidXmlCharactersFilter implements Filter {
 					HttpServletUtil.sendRedirect(HttpServletResponse.SC_MOVED_PERMANENTLY, httpResponse, url.toString());
 				} else {
 					// Filter invalid parameters and characters
-					final Map<String,List<String>> filteredMap = new LinkedHashMap<>(paramMap.size()*4/3+1);
+					final Map<String,List<String>> filteredMap = AoCollections.newLinkedHashMap(paramMap.size());
 					for(Map.Entry<String,List<String>> entry : paramMap.entrySet()) {
 						String name = entry.getKey();
 						if(isValid(name)) {
@@ -204,7 +204,7 @@ public class StripInvalidXmlCharactersFilter implements Filter {
 
 							@Override
 							public Map<String, String[]> getParameterMap() {
-								Map<String,String[]> newMap = new LinkedHashMap<>(filteredMap.size()*4/3+1);
+								Map<String,String[]> newMap = AoCollections.newLinkedHashMap(filteredMap.size());
 								for(Map.Entry<String,List<String>> entry : filteredMap.entrySet()) {
 									List<String> values = entry.getValue();
 									newMap.put(entry.getKey(), values.toArray(new String[values.size()]));
