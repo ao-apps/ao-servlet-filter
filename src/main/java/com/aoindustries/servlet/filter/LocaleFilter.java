@@ -196,7 +196,7 @@ abstract public class LocaleFilter implements Filter {
 					// Encode URI to ASCII format
 					String newUrl = iri.addParameters(newParams).toASCIIString();
 					// Convert to absolute URL
-					newUrl = HttpServletUtil.getAbsoluteURL(httpRequest, newUrl, false);
+					newUrl = HttpServletUtil.getAbsoluteURL(httpRequest, false, newUrl);
 					// Perform URL rewriting
 					newUrl = httpResponse.encodeRedirectURL(newUrl);
 					HttpServletUtil.sendRedirect(redirectStatusCode, httpResponse, newUrl);
@@ -276,7 +276,7 @@ abstract public class LocaleFilter implements Filter {
 						// Encode URI to ASCII format
 						String newUrl = iri.addParameters(newParams).toASCIIString();
 						// Convert to absolute URL
-						newUrl = HttpServletUtil.getAbsoluteURL(httpRequest, newUrl, false);
+						newUrl = HttpServletUtil.getAbsoluteURL(httpRequest, false, newUrl);
 						// Perform URL rewriting
 						newUrl = httpResponse.encodeRedirectURL(newUrl);
 						HttpServletUtil.sendRedirect(redirectStatusCode, httpResponse, newUrl);

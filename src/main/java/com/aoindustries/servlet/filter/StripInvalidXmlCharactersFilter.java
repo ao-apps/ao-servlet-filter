@@ -155,8 +155,8 @@ public class StripInvalidXmlCharactersFilter implements Filter {
 					StringBuilder url = new StringBuilder();
 					HttpServletUtil.getAbsoluteURL(
 						httpRequest,
-						httpRequest.getRequestURI(),
 						false,
+						httpRequest.getRequestURI(),
 						url
 					);
 					// Add any parameters
