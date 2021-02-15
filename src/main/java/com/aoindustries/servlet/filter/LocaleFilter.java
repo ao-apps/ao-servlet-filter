@@ -1,6 +1,6 @@
 /*
  * ao-servlet-filter - Reusable Java library of servlet filters.
- * Copyright (C) 2014, 2015, 2016, 2019, 2020  AO Industries, Inc.
+ * Copyright (C) 2014, 2015, 2016, 2019, 2020, 2021  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -190,7 +190,7 @@ abstract public class LocaleFilter implements Filter {
 					for(Map.Entry<String,List<String>> entry : new ServletRequestParameters(request).getParameterMap().entrySet()) {
 						String name = entry.getKey();
 						if(!paramName.equals(name)) {
-							newParams.addParameters(name, entry.getValue());
+							newParams.add(name, entry.getValue());
 						}
 					}
 					// Encode URI to ASCII format
@@ -269,10 +269,10 @@ abstract public class LocaleFilter implements Filter {
 						for(Map.Entry<String,List<String>> entry : new ServletRequestParameters(request).getParameterMap().entrySet()) {
 							String name = entry.getKey();
 							if(!paramName.equals(name)) {
-								newParams.addParameters(name, entry.getValue());
+								newParams.add(name, entry.getValue());
 							}
 						}
-						newParams.addParameter(paramName, localeString);
+						newParams.add(paramName, localeString);
 						// Encode URI to ASCII format
 						String newUrl = iri.addParameters(newParams).toASCIIString();
 						// Convert to absolute URL

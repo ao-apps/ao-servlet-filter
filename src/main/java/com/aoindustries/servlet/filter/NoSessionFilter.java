@@ -1,6 +1,6 @@
 /*
  * ao-servlet-filter - Reusable Java library of servlet filters.
- * Copyright (C) 2010, 2011, 2013, 2016, 2019, 2020  AO Industries, Inc.
+ * Copyright (C) 2010, 2011, 2013, 2016, 2019, 2020, 2021  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -180,7 +180,7 @@ public class NoSessionFilter implements Filter {
 					Cookie newCookie = newCookies.get(cookieName);
 					if(newCookie != null) {
 						if(cookieParams == null) cookieParams = new URIParametersMap();
-						cookieParams.addParameter(cookieUrlParamPrefix + cookieName, Cookies.getValue(newCookie));
+						cookieParams.add(cookieUrlParamPrefix + cookieName, Cookies.getValue(newCookie));
 					} else {
 						// Cookie was removed - do not add to URL
 					}
@@ -206,7 +206,7 @@ public class NoSessionFilter implements Filter {
 						}
 						if(!found) {
 							if(cookieParams == null) cookieParams = new URIParametersMap();
-							cookieParams.addParameter(paramName, values[values.length - 1]);
+							cookieParams.add(paramName, values[values.length - 1]);
 						}
 					}
 				}
