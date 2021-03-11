@@ -140,9 +140,9 @@ abstract public class LocaleFilter implements Filter {
 	 * 
 	 * @return  The mapping from localeString to locale
 	 */
-	public static Map<String,Locale> getEnabledLocales(ServletRequest request) {
+	public static Map<String, Locale> getEnabledLocales(ServletRequest request) {
 		@SuppressWarnings("unchecked")
-		Map<String,Locale> enabledLocales = (Map<String,Locale>)request.getAttribute(ENABLED_LOCALES_REQUEST_ATTRIBUTE);
+		Map<String, Locale> enabledLocales = (Map<String, Locale>)request.getAttribute(ENABLED_LOCALES_REQUEST_ATTRIBUTE);
 		if(enabledLocales==null) throw new IllegalStateException("Not in request filtered by LocaleFilter, unable to get enabled locales.");
 		return enabledLocales;
 	}
@@ -160,7 +160,7 @@ abstract public class LocaleFilter implements Filter {
 			&& (request instanceof HttpServletRequest)
 			&& (response instanceof HttpServletResponse)
 		) {
-			final Map<String,Locale> supportedLocales = getSupportedLocales(request);
+			final Map<String, Locale> supportedLocales = getSupportedLocales(request);
 			request.setAttribute(ENABLED_LOCALES_REQUEST_ATTRIBUTE, supportedLocales);
 			try {
 				final HttpServletRequest httpRequest = (HttpServletRequest)request;
@@ -187,7 +187,7 @@ abstract public class LocaleFilter implements Filter {
 					if(DEBUG) servletContext.log("DEBUG: Redirecting to remove \"" + paramName + "\" parameter.");
 					response.setCharacterEncoding(ENCODING.name());
 					MutableURIParameters newParams = new URIParametersMap();
-					for(Map.Entry<String,List<String>> entry : new ServletRequestParameters(request).getParameterMap().entrySet()) {
+					for(Map.Entry<String, List<String>> entry : new ServletRequestParameters(request).getParameterMap().entrySet()) {
 						String name = entry.getKey();
 						if(!paramName.equals(name)) {
 							newParams.add(name, entry.getValue());
@@ -266,7 +266,7 @@ abstract public class LocaleFilter implements Filter {
 						if(DEBUG) servletContext.log("DEBUG: Redirecting for missing or mismatched locale parameter: " + localeString);
 						response.setCharacterEncoding(ENCODING.name());
 						MutableURIParameters newParams = new URIParametersMap();
-						for(Map.Entry<String,List<String>> entry : new ServletRequestParameters(request).getParameterMap().entrySet()) {
+						for(Map.Entry<String, List<String>> entry : new ServletRequestParameters(request).getParameterMap().entrySet()) {
 							String name = entry.getKey();
 							if(!paramName.equals(name)) {
 								newParams.add(name, entry.getValue());
@@ -479,7 +479,7 @@ abstract public class LocaleFilter implements Filter {
 	/**
 	 * Performs the language negotiation based on the Accept-Language header(s).
 	 */
-	protected Locale getBestLocale(HttpServletRequest request, Map<String,Locale> supportedLocales) throws ServletException {
+	protected Locale getBestLocale(HttpServletRequest request, Map<String, Locale> supportedLocales) throws ServletException {
 		@SuppressWarnings("unchecked")
 		Enumeration<String> acceptLanguages = request.getHeaders("accept-language");
 		if(acceptLanguages == null) {
@@ -560,7 +560,7 @@ abstract public class LocaleFilter implements Filter {
 	 *   <li>null</li>
 	 * </ol>
 	 */
-	protected MatchedLocale getBestMatch(Map<String,Locale> supportedLocales, String acceptLanguage) {
+	protected MatchedLocale getBestMatch(Map<String, Locale> supportedLocales, String acceptLanguage) {
 		// Parse into language, country, and variant
 		String language;
 		String country;
@@ -655,7 +655,7 @@ abstract public class LocaleFilter implements Filter {
 	 *
 	 * @see  #toLocaleString(java.util.Locale) 
 	 */
-	abstract protected Map<String,Locale> getSupportedLocales(ServletRequest request) throws ServletException;
+	abstract protected Map<String, Locale> getSupportedLocales(ServletRequest request) throws ServletException;
 
 	/**
 	 * Gets the default locale to be used when a best locale cannot be resolved.
@@ -666,5 +666,5 @@ abstract public class LocaleFilter implements Filter {
 	 * 
 	 * @see  #getSupportedLocales(javax.servlet.ServletRequest)
 	 */
-	abstract protected Locale getDefaultLocale(ServletRequest request, Map<String,Locale> supportedLocales) throws ServletException;
+	abstract protected Locale getDefaultLocale(ServletRequest request, Map<String, Locale> supportedLocales) throws ServletException;
 }

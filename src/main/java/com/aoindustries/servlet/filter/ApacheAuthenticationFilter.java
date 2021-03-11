@@ -1,6 +1,6 @@
 /*
  * ao-servlet-filter - Reusable Java library of servlet filters.
- * Copyright (C) 2020  AO Industries, Inc.
+ * Copyright (C) 2020, 2021  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -82,13 +82,13 @@ public class ApacheAuthenticationFilter implements Filter {
 	private final CacheLock cacheLock = new CacheLock();
 
 	private long cacheLastModified;
-	private Map<String,Set<String>> cache;
+	private Map<String, Set<String>> cache;
 
 	/**
 	 * Parses the Apache group file.
 	 */
 	@SuppressWarnings("ReturnOfCollectionOrArrayField") // Returning unmodifiable
-	private Map<String,Set<String>> getUserGroups() throws IOException {
+	private Map<String, Set<String>> getUserGroups() throws IOException {
 		synchronized(cacheLock) {
 			long lastModified = ServletContextCache.getInstance(servletContext).getLastModified(groupFile);
 			if(cache == null || lastModified != cacheLastModified) {
@@ -99,7 +99,7 @@ public class ApacheAuthenticationFilter implements Filter {
 							new InputStreamReader(in, StandardCharsets.UTF_8)
 						)
 					) {
-						Map<String,Set<String>> parsed = new LinkedHashMap<>();
+						Map<String, Set<String>> parsed = new LinkedHashMap<>();
 						String line;
 						while((line = reader.readLine()) != null) {
 							line = line.trim();
@@ -122,8 +122,8 @@ public class ApacheAuthenticationFilter implements Filter {
 							}
 						}
 						// Invert
-						Map<String,Set<String>> userGroups = new LinkedHashMap<>();
-						for(Map.Entry<String,Set<String>> entry : parsed.entrySet()) {
+						Map<String, Set<String>> userGroups = new LinkedHashMap<>();
+						for(Map.Entry<String, Set<String>> entry : parsed.entrySet()) {
 							String group = entry.getKey();
 							for(String username : entry.getValue()) {
 								Set<String> groups = userGroups.get(username);
@@ -132,7 +132,7 @@ public class ApacheAuthenticationFilter implements Filter {
 							}
 						}
 						// Make unmodifiable
-						for(Map.Entry<String,Set<String>> entry : userGroups.entrySet()) {
+						for(Map.Entry<String, Set<String>> entry : userGroups.entrySet()) {
 							entry.setValue(AoCollections.optimalUnmodifiableSet(entry.getValue()));
 						}
 						cache = AoCollections.optimalUnmodifiableMap(userGroups);

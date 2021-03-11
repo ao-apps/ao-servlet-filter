@@ -140,7 +140,7 @@ public class NoSessionFilter implements Filter {
 	 * Adds the values for any new cookies to the URL.  This handles cookie-based
 	 * session management through URL rewriting.
 	 */
-	private IRI addCookieValues(HttpServletRequest request, Map<String,Cookie> newCookies, IRI iri) {
+	private IRI addCookieValues(HttpServletRequest request, Map<String, Cookie> newCookies, IRI iri) {
 		// Don't add for certains file types
 		// TODO: This list is getting long.  Use a map?
 		if(
@@ -216,7 +216,7 @@ public class NoSessionFilter implements Filter {
 		return iri;
 	}
 
-	private String addCookieValues(HttpServletRequest request, Map<String,Cookie> newCookies, String url) {
+	private String addCookieValues(HttpServletRequest request, Map<String, Cookie> newCookies, String url) {
 		return addCookieValues(request, newCookies, new IRI(url)).toASCIIString();
 	}
 
@@ -235,7 +235,7 @@ public class NoSessionFilter implements Filter {
 				) {
 					final HttpServletRequest originalRequest = (HttpServletRequest)request;
 					final HttpServletResponse originalResponse = (HttpServletResponse)response;
-					final Map<String,Cookie> newCookies = AoCollections.newHashMap(cookieNames.size());
+					final Map<String, Cookie> newCookies = AoCollections.newHashMap(cookieNames.size());
 					chain.doFilter(
 						new HttpServletRequestWrapper(originalRequest) {
 							@Override
@@ -255,9 +255,9 @@ public class NoSessionFilter implements Filter {
 							}
 							/** Filter cookie parameters */
 							@Override
-							public Map<String,String[]> getParameterMap() {
+							public Map<String, String[]> getParameterMap() {
 								// Only create new map if at least one parameter is filtered
-								Map<String,String[]> completeMap = super.getParameterMap();
+								Map<String, String[]> completeMap = super.getParameterMap();
 								boolean needsFilter = false;
 								for(String paramName : completeMap.keySet()) {
 									if(paramName.startsWith(cookieUrlParamPrefix)) {
@@ -266,8 +266,8 @@ public class NoSessionFilter implements Filter {
 									}
 								}
 								if(!needsFilter) return completeMap;
-								Map<String,String[]> filteredMap = AoCollections.newLinkedHashMap(completeMap.size() - 1); // size - 1: we will filter at least one
-								for(Map.Entry<String,String[]> entry : completeMap.entrySet()) {
+								Map<String, String[]> filteredMap = AoCollections.newLinkedHashMap(completeMap.size() - 1); // size - 1: we will filter at least one
+								for(Map.Entry<String, String[]> entry : completeMap.entrySet()) {
 									String paramName = entry.getKey();
 									if(!paramName.startsWith(cookieUrlParamPrefix)) filteredMap.put(paramName, entry.getValue());
 								}
@@ -319,7 +319,7 @@ public class NoSessionFilter implements Filter {
 								Enumeration<String> parameterNames = originalRequest.getParameterNames();
 								if(headerCookies == null && !parameterNames.hasMoreElements()) return null; // Not possibly any cookies
 								// Add header cookies
-								Map<String,Cookie> allCookies = AoCollections.newLinkedHashMap(cookieNames.size()); // Worst-case map size is cookieNames
+								Map<String, Cookie> allCookies = AoCollections.newLinkedHashMap(cookieNames.size()); // Worst-case map size is cookieNames
 								if(headerCookies != null) {
 									for(Cookie cookie : headerCookies) {
 										String cookieName = Cookies.getName(cookie);

@@ -1,6 +1,6 @@
 /*
  * ao-servlet-filter - Reusable Java library of servlet filters.
- * Copyright (C) 2016, 2019, 2020  AO Industries, Inc.
+ * Copyright (C) 2016, 2019, 2020, 2021  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -131,9 +131,9 @@ public class StripInvalidXmlCharactersFilter implements Filter {
 			&& (response instanceof HttpServletResponse)
 		) {
 			HttpServletRequest httpRequest = (HttpServletRequest)request;
-			Map<String,List<String>> paramMap = new ServletRequestParameters(request).getParameterMap();
+			Map<String, List<String>> paramMap = new ServletRequestParameters(request).getParameterMap();
 			boolean isValid = true;
-			for(Map.Entry<String,List<String>> entry : paramMap.entrySet()) {
+			for(Map.Entry<String, List<String>> entry : paramMap.entrySet()) {
 				if(!isValid(entry.getKey())) {
 					isValid = false;
 					break;
@@ -161,7 +161,7 @@ public class StripInvalidXmlCharactersFilter implements Filter {
 					);
 					// Add any parameters
 					boolean didOne = false;
-					for(Map.Entry<String,List<String>> entry : paramMap.entrySet()) {
+					for(Map.Entry<String, List<String>> entry : paramMap.entrySet()) {
 						String name = entry.getKey();
 						if(isValid(name)) {
 							for(String value : entry.getValue()) {
@@ -180,8 +180,8 @@ public class StripInvalidXmlCharactersFilter implements Filter {
 					HttpServletUtil.sendRedirect(HttpServletResponse.SC_MOVED_PERMANENTLY, httpResponse, url.toString());
 				} else {
 					// Filter invalid parameters and characters
-					final Map<String,List<String>> filteredMap = AoCollections.newLinkedHashMap(paramMap.size());
-					for(Map.Entry<String,List<String>> entry : paramMap.entrySet()) {
+					final Map<String, List<String>> filteredMap = AoCollections.newLinkedHashMap(paramMap.size());
+					for(Map.Entry<String, List<String>> entry : paramMap.entrySet()) {
 						String name = entry.getKey();
 						if(isValid(name)) {
 							List<String> values = entry.getValue();
@@ -204,8 +204,8 @@ public class StripInvalidXmlCharactersFilter implements Filter {
 
 							@Override
 							public Map<String, String[]> getParameterMap() {
-								Map<String,String[]> newMap = AoCollections.newLinkedHashMap(filteredMap.size());
-								for(Map.Entry<String,List<String>> entry : filteredMap.entrySet()) {
+								Map<String, String[]> newMap = AoCollections.newLinkedHashMap(filteredMap.size());
+								for(Map.Entry<String, List<String>> entry : filteredMap.entrySet()) {
 									List<String> values = entry.getValue();
 									newMap.put(entry.getKey(), values.toArray(new String[values.size()]));
 								}

@@ -1,6 +1,6 @@
 /*
  * ao-servlet-filter - Reusable Java library of servlet filters.
- * Copyright (C) 2017, 2019, 2020  AO Industries, Inc.
+ * Copyright (C) 2017, 2019, 2020, 2021  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -96,7 +96,7 @@ public class AddResponseHeaderFilter implements Filter {
 
 	private List<Pattern> regexs;
 
-	private Map<String,String> headers;
+	private Map<String, String> headers;
 
 	@Override
 	public void init(FilterConfig config) {
@@ -112,7 +112,7 @@ public class AddResponseHeaderFilter implements Filter {
 
 		// Find and sort any regular expressions
 		{
-			SortedMap<Integer,Pattern> regexsByNum = new TreeMap<>();
+			SortedMap<Integer, Pattern> regexsByNum = new TreeMap<>();
 			Enumeration<String> paramNames = config.getInitParameterNames();
 			while(paramNames.hasMoreElements()) {
 				String paramName = paramNames.nextElement();
@@ -144,7 +144,7 @@ public class AddResponseHeaderFilter implements Filter {
 
 		// Find all headers
 		{
-			Map<String,String> foundHeaders = new LinkedHashMap<>();
+			Map<String, String> foundHeaders = new LinkedHashMap<>();
 			Enumeration<String> paramNames = config.getInitParameterNames();
 			while(paramNames.hasMoreElements()) {
 				String paramName = paramNames.nextElement();
@@ -164,7 +164,7 @@ public class AddResponseHeaderFilter implements Filter {
 				headers = Collections.emptyMap();
 			} else if(foundHeaders.size() == 1) {
 				// Use singleton map for common case of single header
-				Map.Entry<String,String> header = foundHeaders.entrySet().iterator().next();
+				Map.Entry<String, String> header = foundHeaders.entrySet().iterator().next();
 				headers = Collections.singletonMap(header.getKey(), header.getValue());
 			} else {
 				headers = foundHeaders;
@@ -200,7 +200,7 @@ public class AddResponseHeaderFilter implements Filter {
 			}
 			if(matched) {
 				HttpServletResponse httpResponse = (HttpServletResponse)response;
-				for(Map.Entry<String,String> entry : headers.entrySet()) {
+				for(Map.Entry<String, String> entry : headers.entrySet()) {
 					String name = entry.getKey();
 					if(allowMultiples || !httpResponse.containsHeader(name)) {
 						httpResponse.addHeader(name, entry.getValue());
