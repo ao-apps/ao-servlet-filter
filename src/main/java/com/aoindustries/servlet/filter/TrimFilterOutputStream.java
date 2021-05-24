@@ -1,6 +1,6 @@
 /*
  * ao-servlet-filter - Reusable Java library of servlet filters.
- * Copyright (C) 2006, 2007, 2008, 2009, 2010, 2011, 2013, 2014, 2016, 2020  AO Industries, Inc.
+ * Copyright (C) 2006, 2007, 2008, 2009, 2010, 2011, 2013, 2014, 2016, 2020, 2021  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -27,7 +27,7 @@ import com.aoindustries.util.BufferManager;
 import java.io.IOException;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.ServletResponse;
-// Java EE 7: import javax.servlet.WriteListener;
+import javax.servlet.WriteListener;
 
 /**
  * Filters the output and removes extra white space at the beginning of lines and completely removes blank lines.
@@ -391,7 +391,6 @@ public class TrimFilterOutputStream extends ServletOutputStream {
 		}
 	}
 
-	/* Java EE 7: 
 	@Override
 	public boolean isReady() {
 		return wrapped.isReady();
@@ -401,5 +400,4 @@ public class TrimFilterOutputStream extends ServletOutputStream {
 	public void setWriteListener(WriteListener wl) {
 		wrapped.setWriteListener(wl);
 	}
-	 */
 }
