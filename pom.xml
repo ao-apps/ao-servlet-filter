@@ -32,6 +32,15 @@ along with ao-servlet-filter.  If not, see <http://www.gnu.org/licenses />.
 	<groupId>com.aoindustries</groupId><artifactId>ao-servlet-filter</artifactId><version>2.4.0-SNAPSHOT</version>
 	<packaging>bundle</packaging>
 
+	<properties>
+		<!-- Java 1.8 -->
+		<javase.version>1.8</javase.version>
+		<javase.release>8</javase.release>
+		<javadoc.link.javase>${javadoc.link.javase.8}</javadoc.link.javase>
+		<!-- This must be set in your ~/.m2/settings.xml when building with JDK < 9 -->
+		<javase.bootclasspath>${javase.bootclasspath.8}</javase.bootclasspath>
+	</properties>
+
 	<name>AO Servlet Filter</name>
 	<url>https://aoindustries.com/ao-servlet-filter/</url>
 	<description>Reusable Java library of servlet filters.</description>
