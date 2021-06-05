@@ -20,9 +20,9 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with ao-servlet-filter.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.aoindustries.servlet.filter;
+package com.aoapps.servlet.filter;
 
-import com.aoindustries.util.WildcardPatternMatcher;
+import com.aoapps.hodgepodge.util.WildcardPatternMatcher;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;

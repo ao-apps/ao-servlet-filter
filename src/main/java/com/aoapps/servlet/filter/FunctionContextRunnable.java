@@ -1,6 +1,6 @@
 /*
  * ao-servlet-filter - Reusable Java library of servlet filters.
- * Copyright (C) 2016  AO Industries, Inc.
+ * Copyright (C) 2016, 2021  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -20,23 +20,16 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with ao-servlet-filter.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.aoindustries.servlet.filter;
+package com.aoapps.servlet.filter;
 
-import com.aoindustries.util.concurrent.ThreadLocalsCallable;
-import java.util.concurrent.Callable;
+import com.aoapps.lang.concurrent.ThreadLocalsRunnable;
 
 /**
- * Maintains current function context for the provided callable.
+ * Maintains current function context for the provided runnable.
  */
-public class FunctionContextCallable<T> extends ThreadLocalsCallable<T> {
+public class FunctionContextRunnable extends ThreadLocalsRunnable {
 
-	static final ThreadLocal<?>[] threadLocals = {
-		FunctionContext.servletContextTL,
-		FunctionContext.requestTL,
-		FunctionContext.responseTL
-	};
-
-	public FunctionContextCallable(Callable<T> task) {
-		super(task, threadLocals);
+	public FunctionContextRunnable(Runnable task) {
+		super(task, FunctionContextCallable.threadLocals);
 	}
 }

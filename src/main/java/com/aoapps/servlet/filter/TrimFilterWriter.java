@@ -1,6 +1,6 @@
 /*
  * ao-servlet-filter - Reusable Java library of servlet filters.
- * Copyright (C) 2006, 2007, 2008, 2009, 2010, 2011, 2013, 2014, 2016, 2020, 2021  AO Industries, Inc.
+ * Copyright (C) 2006, 2007, 2008, 2009, 2010, 2011, 2013, 2016, 2020, 2021  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -20,31 +20,27 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with ao-servlet-filter.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.aoindustries.servlet.filter;
+package com.aoapps.servlet.filter;
 
-import com.aoindustries.io.ContentType;
-import com.aoindustries.util.BufferManager;
-import java.io.IOException;
-import javax.servlet.ServletOutputStream;
+import com.aoapps.lang.io.ContentType;
+import com.aoapps.lang.util.BufferManager;
+import java.io.PrintWriter;
+import java.io.Writer;
+import java.util.Locale;
 import javax.servlet.ServletResponse;
-import javax.servlet.WriteListener;
 
 /**
  * Filters the output and removes extra white space at the beginning of lines and completely removes blank lines.
  * TEXTAREAs are automatically detected as long as they start with exact "&lt;textarea" and end with exactly "&lt;/textarea" (case insensitive).
- * PREs are automatically detected as long as they start with exact "&lt;pre" and end with exactly "&lt;/pre" (case insensitive).
  * The reason for the specific tag format is to simplify the implementation
- * for maximum performance.  Careful attention has been paid to minimize the internal buffering in this class.  As many write/print operations as possible
- * are passed directly to the wrapped <code>ServletOutputStream</code>.  Please note that these methods are not synchronized, as servlet output is normally written
- * by the thread allocated for the request.  If synchronization is required it should be provided externally.
+ * for maximum performance.  Careful attention has been paid to minimize the internal buffering in this class.
  * 
  * @author  AO Industries, Inc.
  */
-public class TrimFilterOutputStream extends ServletOutputStream {
+public class TrimFilterWriter extends PrintWriter {
 
 	private static final String lineSeparator = System.lineSeparator();
 
-	private final ServletOutputStream wrapped;
 	private final ServletResponse response;
 	@SuppressWarnings("PackageVisibleField")
 	boolean inTextArea = false;
@@ -56,12 +52,12 @@ public class TrimFilterOutputStream extends ServletOutputStream {
 	private int preReadCharMatchCount = 0;
 
 	/**
-	 * Only used within individual methods, released on close.
+	 * Used within individual methods only and released on close.
 	 */
-	private byte[] outputBuffer = BufferManager.getBytes();
+	private char[] outputBuffer = BufferManager.getChars();
 
-	public TrimFilterOutputStream(ServletOutputStream wrapped, ServletResponse response) {
-		this.wrapped = wrapped;
+	public TrimFilterWriter(Writer out, ServletResponse response) {
+		super(out);
 		this.response = response;
 	}
 
@@ -71,7 +67,7 @@ public class TrimFilterOutputStream extends ServletOutputStream {
 	/**
 	 * Determines if trimming is enabled based on the output content type.
 	 * 
-	 * @see  TrimFilterWriter#isTrimEnabled()  for same method implemented
+	 * @see  TrimFilterOutputStream#isTrimEnabled()  for same method implemented
 	 */
 	@SuppressWarnings({"deprecation", "StringEquality"})
 	private boolean isTrimEnabled() {
@@ -94,18 +90,19 @@ public class TrimFilterOutputStream extends ServletOutputStream {
 		return isTrimEnabledCacheResult;
 	}
 
+	/*
 	@Override
-	public void flush() throws IOException {
-		wrapped.flush();
-	}
+	public void flush() {
+		out.flush();
+	}*/
 
 	@Override
-	public void close() throws IOException {
+	public void close() {
 		if(outputBuffer!=null) {
 			BufferManager.release(outputBuffer, false);
 			outputBuffer = null;
 		}
-		wrapped.close();
+		super.close();
 		readCharMatchCount = 0;
 		preReadCharMatchCount = 0;
 		inTextArea = false;
@@ -113,17 +110,29 @@ public class TrimFilterOutputStream extends ServletOutputStream {
 		atLineStart = true;
 	}
 
+	static final char[] textarea = {'<', 't', 'e', 'x', 't', 'a', 'r', 'e', 'a'};
+	static final char[] TEXTAREA = {'<', 'T', 'E', 'X', 'T', 'A', 'R', 'E', 'A'};
+
+	static final char[] textarea_close = {'<', '/', 't', 'e', 'x', 't', 'a', 'r', 'e', 'a'};
+	static final char[] TEXTAREA_CLOSE = {'<', '/', 'T', 'E', 'X', 'T', 'A', 'R', 'E', 'A'};
+
+	static final char[] pre = {'<', 'p', 'r', 'e'};
+	static final char[] PRE = {'<', 'P', 'R', 'E'};
+
+	static final char[] pre_close = {'<', '/', 'p', 'r', 'e'};
+	static final char[] PRE_CLOSE = {'<', '/', 'P', 'R', 'E'};
+
 	/**
 	 * Processes one character and returns true if the character should be outputted.
 	 */
 	private boolean processChar(char c) {
 		if(inTextArea) {
 			if(
-				c==TrimFilterWriter.textarea_close[readCharMatchCount]
-				|| c==TrimFilterWriter.TEXTAREA_CLOSE[readCharMatchCount]
+				c==textarea_close[readCharMatchCount]
+				|| c==TEXTAREA_CLOSE[readCharMatchCount]
 			) {
 				readCharMatchCount++;
-				if(readCharMatchCount>=TrimFilterWriter.textarea_close.length) {
+				if(readCharMatchCount>=textarea_close.length) {
 					inTextArea=false;
 					readCharMatchCount=0;
 				}
@@ -133,11 +142,11 @@ public class TrimFilterOutputStream extends ServletOutputStream {
 			return true;
 		} else if(inPre) {
 			if(
-				c==TrimFilterWriter.pre_close[preReadCharMatchCount]
-				|| c==TrimFilterWriter.PRE_CLOSE[preReadCharMatchCount]
+				c==pre_close[preReadCharMatchCount]
+				|| c==PRE_CLOSE[preReadCharMatchCount]
 			) {
 				preReadCharMatchCount++;
-				if(preReadCharMatchCount>=TrimFilterWriter.pre_close.length) {
+				if(preReadCharMatchCount>=pre_close.length) {
 					inPre=false;
 					preReadCharMatchCount=0;
 				}
@@ -169,11 +178,11 @@ public class TrimFilterOutputStream extends ServletOutputStream {
 			} else {
 				atLineStart = false;
 				if(
-					c==TrimFilterWriter.textarea[readCharMatchCount]
-					|| c==TrimFilterWriter.TEXTAREA[readCharMatchCount]
+					c==textarea[readCharMatchCount]
+					|| c==TEXTAREA[readCharMatchCount]
 				) {
 					readCharMatchCount++;
-					if(readCharMatchCount>=TrimFilterWriter.textarea.length) {
+					if(readCharMatchCount>=textarea.length) {
 						inTextArea=true;
 						readCharMatchCount=0;
 					}
@@ -181,11 +190,11 @@ public class TrimFilterOutputStream extends ServletOutputStream {
 					readCharMatchCount=0;
 				}
 				if(
-					c==TrimFilterWriter.pre[preReadCharMatchCount]
-					|| c==TrimFilterWriter.PRE[preReadCharMatchCount]
+					c==pre[preReadCharMatchCount]
+					|| c==PRE[preReadCharMatchCount]
 				) {
 					preReadCharMatchCount++;
-					if(preReadCharMatchCount>=TrimFilterWriter.pre.length) {
+					if(preReadCharMatchCount>=pre.length) {
 						inPre=true;
 						preReadCharMatchCount=0;
 					}
@@ -198,17 +207,17 @@ public class TrimFilterOutputStream extends ServletOutputStream {
 	}
 
 	@Override
-	public void write(int b) throws IOException {
+	public void write(int c) {
 		if(
 			!isTrimEnabled()
-			|| processChar((char)b)
-		) wrapped.write(b);
+			|| processChar((char)c)
+		) super.write(c);
 	}
 
 	@Override
-	public void write(byte[] buf, int off, int len) throws IOException {
+	public void write(char buf[], int off, int len) {
 		if(isTrimEnabled()) {
-			final byte[] buff = outputBuffer;
+			char[] buff = outputBuffer;
 			// If len > OUPUT_BUFFER_SIZE, process in blocks
 			int buffUsed = 0;
 			while(len>0) {
@@ -218,12 +227,12 @@ public class TrimFilterOutputStream extends ServletOutputStream {
 					index<blockEnd;
 					index++
 				) {
-					byte b = buf[index];
-					if(processChar((char)b)) {
-						buff[buffUsed++] = b;
+					char c = buf[index];
+					if(processChar(c)) {
+						buff[buffUsed++] = c;
 						if(buffUsed>=BufferManager.BUFFER_SIZE) {
 							assert buffUsed==BufferManager.BUFFER_SIZE;
-							wrapped.write(buff, 0, buffUsed);
+							super.write(buff, 0, buffUsed);
 							buffUsed = 0;
 						}
 					}
@@ -231,73 +240,23 @@ public class TrimFilterOutputStream extends ServletOutputStream {
 				off+=blockLen;
 				len-=blockLen;
 			}
-			if(buffUsed>0) wrapped.write(buff, 0, buffUsed);
+			if(buffUsed>0) super.write(buff, 0, buffUsed);
 		} else {
-			wrapped.write(buf, off, len);
+			super.write(buf, off, len);
 		}
 	}
 
 	@Override
-	public void write(byte[] b) throws IOException {
-		if(isTrimEnabled()) write(b, 0, b.length);
-		else wrapped.write(b);
+	public void write(char buf[]) {
+		if(isTrimEnabled()) write(buf, 0, buf.length);
+		else super.write(buf);
 	}
 
 	@Override
-	public void print(boolean b) throws IOException {
-		atLineStart = false;
-		readCharMatchCount = 0;
-		preReadCharMatchCount = 0;
-		wrapped.print(b);
-	}
-
-	@Override
-	public void print(char c) throws IOException {
-		if(
-			!isTrimEnabled()
-			|| processChar(c)
-		) wrapped.print(c);
-	}
-
-	@Override
-	public void print(double d) throws IOException {
-		atLineStart = false;
-		readCharMatchCount = 0;
-		preReadCharMatchCount = 0;
-		wrapped.print(d);
-	}
-
-	@Override
-	public void print(float f) throws IOException {
-		atLineStart = false;
-		readCharMatchCount = 0;
-		preReadCharMatchCount = 0;
-		wrapped.print(f);
-	}
-
-	@Override
-	public void print(int i) throws IOException {
-		atLineStart = false;
-		readCharMatchCount = 0;
-		preReadCharMatchCount = 0;
-		wrapped.print(i);
-	}
-
-	@Override
-	public void print(long l) throws IOException {
-		atLineStart = false;
-		readCharMatchCount = 0;
-		preReadCharMatchCount = 0;
-		wrapped.print(l);
-	}
-
-	@Override
-	public void print(String s) throws IOException {
+	public void write(String s, int off, int len) {
 		if(isTrimEnabled()) {
-			byte[] buff = outputBuffer;
+			char[] buff = outputBuffer;
 			// If len > OUPUT_BUFFER_SIZE, process in blocks
-			int off = 0;
-			int len = s.length();
 			int buffUsed = 0;
 			while(len>0) {
 				int blockLen = len<=BufferManager.BUFFER_SIZE ? len : BufferManager.BUFFER_SIZE;
@@ -308,10 +267,10 @@ public class TrimFilterOutputStream extends ServletOutputStream {
 				) {
 					char c = s.charAt(index);
 					if(processChar(c)) {
-						buff[buffUsed++] = (byte)c;
+						buff[buffUsed++] = c;
 						if(buffUsed>=BufferManager.BUFFER_SIZE) {
 							assert buffUsed==BufferManager.BUFFER_SIZE;
-							wrapped.write(buff, 0, buffUsed);
+							super.write(buff, 0, buffUsed);
 							buffUsed = 0;
 						}
 					}
@@ -319,85 +278,155 @@ public class TrimFilterOutputStream extends ServletOutputStream {
 				off+=blockLen;
 				len-=blockLen;
 			}
-			if(buffUsed>0) wrapped.write(buff, 0, buffUsed);
+			if(buffUsed>0) super.write(buff, 0, buffUsed);
 		} else {
-			wrapped.print(s);
+			super.write(s, off, len);
 		}
 	}
 
 	@Override
-	public void println() throws IOException {
-		if(isTrimEnabled()) print(lineSeparator);
-		else wrapped.println();
+	public void print(boolean b) {
+		atLineStart = false;
+		readCharMatchCount = 0;
+		preReadCharMatchCount = 0;
+		super.print(b);
 	}
 
 	@Override
-	public void println(boolean b) throws IOException {
+	public void print(char c) {
+		if(
+			!isTrimEnabled()
+			|| processChar(c)
+		) super.print(c);
+	}
+
+	@Override
+	public void print(int i) {
+		atLineStart = false;
+		readCharMatchCount = 0;
+		preReadCharMatchCount = 0;
+		super.print(i);
+	}
+
+	@Override
+	public void print(long l) {
+		atLineStart = false;
+		readCharMatchCount = 0;
+		preReadCharMatchCount = 0;
+		super.print(l);
+	}
+
+	@Override
+	public void print(float f) {
+		atLineStart = false;
+		readCharMatchCount = 0;
+		preReadCharMatchCount = 0;
+		super.print(f);
+	}
+
+	@Override
+	public void print(double d) {
+		atLineStart = false;
+		readCharMatchCount = 0;
+		preReadCharMatchCount = 0;
+		super.print(d);
+	}
+
+	@Override
+	public void println() {
+		if(isTrimEnabled()) write(lineSeparator);
+		else super.println();
+	}
+
+	@Override
+	public void println(boolean b) {
 		atLineStart = true;
 		readCharMatchCount = 0;
 		preReadCharMatchCount = 0;
-		wrapped.println(b);
+		super.println(b);
 	}
 
 	@Override
-	public void println(char c) throws IOException {
+	public void println(char x) {
 		if(isTrimEnabled()) {
-			if(processChar(c)) wrapped.print(c);
-			print(lineSeparator);
-		} else {
-			wrapped.println(c);
-		}
+			if(processChar(x)) super.print(x);
+			write(lineSeparator);
+		} else super.println(x);
 	}
 
 	@Override
-	public void println(double d) throws IOException {
+	public void println(int i) {
 		atLineStart = true;
 		readCharMatchCount = 0;
 		preReadCharMatchCount = 0;
-		wrapped.println(d);
+		super.println(i);
 	}
 
 	@Override
-	public void println(float f) throws IOException {
+	public void println(long l) {
 		atLineStart = true;
 		readCharMatchCount = 0;
 		preReadCharMatchCount = 0;
-		wrapped.println(f);
+		super.println(l);
 	}
 
 	@Override
-	public void println(int i) throws IOException {
+	public void println(float f) {
 		atLineStart = true;
 		readCharMatchCount = 0;
 		preReadCharMatchCount = 0;
-		wrapped.println(i);
+		super.println(f);
 	}
 
 	@Override
-	public void println(long l) throws IOException {
+	public void println(double d) {
 		atLineStart = true;
 		readCharMatchCount = 0;
 		preReadCharMatchCount = 0;
-		wrapped.println(l);
+		super.println(d);
 	}
 
 	@Override
-	public void println(String s) throws IOException {
+	public void println(char x[]) {
 		if(isTrimEnabled()) {
-			print(s);
-			print(lineSeparator);
+			print(x);
+			write(lineSeparator);
 		} else {
-			wrapped.println(s);
+			super.println(x);
 		}
 	}
 
 	@Override
-	public boolean isReady() {
-		return wrapped.isReady();
+	public void println(String x) {
+		if(isTrimEnabled()) {
+			print(x);
+			write(lineSeparator);
+		} else super.println(x);
 	}
 
 	@Override
-	public void setWriteListener(WriteListener wl) {
-		wrapped.setWriteListener(wl);
+	public void println(Object x) {
+		if(isTrimEnabled()) {
+			print(x);
+			write(lineSeparator);
+		} else super.println(x);
+	}
+
+	@Override
+	public TrimFilterWriter format(String format, Object ... args) {
+		atLineStart = false;
+		readCharMatchCount = 0;
+		preReadCharMatchCount = 0;
+		super.format(format, args);
+		return this;
+	}
+
+	@Override
+	public TrimFilterWriter format(Locale l, String format, Object ... args) {
+		atLineStart = false;
+		readCharMatchCount = 0;
+		preReadCharMatchCount = 0;
+		super.format(l, format, args);
+		return this;
 	}
 }

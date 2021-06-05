@@ -20,11 +20,11 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with ao-servlet-filter.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.aoindustries.servlet.filter;
+package com.aoapps.servlet.filter;
 
-import com.aoindustries.collections.AoCollections;
-import com.aoindustries.lang.Strings;
-import com.aoindustries.servlet.ServletContextCache;
+import com.aoapps.collections.AoCollections;
+import com.aoapps.lang.Strings;
+import com.aoapps.servlet.ServletContextCache;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;

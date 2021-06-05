@@ -1,6 +1,6 @@
 /*
  * ao-servlet-filter - Reusable Java library of servlet filters.
- * Copyright (C) 2015, 2016, 2017, 2019, 2020  AO Industries, Inc.
+ * Copyright (C) 2015, 2016, 2017, 2019, 2020, 2021  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -20,15 +20,15 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with ao-servlet-filter.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.aoindustries.servlet.filter;
+package com.aoapps.servlet.filter;
 
-import com.aoindustries.net.IRI;
-import com.aoindustries.net.URIEncoder;
-import com.aoindustries.net.URIParser;
-import com.aoindustries.servlet.ServletContextCache;
-import com.aoindustries.servlet.http.Dispatcher;
-import com.aoindustries.servlet.http.HttpServletUtil;
-import com.aoindustries.util.WildcardPatternMatcher;
+import com.aoapps.hodgepodge.util.WildcardPatternMatcher;
+import com.aoapps.net.IRI;
+import com.aoapps.net.URIEncoder;
+import com.aoapps.net.URIParser;
+import com.aoapps.servlet.ServletContextCache;
+import com.aoapps.servlet.http.Dispatcher;
+import com.aoapps.servlet.http.HttpServletUtil;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;

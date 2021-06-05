@@ -20,12 +20,12 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with ao-servlet-filter.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.aoindustries.servlet.filter;
+package com.aoapps.servlet.filter;
 
-import com.aoindustries.collections.AoCollections;
-import com.aoindustries.net.URIEncoder;
-import com.aoindustries.servlet.ServletRequestParameters;
-import com.aoindustries.servlet.http.HttpServletUtil;
+import com.aoapps.collections.AoCollections;
+import com.aoapps.net.URIEncoder;
+import com.aoapps.servlet.ServletRequestParameters;
+import com.aoapps.servlet.http.HttpServletUtil;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;

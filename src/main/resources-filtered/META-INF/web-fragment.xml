@@ -44,11 +44,11 @@ along with ao-servlet-filter.  If not, see <http://www.gnu.org/licenses />.
 
 	<!-- Filter to strip invalid XML characters from incoming parameters -->
 	<filter>
-		<filter-name>com.aoindustries.servlet.filter.StripInvalidXmlCharactersFilter</filter-name>
-		<filter-class>com.aoindustries.servlet.filter.StripInvalidXmlCharactersFilter</filter-class>
+		<filter-name>com.aoapps.servlet.filter.StripInvalidXmlCharactersFilter</filter-name>
+		<filter-class>com.aoapps.servlet.filter.StripInvalidXmlCharactersFilter</filter-class>
 	</filter>
 	<filter-mapping>
-		<filter-name>com.aoindustries.servlet.filter.StripInvalidXmlCharactersFilter</filter-name>
+		<filter-name>com.aoapps.servlet.filter.StripInvalidXmlCharactersFilter</filter-name>
 		<url-pattern>/*</url-pattern>
 		<dispatcher>REQUEST</dispatcher>
 		<dispatcher>ERROR</dispatcher>
@@ -62,7 +62,7 @@ along with ao-servlet-filter.  If not, see <http://www.gnu.org/licenses />.
 			smaller output, and more readable HTML source, but for
 			interoperability should be off in production systems.
 		</description>
-		<param-name>com.aoindustries.servlet.filter.EncodeURIFilter.enableIRI</param-name>
+		<param-name>com.aoapps.servlet.filter.EncodeURIFilter.enableIRI</param-name>
 		<param-value>false</param-value>
 	</context-param>
 	<filter>
@@ -70,11 +70,11 @@ along with ao-servlet-filter.  If not, see <http://www.gnu.org/licenses />.
 			Encodes the URL to either RFC 3986 URI US-ASCII format or RFC 3987
 			IRI Unicode format.  Redirects are always formatted as RFC 3986 URI.
 		</description>
-		<filter-name>com.aoindustries.servlet.filter.EncodeURIFilter</filter-name>
-		<filter-class>com.aoindustries.servlet.filter.EncodeURIFilter</filter-class>
+		<filter-name>com.aoapps.servlet.filter.EncodeURIFilter</filter-name>
+		<filter-class>com.aoapps.servlet.filter.EncodeURIFilter</filter-class>
 	</filter>
 	<filter-mapping>
-		<filter-name>com.aoindustries.servlet.filter.EncodeURIFilter</filter-name>
+		<filter-name>com.aoapps.servlet.filter.EncodeURIFilter</filter-name>
 		<url-pattern>/*</url-pattern>
 		<dispatcher>REQUEST</dispatcher>
 		<dispatcher>ERROR</dispatcher>

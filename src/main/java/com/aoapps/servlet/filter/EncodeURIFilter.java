@@ -1,6 +1,6 @@
 /*
  * ao-servlet-filter - Reusable Java library of servlet filters.
- * Copyright (C) 2019, 2020  AO Industries, Inc.
+ * Copyright (C) 2019, 2020, 2021  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -20,14 +20,14 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with ao-servlet-filter.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.aoindustries.servlet.filter;
+package com.aoapps.servlet.filter;
 
-import com.aoindustries.encoding.Doctype;
-import com.aoindustries.encoding.servlet.DoctypeEE;
-import com.aoindustries.net.IRI;
-import com.aoindustries.net.URI;
-import com.aoindustries.net.URIParser;
-import com.aoindustries.servlet.http.Canonical;
+import com.aoapps.encoding.Doctype;
+import com.aoapps.encoding.servlet.DoctypeEE;
+import com.aoapps.net.IRI;
+import com.aoapps.net.URI;
+import com.aoapps.net.URIParser;
+import com.aoapps.servlet.http.Canonical;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;

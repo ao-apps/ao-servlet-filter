@@ -37,7 +37,7 @@ along with ao-servlet-filter.  If not, see <http://www.gnu.org/licenses />.
 		shortTitle="Changelog"
 		tocLevels="1"
 		datePublished="2016-10-29T21:37:35-05:00"
-		dateModified="2021-05-31T01:04:26-05:00"
+		dateModified="2021-06-03T22:53:21-05:00"
 	>
 		<c:if test="${fn:endsWith('@{project.version}', '-SNAPSHOT') and !fn:endsWith('@{project.version}', '-POST-SNAPSHOT')}">
 			<changelog:release
@@ -51,6 +51,7 @@ along with ao-servlet-filter.  If not, see <http://www.gnu.org/licenses />.
 				<ul>
 					<li>Updated to <ao:a rel="nofollow" href="https://www.oracle.com/java/technologies/javaee/javaeetechnologies.html#javaee7">Java™ EE 7 Web Profile</ao:a> (Servlet 3.1, JSP 2.3, EL 3.0, and JSTL 1.2).</li>
 					<li>Maven artifact relocated from <code>com.aoindustries:ao-servlet-filter</code> to <code>com.aoapps:ao-servlet-filter</code>.</li>
+					<li>Package renamed from <code>com.aoindustries.servlet.filter</code> to <code>com.aoapps.servlet.filter</code>.</li>
 				</ul>
 			</changelog:release>
 		</c:if>
@@ -108,13 +109,13 @@ along with ao-servlet-filter.  If not, see <http://www.gnu.org/licenses />.
 				<li>Fixed <code>ClassCastException</code> in <code>EncodeURIFilter.getActiveFilter(ServletRequest)</code>.</li>
 				<li>"Cache-Control" init parameters renamed to "cache-control".  Old values still work for compatibility.</li>
 				<li>
-					<ao:a href="apidocs/com/aoindustries/servlet/filter/StripInvalidXmlCharactersFilter.html">StripInvalidXmlCharactersFilter</ao:a>
+					<ao:a href="apidocs/com/aoapps/servlet/filter/StripInvalidXmlCharactersFilter.html">StripInvalidXmlCharactersFilter</ao:a>
 					now supports the REQUEST dispatcher, too.  It is recommended that all uses of this
 					filter include <![CDATA[&lt;dispatcher&gt;ERROR&lt;/dispatcher&gt;]]>
 				</li>
 				<li>
 					<p>
-						New filter <ao:a href="apidocs/com/aoindustries/servlet/filter/ApacheAuthenticationFilter.html">ApacheAuthenticationFilter</ao:a>
+						New filter <ao:a href="apidocs/com/aoapps/servlet/filter/ApacheAuthenticationFilter.html">ApacheAuthenticationFilter</ao:a>
 						that parses Apache group file for role information while under Apache authentication.
 					</p>
 					<p>
@@ -124,7 +125,7 @@ along with ao-servlet-filter.  If not, see <http://www.gnu.org/licenses />.
 					</p>
 				</li>
 				<li>
-					<ao:a href="apidocs/com/aoindustries/servlet/filter/Utf8RequestCharacterEncodingListener.html">Utf8RequestCharacterEncodingListener</ao:a>
+					<ao:a href="apidocs/com/aoapps/servlet/filter/Utf8RequestCharacterEncodingListener.html">Utf8RequestCharacterEncodingListener</ao:a>
 					is now enabled via <code>@WebListener</code> annotation, and thus does not need to be included
 					in <code>web.xml</code> or <code>web-fragment.xml</code> when <code>metadata-complete="false"</code>.
 				</li>
@@ -132,22 +133,22 @@ along with ao-servlet-filter.  If not, see <http://www.gnu.org/licenses />.
 					Now activating the following filters by default within a <code>META-INF/web-fragment.xml</code>,
 					with the fragment configured to be before all others:
 					<ol>
-						<li><ao:a href="apidocs/com/aoindustries/servlet/filter/StripInvalidXmlCharactersFilter.html">StripInvalidXmlCharactersFilter</ao:a></li>
-						<li><ao:a href="apidocs/com/aoindustries/servlet/filter/EncodeURIFilter.html">EncodeURIFilter</ao:a></li>
+						<li><ao:a href="apidocs/com/aoapps/servlet/filter/StripInvalidXmlCharactersFilter.html">StripInvalidXmlCharactersFilter</ao:a></li>
+						<li><ao:a href="apidocs/com/aoapps/servlet/filter/EncodeURIFilter.html">EncodeURIFilter</ao:a></li>
 					</ol>
 				</li>
 				<li>
-					<ao:a href="apidocs/com/aoindustries/servlet/filter/EncodeURIFilter.html">EncodeURIFilter</ao:a> configuration changed
+					<ao:a href="apidocs/com/aoapps/servlet/filter/EncodeURIFilter.html">EncodeURIFilter</ao:a> configuration changed
 					to <![CDATA[&lt;context-param&gt;]]> named <code>com.aoindustries.servlet.filter.EncodeURIFilter.enableIRI</code>.
 					It is still off by default, but may be selectively enabled in development mode via <code>META-INF/context.xml</code>.
 				</li>
 				<li>
-					When <ao:a href="apidocs/com/aoindustries/servlet/filter/EncodeURIFilter.html">EncodeURIFilter</ao:a> has IRI support
-					enabled, it is now only activated when the current <ao:a href="https://oss.aoapps.com/encoding/apidocs/com/aoindustries/encoding/Doctype.html">Doctype</ao:a>
+					When <ao:a href="apidocs/com/aoapps/servlet/filter/EncodeURIFilter.html">EncodeURIFilter</ao:a> has IRI support
+					enabled, it is now only activated when the current <ao:a href="https://oss.aoapps.com/encoding/apidocs/com/aoapps/encoding/Doctype.html">Doctype</ao:a>
 					supports <ao:a href="https://tools.ietf.org/html/rfc3987">RFC 3987 IRI</ao:a> Unicode format URLs, which currently
-					is only <ao:a href="https://oss.aoapps.com/encoding/apidocs/com/aoindustries/encoding/Doctype.html#HTML5">HTML5</ao:a>.
+					is only <ao:a href="https://oss.aoapps.com/encoding/apidocs/com/aoapps/encoding/Doctype.html#HTML5">HTML5</ao:a>.
 				</li>
-				<li><ao:a href="apidocs/com/aoindustries/servlet/filter/CountConcurrencyListener.html">CountConcurrencyListener</ao:a> is now a <code>@WebListener</code>.</li>
+				<li><ao:a href="apidocs/com/aoapps/servlet/filter/CountConcurrencyListener.html">CountConcurrencyListener</ao:a> is now a <code>@WebListener</code>.</li>
 				<li>Optimized ServletContext attribute initialization and concurrency.</li>
 			</ul>
 		</changelog:release>
@@ -191,7 +192,7 @@ along with ao-servlet-filter.  If not, see <http://www.gnu.org/licenses />.
 						or <ao:a href="https://tools.ietf.org/html/rfc3987">RFC 3987 IRI</ao:a> Unicode format.
 						If the URL begins with <code>javascript:</code>, <code>cid:</code>, or <code>data:</code>,
 						(case-insensitive) it is not altered.
-						<ao:a href="https://oss.aoapps.com/servlet-util/apidocs/com/aoindustries/servlet/http/Canonical.html">Canonical URLs</ao:a> are always encoded to US-ASCII format.
+						<ao:a href="https://oss.aoapps.com/servlet-util/apidocs/com/aoapps/servlet/http/Canonical.html">Canonical URLs</ao:a> are always encoded to US-ASCII format.
 					</p>
 					<p>
 						IRI support is disabled by default, and only recommended for development or
@@ -226,33 +227,33 @@ along with ao-servlet-filter.  If not, see <http://www.gnu.org/licenses />.
 				<li>No longer URL rewriting <code>*.dia</code> URLs.</li>
 				<li>
 					<code>NoSessionFilter</code> will now not write cookie parameters into
-					<ao:a href="https://oss.aoapps.com/servlet-util/apidocs/com/aoindustries/servlet/http/Canonical.html">Canonical URLs</ao:a>.
+					<ao:a href="https://oss.aoapps.com/servlet-util/apidocs/com/aoapps/servlet/http/Canonical.html">Canonical URLs</ao:a>.
 				</li>
 				<li>
-					New filter <ao:a href="https://oss.aoapps.com/servlet-last-modified/apidocs/com/aoindustries/servlet/lastmodified/LastModifiedCacheControlFilter.html">LastModifiedCacheControlFilter</ao:a>
+					New filter <ao:a href="https://oss.aoapps.com/servlet-last-modified/apidocs/com/aoapps/servlet/lastmodified/LastModifiedCacheControlFilter.html">LastModifiedCacheControlFilter</ao:a>
 					that adds a <ao:a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control">Cache-Control</ao:a> header to any request with a 
-					<ao:a href="https://oss.aoapps.com/servlet-last-modified/apidocs/com/aoindustries/servlet/lastmodified/LastModifiedServlet.html#LAST_MODIFIED_PARAMETER_NAME">LAST_MODIFIED_PARAMETER_NAME</ao:a>
+					<ao:a href="https://oss.aoapps.com/servlet-last-modified/apidocs/com/aoapps/servlet/lastmodified/LastModifiedServlet.html#LAST_MODIFIED_PARAMETER_NAME">LAST_MODIFIED_PARAMETER_NAME</ao:a>
 					parameter.  Defaults to a very aggressive setting of public, one-year, allowing stale, and immutable.
 				</li>
 				<li>
 					New optional init parameter <code>allowMultiple</code>
-					on <ao:a href="apidocs/com/aoindustries/servlet/filter/AddResponseHeaderFilter.html">AddResponseHeaderFilter</ao:a>
+					on <ao:a href="apidocs/com/aoapps/servlet/filter/AddResponseHeaderFilter.html">AddResponseHeaderFilter</ao:a>
 					allows multiple headers of the same name.  When <code>true</code>, the header will not be added when a header
 					of the same name already exists on the response.  Defaults to <code>true</code> for compatibility.
 				</li>
 				<li>
 					Changed <code>CountConcurrencyFilter</code> from a <code><![CDATA[&lt;filter&gt;]]></code>
 					to a <code><![CDATA[&lt;listener&gt;]]></code> named
-					<ao:a href="apidocs/com/aoindustries/servlet/filter/CountConcurrencyListener.html">CountConcurrencyListener</ao:a>.
+					<ao:a href="apidocs/com/aoapps/servlet/filter/CountConcurrencyListener.html">CountConcurrencyListener</ao:a>.
 				</li>
 				<li>
 					Changed <code>Utf8RequestCharacterEncodingFilter</code> from a <code><![CDATA[&lt;filter&gt;]]></code>
 					to a <code><![CDATA[&lt;listener&gt;]]></code> named
-					<ao:a href="apidocs/com/aoindustries/servlet/filter/CountConcurrencyListener.html">Utf8RequestCharacterEncodingListener</ao:a>.
+					<ao:a href="apidocs/com/aoapps/servlet/filter/CountConcurrencyListener.html">Utf8RequestCharacterEncodingListener</ao:a>.
 				</li>
 				<li>
 					Removed deprecated <code>com.aoindustries.servlet.filter.TempFileContext</code>
-					in favor of new <ao:a href="https://oss.aoapps.com/tempfiles/servlet/apidocs/com/aoindustries/tempfiles/servlet/ServletTempFileContext.html">ServletTempFileContext</ao:a>
+					in favor of new <ao:a href="https://oss.aoapps.com/tempfiles/servlet/apidocs/com/aoapps/tempfiles/servlet/ServletTempFileContext.html">ServletTempFileContext</ao:a>
 					that does not require <code>web.xml</code> configuration, supports additional scopes (application and session),
 					and registers a shutdown hook to delete on JVM exit.
 				</li>
@@ -289,7 +290,7 @@ along with ao-servlet-filter.  If not, see <http://www.gnu.org/licenses />.
 				<li>Minimum Java version changed from 1.6 to 1.7.</li>
 				<li>
 					Deprecated <code>com.aoindustries.servlet.filter.TempFileContext</code>
-					in favor of new <ao:a href="https://oss.aoapps.com/tempfiles/servlet/apidocs/com/aoindustries/tempfiles/servlet/ServletTempFileContext.html">ServletTempFileContext</ao:a>
+					in favor of new <ao:a href="https://oss.aoapps.com/tempfiles/servlet/apidocs/com/aoapps/tempfiles/servlet/ServletTempFileContext.html">ServletTempFileContext</ao:a>
 					that does not require <code>web.xml</code> configuration, supports additional scopes (application and session),
 					and registers a shutdown hook to delete on JVM exit.
 				</li>
@@ -327,7 +328,7 @@ along with ao-servlet-filter.  If not, see <http://www.gnu.org/licenses />.
 				<li>
 					New <code>AddResponseHeaderFilter</code> filter to add response headers.
 					For when filter mappings are not expressive enough, supports both
-					lightning-fast <ao:a href="https://oss.aoapps.com/hodgepodge/apidocs/com/aoindustries/util/WildcardPatternMatcher.html">WildcardPatternMatcher</ao:a>
+					lightning-fast <ao:a href="https://oss.aoapps.com/hodgepodge/apidocs/com/aoapps/hodgepodge/util/WildcardPatternMatcher.html">WildcardPatternMatcher</ao:a>
 					and standard Java <ao:a rel="nofollow" href="@{javadoc.link.javase}java/util/regex/Pattern.html">Pattern</ao:a>.
 				</li>
 			</ul>
