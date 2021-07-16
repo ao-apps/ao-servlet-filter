@@ -10,6 +10,12 @@
 
 [![Build](https://github.com/aoindustries/ao-servlet-filter/workflows/Build/badge.svg?branch=master)](https://github.com/aoindustries/ao-servlet-filter/actions?query=workflow%3ABuild)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.aoapps/ao-servlet-filter/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.aoapps/ao-servlet-filter)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?branch=master&project=com.aoapps%3Aao-servlet-filter&metric=alert_status)](https://sonarcloud.io/dashboard?branch=master&id=com.aoapps%3Aao-servlet-filter)
+[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?branch=master&project=com.aoapps%3Aao-servlet-filter&metric=ncloc)](https://sonarcloud.io/component_measures?branch=master&id=com.aoapps%3Aao-servlet-filter&metric=ncloc)  
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?branch=master&project=com.aoapps%3Aao-servlet-filter&metric=reliability_rating)](https://sonarcloud.io/component_measures?branch=master&id=com.aoapps%3Aao-servlet-filter&metric=Reliability)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?branch=master&project=com.aoapps%3Aao-servlet-filter&metric=security_rating)](https://sonarcloud.io/component_measures?branch=master&id=com.aoapps%3Aao-servlet-filter&metric=Security)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?branch=master&project=com.aoapps%3Aao-servlet-filter&metric=sqale_rating)](https://sonarcloud.io/component_measures?branch=master&id=com.aoapps%3Aao-servlet-filter&metric=Maintainability)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?branch=master&project=com.aoapps%3Aao-servlet-filter&metric=coverage)](https://sonarcloud.io/component_measures?branch=master&id=com.aoapps%3Aao-servlet-filter&metric=Coverage)
 
 Reusable Java library of servlet filters.
 
