@@ -201,7 +201,7 @@ along with ao-servlet-filter.  If not, see <http://www.gnu.org/licenses />.
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId><artifactId>maven-javadoc-plugin</artifactId>
 						<configuration>
-							<offlineLinks>
+							<offlineLinks combine.children="append">
 								<!-- Direct -->
 								<offlineLink>
 									<url>https://oss.aoapps.com/collections/apidocs/</url>
@@ -231,17 +231,7 @@ along with ao-servlet-filter.  If not, see <http://www.gnu.org/licenses />.
 									<url>https://oss.aoapps.com/servlet-util/apidocs/</url>
 									<location>${project.build.directory}/offlineLinks/com.aoapps/ao-servlet-util</location>
 								</offlineLink>
-								<!-- Java EE: <groupId>javax.servlet</groupId><artifactId>javax.servlet-api</artifactId> -->
-								<!-- Java SE -->
-								<offlineLink>
-									<url>${javadoc.link.javase}</url>
-									<location>${project.build.directory}/offlineLinks/com/aoapps/javadoc/offline/javase/${javase.release}</location>
-								</offlineLink>
-								<!-- Java EE -->
-								<offlineLink>
-									<url>${javadoc.link.javaee}</url>
-									<location>${project.build.directory}/offlineLinks/com/aoapps/javadoc/offline/javaee/${javaee.version}</location>
-								</offlineLink>
+								<!-- ao-javadoc-offline: <groupId>javax.servlet</groupId><artifactId>javax.servlet-api</artifactId> -->
 							</offlineLinks>
 						</configuration>
 					</plugin>
