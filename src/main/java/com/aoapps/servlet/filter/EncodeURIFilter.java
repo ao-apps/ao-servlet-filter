@@ -45,8 +45,8 @@ import javax.servlet.http.HttpServletResponseWrapper;
 /**
  * <p>
  * Encodes the URL to either
- * <a href="https://tools.ietf.org/html/rfc3986">RFC 3986 URI</a> US-ASCII format
- * or <a href="https://tools.ietf.org/html/rfc3987">RFC 3987 IRI</a> Unicode format.
+ * <a href="https://datatracker.ietf.org/doc/html/rfc3986">RFC 3986 URI</a> US-ASCII format
+ * or <a href="https://datatracker.ietf.org/doc/html/rfc3987">RFC 3987 IRI</a> Unicode format.
  * If the URL begins with <code>javascript:</code>, <code>cid:</code>, or <code>data:</code>,
  * (case-insensitive) it is not altered.
  * {@linkplain Canonical Canonical URLs} are always encoded to US-ASCII format.
@@ -57,10 +57,10 @@ import javax.servlet.http.HttpServletResponseWrapper;
  * HTML source, but for interoperability should be off in production systems.
  * </p>
  * <p>
- * <a href="https://tools.ietf.org/html/rfc7231#section-7.1.2">RFC 7231 - 7.1.2.  Location</a>
- * refers only to <a href="https://tools.ietf.org/html/rfc3986">RFC 3986 URI</a> for
+ * <a href="https://datatracker.ietf.org/doc/html/rfc7231#section-7.1.2">RFC 7231 - 7.1.2.  Location</a>
+ * refers only to <a href="https://datatracker.ietf.org/doc/html/rfc3986">RFC 3986 URI</a> for
  * URI-reference, thus redirects are always formatted as
- * <a href="https://tools.ietf.org/html/rfc3986">RFC 3986 URI</a>.
+ * <a href="https://datatracker.ietf.org/doc/html/rfc3986">RFC 3986 URI</a>.
  * </p>
  * <p>
  * This should be used for both the {@link DispatcherType#REQUEST} and {@link DispatcherType#ERROR} dispatchers.

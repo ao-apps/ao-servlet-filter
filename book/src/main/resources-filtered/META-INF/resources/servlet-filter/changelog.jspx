@@ -37,7 +37,7 @@ along with ao-servlet-filter.  If not, see <http://www.gnu.org/licenses />.
 		shortTitle="Changelog"
 		tocLevels="1"
 		datePublished="2016-10-29T21:37:35-05:00"
-		dateModified="2021-07-05T01:05:52-05:00"
+		dateModified="2021-09-25T23:27:50-05:00"
 	>
 		<c:if test="${fn:endsWith('@{project.version}', '-SNAPSHOT') and !fn:endsWith('@{project.version}', '-POST-SNAPSHOT')}">
 			<changelog:release
@@ -160,7 +160,7 @@ along with ao-servlet-filter.  If not, see <http://www.gnu.org/licenses />.
 				<li>
 					When <ao:a href="apidocs/com.aoapps.servlet.filter/com/aoapps/servlet/filter/EncodeURIFilter.html">EncodeURIFilter</ao:a> has IRI support
 					enabled, it is now only activated when the current <ao:a href="https://oss.aoapps.com/encoding/apidocs/com.aoapps.encoding/com/aoapps/encoding/Doctype.html">Doctype</ao:a>
-					supports <ao:a href="https://tools.ietf.org/html/rfc3987">RFC 3987 IRI</ao:a> Unicode format URLs, which currently
+					supports <ao:a href="https://datatracker.ietf.org/doc/html/rfc3987">RFC 3987 IRI</ao:a> Unicode format URLs, which currently
 					is only <ao:a href="https://oss.aoapps.com/encoding/apidocs/com.aoapps.encoding/com/aoapps/encoding/Doctype.html#HTML5">HTML5</ao:a>.
 				</li>
 				<li><ao:a href="apidocs/com.aoapps.servlet.filter/com/aoapps/servlet/filter/CountConcurrencyListener.html">CountConcurrencyListener</ao:a> is now a <code>@WebListener</code>.</li>
@@ -203,8 +203,8 @@ along with ao-servlet-filter.  If not, see <http://www.gnu.org/licenses />.
 				<li>
 					<p>
 						New filter <code>EncodeURIFilter</code> which encodes the URL to either
-						<ao:a href="https://tools.ietf.org/html/rfc3986">RFC 3986 URI</ao:a> US-ASCII format
-						or <ao:a href="https://tools.ietf.org/html/rfc3987">RFC 3987 IRI</ao:a> Unicode format.
+						<ao:a href="https://datatracker.ietf.org/doc/html/rfc3986">RFC 3986 URI</ao:a> US-ASCII format
+						or <ao:a href="https://datatracker.ietf.org/doc/html/rfc3987">RFC 3987 IRI</ao:a> Unicode format.
 						If the URL begins with <code>javascript:</code>, <code>cid:</code>, or <code>data:</code>,
 						(case-insensitive) it is not altered.
 						<ao:a href="https://oss.aoapps.com/servlet-util/apidocs/com.aoapps.servlet.util/com/aoapps/servlet/http/Canonical.html">Canonical URLs</ao:a> are always encoded to US-ASCII format.
@@ -215,10 +215,10 @@ along with ao-servlet-filter.  If not, see <http://www.gnu.org/licenses />.
 						HTML source, but for interoperability should be off in production systems.
 					</p>
 					<p>
-						<ao:a href="https://tools.ietf.org/html/rfc7231#section-7.1.2">RFC 7231 - 7.1.2.  Location</ao:a>
-						refers only to <ao:a href="https://tools.ietf.org/html/rfc3986">RFC 3986 URI</ao:a> for
+						<ao:a href="https://datatracker.ietf.org/doc/html/rfc7231#section-7.1.2">RFC 7231 - 7.1.2.  Location</ao:a>
+						refers only to <ao:a href="https://datatracker.ietf.org/doc/html/rfc3986">RFC 3986 URI</ao:a> for
 						URI-reference, thus redirects are always formatted as
-						<ao:a href="https://tools.ietf.org/html/rfc3986">RFC 3986 URI</ao:a>.
+						<ao:a href="https://datatracker.ietf.org/doc/html/rfc3986">RFC 3986 URI</ao:a>.
 					</p>
 				</li>
 				<li>No longer URL rewriting <code>file:</code> and <code>data:</code> URLs.</li>
