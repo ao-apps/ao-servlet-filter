@@ -24,6 +24,8 @@ package com.aoapps.servlet.filter;
 
 import com.aoapps.collections.AoCollections;
 import com.aoapps.lang.Strings;
+import com.aoapps.lang.attribute.Attribute;
+import com.aoapps.servlet.attribute.ScopeEE;
 import com.aoapps.servlet.ServletContextCache;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -66,7 +68,7 @@ public class ApacheAuthenticationFilter implements Filter {
 	private ServletContext servletContext;
 
 	private String groupFile;
-	private String groupsRequestAttribute;
+	private ScopeEE.Request.Attribute<Set<String>> groupsRequestAttribute;
 
 	@Override
 	public void init(FilterConfig config) {
@@ -74,8 +76,9 @@ public class ApacheAuthenticationFilter implements Filter {
 
 		groupFile = Strings.trimNullIfEmpty(config.getInitParameter("groupFile"));
 		if(groupFile == null) groupFile = "/WEB-INF/group";
-		groupsRequestAttribute = Strings.trimNullIfEmpty(config.getInitParameter("groupsRequestAttribute"));
-		if(groupsRequestAttribute == null) groupsRequestAttribute = ApacheAuthenticationFilter.class.getName() + ".groups";
+		String groupsRequestAttributeName = Strings.trimNullIfEmpty(config.getInitParameter("groupsRequestAttribute"));
+		if(groupsRequestAttributeName == null) groupsRequestAttributeName = ApacheAuthenticationFilter.class.getName() + ".groups";
+		groupsRequestAttribute = ScopeEE.REQUEST.attribute(groupsRequestAttributeName);
 	}
 
 	private static class CacheLock {}
@@ -170,9 +173,7 @@ public class ApacheAuthenticationFilter implements Filter {
 				// servletContext.log("ApacheAuthenticationFilter: No user principal");
 				groups = Collections.emptySet();
 			}
-			Object oldAttribute = request.getAttribute(groupsRequestAttribute);
-			try {
-				request.setAttribute(groupsRequestAttribute, groups);
+			try (Attribute.OldValue oldAttribute = groupsRequestAttribute.context(request).init(groups)) {
 				chain.doFilter(
 					new HttpServletRequestWrapper(httpRequest) {
 						@Override
@@ -182,18 +183,11 @@ public class ApacheAuthenticationFilter implements Filter {
 					},
 					response
 				);
-			} finally {
-				request.setAttribute(groupsRequestAttribute, oldAttribute);
 			}
 		} else {
 			// Non-HTTP, no user information available
-			assert request != null;
-			Object oldAttribute = request.getAttribute(groupsRequestAttribute);
-			try {
-				request.setAttribute(groupsRequestAttribute, Collections.emptySet());
+			try (Attribute.OldValue oldAttribute = groupsRequestAttribute.context(request).init(Collections.emptySet())) {
 				chain.doFilter(request, response);
-			} finally {
-				request.setAttribute(groupsRequestAttribute, oldAttribute);
 			}
 		}
 	}

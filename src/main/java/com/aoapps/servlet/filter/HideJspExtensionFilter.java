@@ -26,6 +26,8 @@ import com.aoapps.hodgepodge.util.WildcardPatternMatcher;
 import com.aoapps.net.IRI;
 import com.aoapps.net.URIEncoder;
 import com.aoapps.net.URIParser;
+import com.aoapps.servlet.attribute.AttributeEE;
+import com.aoapps.servlet.attribute.ScopeEE;
 import com.aoapps.servlet.ServletContextCache;
 import com.aoapps.servlet.http.Dispatcher;
 import com.aoapps.servlet.http.HttpServletUtil;
@@ -80,7 +82,8 @@ import javax.servlet.http.HttpServletResponseWrapper;
  */
 public class HideJspExtensionFilter implements Filter {
 
-	private static final String FILTER_APPLIED_KEY = HideJspExtensionFilter.class.getName()+".filterApplied";
+	private static final ScopeEE.Request.Attribute<Boolean> FILTER_APPLIED_KEY =
+		ScopeEE.REQUEST.attribute(HideJspExtensionFilter.class.getName() + ".filterApplied");
 
 	private static final Charset ENCODING = StandardCharsets.UTF_8;
 
@@ -138,9 +141,10 @@ public class HideJspExtensionFilter implements Filter {
 		ServletResponse response,
 		FilterChain chain
 	) throws IOException, ServletException {
-		if(request.getAttribute(FILTER_APPLIED_KEY)==null) {
+		AttributeEE.Request<Boolean> filterAppliedAttribute = FILTER_APPLIED_KEY.context(request);
+		if(filterAppliedAttribute.get() == null) {
 			try {
-				request.setAttribute(FILTER_APPLIED_KEY, Boolean.TRUE);
+				filterAppliedAttribute.set(true);
 				if(
 					(request instanceof HttpServletRequest)
 					&& (response instanceof HttpServletResponse)
@@ -352,7 +356,7 @@ public class HideJspExtensionFilter implements Filter {
 					chain.doFilter(request, response);
 				}
 			} finally {
-				request.removeAttribute(FILTER_APPLIED_KEY);
+				filterAppliedAttribute.remove();
 			}
 		} else {
 			// Filter already applied

@@ -29,6 +29,8 @@ import com.aoapps.net.MutableURIParameters;
 import com.aoapps.net.URIParametersMap;
 import com.aoapps.net.URIParametersUtils;
 import com.aoapps.net.URIParser;
+import com.aoapps.servlet.attribute.AttributeEE;
+import com.aoapps.servlet.attribute.ScopeEE;
 import com.aoapps.servlet.ServletRequestParameters;
 import com.aoapps.servlet.http.HttpServletUtil;
 import java.io.IOException;
@@ -70,7 +72,7 @@ import javax.servlet.http.HttpServletResponseWrapper;
  *   <li>Otherwise, select the best locale from the Accept headers.</li>
  * </ol>
  * <p>
- * Also sets the JSTL fmt tag locale as the <code>javax.servlet.jsp.jstl.fmt.locale.request (Config.FMT_LOCALE+Config.REQUEST_SCOPE_SUFFIX)</code> request attribute
+ * Also sets the JSTL fmt tag locale via the {@link com.aoapps.servlet.attribute.AttributeEE.Jstl#FMT_LOCALE} request attribute
  * to the current locale.
  * </p>
  * <p>
@@ -93,12 +95,13 @@ abstract public class LocaleFilter implements Filter {
 
 	/**
 	 * The default parameter name if not overridden.
-	 * 
-	 * @see  #getParamName() 
+	 *
+	 * @see  #getParamName()
 	 */
 	private static final String DEFAULT_PARAM_NAME = "hl";
 
-	private static final String ENABLED_LOCALES_REQUEST_ATTRIBUTE = LocaleFilter.class.getName() + ".enabledLocales";
+	private static final ScopeEE.Request.Attribute<Map<String, Locale>> ENABLED_LOCALES_REQUEST_ATTRIBUTE =
+		ScopeEE.REQUEST.attribute(LocaleFilter.class.getName() + ".enabledLocales");
 
 	/**
 	 * Adds the current locale as a parameter to the URL.
@@ -137,13 +140,12 @@ abstract public class LocaleFilter implements Filter {
 	 * Gets the set of enabled locales for the provided request.  This must be called
 	 * from a request that has already been filtered through LocaleFilter.
 	 * When container's default locale is used, will return an empty map.
-	 * 
+	 *
 	 * @return  The mapping from localeString to locale
 	 */
 	public static Map<String, Locale> getEnabledLocales(ServletRequest request) {
-		@SuppressWarnings("unchecked")
-		Map<String, Locale> enabledLocales = (Map<String, Locale>)request.getAttribute(ENABLED_LOCALES_REQUEST_ATTRIBUTE);
-		if(enabledLocales==null) throw new IllegalStateException("Not in request filtered by LocaleFilter, unable to get enabled locales.");
+		Map<String, Locale> enabledLocales = ENABLED_LOCALES_REQUEST_ATTRIBUTE.context(request).get();
+		if(enabledLocales == null) throw new IllegalStateException("Not in request filtered by LocaleFilter, unable to get enabled locales.");
 		return enabledLocales;
 	}
 
@@ -153,15 +155,16 @@ abstract public class LocaleFilter implements Filter {
 		ServletResponse response,
 		FilterChain chain
 	) throws IOException, ServletException {
+		AttributeEE.Request<Map<String, Locale>> enabledLocalesAttribute = ENABLED_LOCALES_REQUEST_ATTRIBUTE.context(request);
 		if(
 			// Makes sure only one locale filter is applied per request
-			request.getAttribute(ENABLED_LOCALES_REQUEST_ATTRIBUTE) == null
+			enabledLocalesAttribute.get() == null
 			// Must be HTTP protocol
 			&& (request instanceof HttpServletRequest)
 			&& (response instanceof HttpServletResponse)
 		) {
 			final Map<String, Locale> supportedLocales = getSupportedLocales(request);
-			request.setAttribute(ENABLED_LOCALES_REQUEST_ATTRIBUTE, supportedLocales);
+			enabledLocalesAttribute.set(supportedLocales);
 			try {
 				final HttpServletRequest httpRequest = (HttpServletRequest)request;
 				final HttpServletResponse httpResponse = (HttpServletResponse)response;
@@ -291,7 +294,7 @@ abstract public class LocaleFilter implements Filter {
 				httpResponse.setLocale(responseLocale);
 
 				// Set the locale for JSTL fmt tags
-				httpRequest.setAttribute("javax.servlet.jsp.jstl.fmt.locale.request", responseLocale);
+				AttributeEE.Jstl.FMT_LOCALE.context(httpRequest).set(responseLocale);
 
 				// Set and restore ThreadLocale
 				Locale oldThreadLocale = ThreadLocale.get();
@@ -399,7 +402,7 @@ abstract public class LocaleFilter implements Filter {
 					ThreadLocale.set(oldThreadLocale);
 				}
 			} finally {
-				request.removeAttribute(ENABLED_LOCALES_REQUEST_ATTRIBUTE);
+				enabledLocalesAttribute.remove();
 			}
 		} else {
 			chain.doFilter(request, response);
@@ -414,7 +417,7 @@ abstract public class LocaleFilter implements Filter {
 
 	/**
 	 * Checks if the locale parameter should be added to the given URL.
-	 * 
+	 *
 	 * This default implementation will cause the parameter to be added to any
 	 * URL that is not one of the excluded extensions (case-insensitive).
 	 */
@@ -631,7 +634,7 @@ abstract public class LocaleFilter implements Filter {
 
 	/**
 	 * Gets the name of the parameter that will contain the locale.
-	 * 
+	 *
 	 * @see  #DEFAULT_PARAM_NAME
 	 */
 	protected String getParamName() {
@@ -653,7 +656,7 @@ abstract public class LocaleFilter implements Filter {
 	 * any paramName parameter will be stripped from incoming requests.
 	 * </p>
 	 *
-	 * @see  #toLocaleString(java.util.Locale) 
+	 * @see  #toLocaleString(java.util.Locale)
 	 */
 	abstract protected Map<String, Locale> getSupportedLocales(ServletRequest request) throws ServletException;
 
@@ -663,7 +666,7 @@ abstract public class LocaleFilter implements Filter {
 	 * empty map.
 	 *
 	 * This must be one of the supported locales.
-	 * 
+	 *
 	 * @see  #getSupportedLocales(javax.servlet.ServletRequest)
 	 */
 	abstract protected Locale getDefaultLocale(ServletRequest request, Map<String, Locale> supportedLocales) throws ServletException;

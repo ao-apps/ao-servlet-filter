@@ -27,6 +27,8 @@ import com.aoapps.encoding.servlet.DoctypeEE;
 import com.aoapps.net.IRI;
 import com.aoapps.net.URI;
 import com.aoapps.net.URIParser;
+import com.aoapps.servlet.attribute.AttributeEE;
+import com.aoapps.servlet.attribute.ScopeEE;
 import com.aoapps.servlet.http.Canonical;
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -68,7 +70,8 @@ import javax.servlet.http.HttpServletResponseWrapper;
  */
 public class EncodeURIFilter implements Filter {
 
-	private static final String REQUEST_ATTRIBUTE = EncodeURIFilter.class.getName();
+	private static final ScopeEE.Request.Attribute<EncodeURIFilter> REQUEST_ATTRIBUTE =
+		ScopeEE.REQUEST.attribute(EncodeURIFilter.class.getName());
 
 	/**
 	 * Gets the filter active on the given request.
@@ -76,7 +79,7 @@ public class EncodeURIFilter implements Filter {
 	 * @return  The currently active filter or {@code null} for none active.
 	 */
 	public static EncodeURIFilter getActiveFilter(ServletRequest request) {
-		return (EncodeURIFilter)request.getAttribute(REQUEST_ATTRIBUTE);
+		return REQUEST_ATTRIBUTE.context(request).get();
 	}
 
 	private ServletContext servletContext;
@@ -141,11 +144,12 @@ public class EncodeURIFilter implements Filter {
 		FilterChain chain
 	) throws IOException, ServletException {
 		// Makes sure only one filter is applied per request
+		AttributeEE.Request<EncodeURIFilter> attribute = REQUEST_ATTRIBUTE.context(request);
 		if(
-			request.getAttribute(REQUEST_ATTRIBUTE) == null
+			attribute.get() == null
 			&& (response instanceof HttpServletResponse)
 		) {
-			request.setAttribute(REQUEST_ATTRIBUTE, this);
+			attribute.set(this);
 			try {
 				chain.doFilter(
 					request,
@@ -192,7 +196,7 @@ public class EncodeURIFilter implements Filter {
 					}
 				);
 			} finally {
-				request.removeAttribute(REQUEST_ATTRIBUTE);
+				attribute.remove();
 			}
 		} else {
 			chain.doFilter(request, response);

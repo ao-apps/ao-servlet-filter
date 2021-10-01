@@ -22,6 +22,7 @@
  */
 package com.aoapps.servlet.filter;
 
+import com.aoapps.servlet.attribute.ScopeEE;
 import java.util.concurrent.atomic.AtomicInteger;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletRequestEvent;
@@ -35,13 +36,14 @@ import javax.servlet.annotation.WebListener;
 // TODO: Rename ConcurrencyCounter or RequestConcurrency?
 public class CountConcurrencyListener implements ServletRequestListener {
 
-	public static final String REQUEST_ATTRIBUTE = CountConcurrencyListener.class.getName() + ".concurrency";
+	public static final ScopeEE.Request.Attribute<Integer> REQUEST_ATTRIBUTE =
+		ScopeEE.REQUEST.attribute(CountConcurrencyListener.class.getName() + ".concurrency");
 
 	/**
 	 * Gets the concurrency at the beginning of the request or {@code null} when listener not active.
 	 */
 	public static Integer getConcurrency(ServletRequest request) {
-		return (Integer)request.getAttribute(REQUEST_ATTRIBUTE);
+		return REQUEST_ATTRIBUTE.context(request).get();
 	}
 
 	private final AtomicInteger concurrency = new AtomicInteger();
@@ -51,13 +53,13 @@ public class CountConcurrencyListener implements ServletRequestListener {
 		// Increase concurrency
 		int newConcurrency = concurrency.incrementAndGet();
 		if(newConcurrency < 1) throw new IllegalStateException("Concurrency < 1: " + newConcurrency);
-		event.getServletRequest().setAttribute(REQUEST_ATTRIBUTE, newConcurrency);
+		REQUEST_ATTRIBUTE.context(event.getServletRequest()).set(newConcurrency);
 	}
 
 	@Override
 	public void requestDestroyed(ServletRequestEvent event) {
 		// Decrease concurrency
-		event.getServletRequest().removeAttribute(REQUEST_ATTRIBUTE);
+		REQUEST_ATTRIBUTE.context(event.getServletRequest()).remove();
 		int oldConcurrency = concurrency.getAndDecrement();
 		if(oldConcurrency < 1) throw new IllegalStateException("Concurrency < 1: " + oldConcurrency);
 	}

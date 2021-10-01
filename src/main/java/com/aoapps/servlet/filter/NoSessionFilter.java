@@ -28,6 +28,8 @@ import com.aoapps.net.IRI;
 import com.aoapps.net.MutableURIParameters;
 import com.aoapps.net.URIParametersMap;
 import com.aoapps.net.URIParser;
+import com.aoapps.servlet.attribute.AttributeEE;
+import com.aoapps.servlet.attribute.ScopeEE;
 import com.aoapps.servlet.http.Canonical;
 import com.aoapps.servlet.http.Cookies;
 import java.io.IOException;
@@ -110,7 +112,8 @@ import javax.servlet.http.HttpSession;
  */
 public class NoSessionFilter implements Filter {
 
-	private static final String FILTER_APPLIED_KEY = NoSessionFilter.class.getName() + ".filterApplied";
+	private static final ScopeEE.Request.Attribute<Boolean> FILTER_APPLIED_KEY =
+		ScopeEE.REQUEST.attribute(NoSessionFilter.class.getName() + ".filterApplied");
 
 	/**
 	 * The default symbol is used as prefix.
@@ -226,9 +229,10 @@ public class NoSessionFilter implements Filter {
 		ServletResponse response,
 		FilterChain chain
 	) throws IOException, ServletException {
-		if(request.getAttribute(FILTER_APPLIED_KEY) == null) {
+		AttributeEE.Request<Boolean> filterAppliedAttribute = FILTER_APPLIED_KEY.context(request);
+		if(filterAppliedAttribute.get() == null) {
 			try {
-				request.setAttribute(FILTER_APPLIED_KEY, Boolean.TRUE);
+				filterAppliedAttribute.set(true);
 				if(
 					(request instanceof HttpServletRequest)
 					&& (response instanceof HttpServletResponse)
@@ -470,7 +474,7 @@ public class NoSessionFilter implements Filter {
 					chain.doFilter(request, response);
 				}
 			} finally {
-				request.removeAttribute(FILTER_APPLIED_KEY);
+				filterAppliedAttribute.remove();
 			}
 		} else {
 			// Filter already applied

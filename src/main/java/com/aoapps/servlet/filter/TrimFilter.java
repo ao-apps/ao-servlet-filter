@@ -22,6 +22,8 @@
  */
 package com.aoapps.servlet.filter;
 
+import com.aoapps.servlet.attribute.AttributeEE;
+import com.aoapps.servlet.attribute.ScopeEE;
 import java.io.IOException;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -44,7 +46,8 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class TrimFilter implements Filter {
 
-	private static final String REQUEST_ATTRIBUTE = TrimFilter.class.getName() + ".filter_applied";
+	private static final ScopeEE.Request.Attribute<Boolean> REQUEST_ATTRIBUTE =
+		ScopeEE.REQUEST.attribute(TrimFilter.class.getName() + ".filter_applied");
 
 	private boolean enabled;
 
@@ -58,16 +61,17 @@ public class TrimFilter implements Filter {
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 		// Makes sure only one filter is applied per request
+		AttributeEE.Request<Boolean> attribute = REQUEST_ATTRIBUTE.context(request);
 		if(
 			enabled
-			&& request.getAttribute(REQUEST_ATTRIBUTE)==null
+			&& attribute.get() == null
 			&& (response instanceof HttpServletResponse)
 		) {
-			request.setAttribute(REQUEST_ATTRIBUTE, Boolean.TRUE);
+			attribute.set(true);
 			try {
 				chain.doFilter(request, new TrimFilterResponse((HttpServletResponse)response));
 			} finally {
-				request.removeAttribute(REQUEST_ATTRIBUTE);
+				attribute.remove();
 			}
 		} else {
 			chain.doFilter(request, response);
