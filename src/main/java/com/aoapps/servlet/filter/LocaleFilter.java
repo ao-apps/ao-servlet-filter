@@ -87,7 +87,7 @@ import javax.servlet.http.HttpServletResponseWrapper;
  *
  * @see ThreadLocale
  */
-abstract public class LocaleFilter implements Filter {
+public abstract class LocaleFilter implements Filter {
 
 	private static final boolean DEBUG = false;
 
@@ -658,7 +658,7 @@ abstract public class LocaleFilter implements Filter {
 	 *
 	 * @see  #toLocaleString(java.util.Locale)
 	 */
-	abstract protected Map<String, Locale> getSupportedLocales(ServletRequest request) throws ServletException;
+	protected abstract Map<String, Locale> getSupportedLocales(ServletRequest request) throws ServletException;
 
 	/**
 	 * Gets the default locale to be used when a best locale cannot be resolved.
@@ -669,5 +669,5 @@ abstract public class LocaleFilter implements Filter {
 	 *
 	 * @see  #getSupportedLocales(javax.servlet.ServletRequest)
 	 */
-	abstract protected Locale getDefaultLocale(ServletRequest request, Map<String, Locale> supportedLocales) throws ServletException;
+	protected abstract Locale getDefaultLocale(ServletRequest request, Map<String, Locale> supportedLocales) throws ServletException;
 }
