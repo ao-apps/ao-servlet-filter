@@ -1,4 +1,4 @@
-# [<img src="ao-logo.png" alt="AO Logo" width="35" height="40">](https://github.com/aoindustries) [AO OSS](https://github.com/aoindustries/ao-oss) / [Servlet Filter](https://github.com/aoindustries/ao-servlet-filter)
+# [<img src="ao-logo.png" alt="AO Logo" width="35" height="40">](https://github.com/ao-apps) [AO OSS](https://github.com/ao-apps/ao-oss) / [Servlet Filter](https://github.com/ao-apps/ao-servlet-filter)
 
 [![project: current stable](https://oss.aoapps.com/ao-badges/project-current-stable.svg)](https://aoindustries.com/life-cycle#project-current-stable)
 [![management: production](https://oss.aoapps.com/ao-badges/management-production.svg)](https://aoindustries.com/life-cycle#management-production)
@@ -8,7 +8,7 @@
 [![semantic versioning: 2.0.0](https://oss.aoapps.com/ao-badges/semver-2.0.0.svg)](http://semver.org/spec/v2.0.0.html)
 [![license: LGPL v3](https://oss.aoapps.com/ao-badges/license-lgpl-3.0.svg)](https://www.gnu.org/licenses/lgpl-3.0)
 
-[![Build](https://github.com/aoindustries/ao-servlet-filter/workflows/Build/badge.svg?branch=master)](https://github.com/aoindustries/ao-servlet-filter/actions?query=workflow%3ABuild)
+[![Build](https://github.com/ao-apps/ao-servlet-filter/workflows/Build/badge.svg?branch=master)](https://github.com/ao-apps/ao-servlet-filter/actions?query=workflow%3ABuild)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.aoapps/ao-servlet-filter/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.aoapps/ao-servlet-filter)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?branch=master&project=com.aoapps%3Aao-servlet-filter&metric=alert_status)](https://sonarcloud.io/dashboard?branch=master&id=com.aoapps%3Aao-servlet-filter)
 [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?branch=master&project=com.aoapps%3Aao-servlet-filter&metric=ncloc)](https://sonarcloud.io/component_measures?branch=master&id=com.aoapps%3Aao-servlet-filter&metric=ncloc)  
@@ -24,7 +24,7 @@ Reusable Java library of servlet filters.
 * [Changelog](https://oss.aoapps.com/servlet-filter/changelog)
 * [API Docs](https://oss.aoapps.com/servlet-filter/apidocs/)
 * [Maven Central Repository](https://search.maven.org/artifact/com.aoapps/ao-servlet-filter)
-* [GitHub](https://github.com/aoindustries/ao-servlet-filter)
+* [GitHub](https://github.com/ao-apps/ao-servlet-filter)
 
 ## Contact Us
 For questions or support, please [contact us](https://aoindustries.com/contact):
