@@ -34,7 +34,7 @@ import javax.servlet.ServletResponse;
  * TEXTAREAs are automatically detected as long as they start with exact "&lt;textarea" and end with exactly "&lt;/textarea" (case insensitive).
  * The reason for the specific tag format is to simplify the implementation
  * for maximum performance.  Careful attention has been paid to minimize the internal buffering in this class.
- * 
+ *
  * @author  AO Industries, Inc.
  */
 public class TrimFilterWriter extends PrintWriter {
@@ -66,7 +66,7 @@ public class TrimFilterWriter extends PrintWriter {
 
 	/**
 	 * Determines if trimming is enabled based on the output content type.
-	 * 
+	 *
 	 * @see  TrimFilterOutputStream#isTrimEnabled()  for same method implemented
 	 */
 	@SuppressWarnings({"deprecation", "StringEquality"})
@@ -215,7 +215,7 @@ public class TrimFilterWriter extends PrintWriter {
 	}
 
 	@Override
-	public void write(char buf[], int off, int len) {
+	public void write(char[] buf, int off, int len) {
 		if(isTrimEnabled()) {
 			char[] buff = outputBuffer;
 			// If len > OUPUT_BUFFER_SIZE, process in blocks
@@ -247,7 +247,7 @@ public class TrimFilterWriter extends PrintWriter {
 	}
 
 	@Override
-	public void write(char buf[]) {
+	public void write(char[] buf) {
 		if(isTrimEnabled()) write(buf, 0, buf.length);
 		else super.write(buf);
 	}
@@ -387,7 +387,7 @@ public class TrimFilterWriter extends PrintWriter {
 	}
 
 	@Override
-	public void println(char x[]) {
+	public void println(char[] x) {
 		if(isTrimEnabled()) {
 			print(x);
 			write(lineSeparator);
