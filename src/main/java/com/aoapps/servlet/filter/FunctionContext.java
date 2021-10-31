@@ -97,9 +97,18 @@ public class FunctionContext implements Filter {
 				if(newResponse != oldResponse) responseTL.set(newResponse);
 				chain.doFilter(request, response);
 			} finally {
-				if(newServletContext != oldServletContext) servletContextTL.set(oldServletContext);
-				if(newRequest != oldRequest) requestTL.set(oldRequest);
-				if(newResponse != oldResponse) responseTL.set(oldResponse);
+				if(newServletContext != oldServletContext) {
+					if(oldServletContext == null) servletContextTL.remove();
+					else servletContextTL.set(oldServletContext);
+				}
+				if(newRequest != oldRequest) {
+					if(oldRequest == null) requestTL.remove();
+					else requestTL.set(oldRequest);
+				}
+				if(newResponse != oldResponse) {
+					if(oldResponse == null) responseTL.remove();
+					else responseTL.set(oldResponse);
+				}
 			}
 		} else {
 			throw new ServletException("Not using HttpServletRequest and HttpServletResponse");
