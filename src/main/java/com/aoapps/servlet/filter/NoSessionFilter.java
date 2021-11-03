@@ -281,6 +281,7 @@ public class NoSessionFilter implements Filter {
 							@Override
 							public Enumeration<String> getParameterNames() {
 								final Enumeration<String> completeNames = super.getParameterNames();
+								// Java 9: new Enumeration<>
 								return new Enumeration<String>() {
 									// Need to look one ahead
 									private String nextName = null;
