@@ -75,9 +75,9 @@ import javax.servlet.http.HttpServletResponse;
  *        name.regex.2   (Optional) second regular expression to match
  *        name.regex.n   (Optional) nth regular expression to match
  *    Header:
- *        name=value  
+ *        name=value
  * </pre>
- * 
+ *
  * @see  WildcardPatternMatcher  for supported patterns
 */
 public class AddResponseHeaderFilter implements Filter {
@@ -135,7 +135,7 @@ public class AddResponseHeaderFilter implements Filter {
 			}
 			if(regexsByNum.isEmpty()) {
 				regexs = Collections.emptyList();
-			} if(regexsByNum.size() == 1) {
+			} else if(regexsByNum.size() == 1) {
 				regexs = Collections.singletonList(regexsByNum.values().iterator().next());
 			} else {
 				regexs = new ArrayList<>(regexsByNum.values());
