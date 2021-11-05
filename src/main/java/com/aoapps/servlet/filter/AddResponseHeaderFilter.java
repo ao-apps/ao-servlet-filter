@@ -213,5 +213,6 @@ public class AddResponseHeaderFilter implements Filter {
 
 	@Override
 	public void destroy() {
+		// Do nothing
 	}
 }

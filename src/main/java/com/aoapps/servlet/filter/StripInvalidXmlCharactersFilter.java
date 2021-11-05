@@ -118,6 +118,7 @@ public class StripInvalidXmlCharactersFilter implements Filter {
 
 	@Override
 	public void init(FilterConfig config) {
+		// Do nothing
 	}
 
 	@Override
@@ -238,5 +239,6 @@ public class StripInvalidXmlCharactersFilter implements Filter {
 
 	@Override
 	public void destroy() {
+		// Do nothing
 	}
 }

@@ -49,7 +49,7 @@ import javax.servlet.http.HttpServletResponse;
  * Init Parameters:
  *    patterns  Comma/space-separated list of patterns (default to *)
  * </pre>
- * 
+ *
  * @see  WildcardPatternMatcher  for supported patterns
 */
 public class NotFoundFilter implements Filter {
@@ -88,5 +88,6 @@ public class NotFoundFilter implements Filter {
 
 	@Override
 	public void destroy() {
+		// Do nothing
 	}
 }

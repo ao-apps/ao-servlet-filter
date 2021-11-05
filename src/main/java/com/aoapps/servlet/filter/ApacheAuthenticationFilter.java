@@ -81,7 +81,7 @@ public class ApacheAuthenticationFilter implements Filter {
 		groupsRequestAttribute = ScopeEE.REQUEST.attribute(groupsRequestAttributeName);
 	}
 
-	private static class CacheLock {}
+	private static class CacheLock {/* Empty lock class to help heap profile */}
 	private final CacheLock cacheLock = new CacheLock();
 
 	private long cacheLastModified;
