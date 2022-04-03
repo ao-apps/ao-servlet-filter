@@ -1,6 +1,6 @@
 /*
  * ao-servlet-filter - Reusable Java library of servlet filters.
- * Copyright (C) 2006, 2007, 2008, 2009, 2010, 2011, 2013, 2014, 2016, 2020, 2021  AO Industries, Inc.
+ * Copyright (C) 2006, 2007, 2008, 2009, 2010, 2011, 2013, 2014, 2016, 2020, 2021, 2022  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -24,6 +24,14 @@ package com.aoapps.servlet.filter;
 
 import com.aoapps.lang.io.ContentType;
 import com.aoapps.lang.util.BufferManager;
+import static com.aoapps.servlet.filter.TrimFilterWriter.PRE;
+import static com.aoapps.servlet.filter.TrimFilterWriter.PRE_CLOSE;
+import static com.aoapps.servlet.filter.TrimFilterWriter.TEXTAREA;
+import static com.aoapps.servlet.filter.TrimFilterWriter.TEXTAREA_CLOSE;
+import static com.aoapps.servlet.filter.TrimFilterWriter.pre;
+import static com.aoapps.servlet.filter.TrimFilterWriter.pre_close;
+import static com.aoapps.servlet.filter.TrimFilterWriter.textarea;
+import static com.aoapps.servlet.filter.TrimFilterWriter.textarea_close;
 import java.io.IOException;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.ServletResponse;
@@ -37,7 +45,7 @@ import javax.servlet.WriteListener;
  * for maximum performance.  Careful attention has been paid to minimize the internal buffering in this class.  As many write/print operations as possible
  * are passed directly to the wrapped <code>ServletOutputStream</code>.  Please note that these methods are not synchronized, as servlet output is normally written
  * by the thread allocated for the request.  If synchronization is required it should be provided externally.
- * 
+ *
  * @author  AO Industries, Inc.
  */
 public class TrimFilterOutputStream extends ServletOutputStream {
@@ -70,7 +78,7 @@ public class TrimFilterOutputStream extends ServletOutputStream {
 
 	/**
 	 * Determines if trimming is enabled based on the output content type.
-	 * 
+	 *
 	 * @see  TrimFilterWriter#isTrimEnabled()  for same method implemented
 	 */
 	@SuppressWarnings({"deprecation", "StringEquality"})
@@ -119,39 +127,34 @@ public class TrimFilterOutputStream extends ServletOutputStream {
 	private boolean processChar(char c) {
 		if(inTextArea) {
 			if(
-				c==TrimFilterWriter.textarea_close[readCharMatchCount]
-				|| c==TrimFilterWriter.TEXTAREA_CLOSE[readCharMatchCount]
+				c == textarea_close[readCharMatchCount]
+				|| c == TEXTAREA_CLOSE[readCharMatchCount]
 			) {
 				readCharMatchCount++;
-				if(readCharMatchCount>=TrimFilterWriter.textarea_close.length) {
-					inTextArea=false;
-					readCharMatchCount=0;
+				if(readCharMatchCount >= textarea_close.length) {
+					inTextArea = false;
+					readCharMatchCount = 0;
 				}
 			} else {
-				readCharMatchCount=0;
+				readCharMatchCount = 0;
 			}
 			return true;
 		} else if(inPre) {
 			if(
-				c==TrimFilterWriter.pre_close[preReadCharMatchCount]
-				|| c==TrimFilterWriter.PRE_CLOSE[preReadCharMatchCount]
+				c == pre_close[preReadCharMatchCount]
+				|| c == PRE_CLOSE[preReadCharMatchCount]
 			) {
 				preReadCharMatchCount++;
-				if(preReadCharMatchCount>=TrimFilterWriter.pre_close.length) {
-					inPre=false;
-					preReadCharMatchCount=0;
+				if(preReadCharMatchCount >= pre_close.length) {
+					inPre = false;
+					preReadCharMatchCount = 0;
 				}
 			} else {
-				preReadCharMatchCount=0;
+				preReadCharMatchCount = 0;
 			}
 			return true;
 		} else {
-			if(c=='\r') {
-				readCharMatchCount = 0;
-				preReadCharMatchCount = 0;
-				// Carriage return only output when no longer at the beginning of the line
-				return !atLineStart;
-			} else if(c=='\n') {
+			if(c == '\n') {
 				readCharMatchCount = 0;
 				preReadCharMatchCount = 0;
 				// Newline only output when no longer at the beginning of the line
@@ -161,36 +164,36 @@ public class TrimFilterOutputStream extends ServletOutputStream {
 				} else {
 					return false;
 				}
-			} else if(c==' ' || c=='\t') {
+			} else if(c == ' ' || c == '\t' || c == '\r') {
 				readCharMatchCount = 0;
 				preReadCharMatchCount = 0;
-				// Space and tab only output when no longer at the beginning of the line
+				// Space, tab, and carriage return only output when no longer at the beginning of the line
 				return !atLineStart;
 			} else {
 				atLineStart = false;
 				if(
-					c==TrimFilterWriter.textarea[readCharMatchCount]
-					|| c==TrimFilterWriter.TEXTAREA[readCharMatchCount]
+					c == textarea[readCharMatchCount]
+					|| c == TEXTAREA[readCharMatchCount]
 				) {
 					readCharMatchCount++;
-					if(readCharMatchCount>=TrimFilterWriter.textarea.length) {
-						inTextArea=true;
-						readCharMatchCount=0;
+					if(readCharMatchCount >= textarea.length) {
+						inTextArea = true;
+						readCharMatchCount = 0;
 					}
 				} else {
-					readCharMatchCount=0;
+					readCharMatchCount = 0;
 				}
 				if(
-					c==TrimFilterWriter.pre[preReadCharMatchCount]
-					|| c==TrimFilterWriter.PRE[preReadCharMatchCount]
+					c == pre[preReadCharMatchCount]
+					|| c == PRE[preReadCharMatchCount]
 				) {
 					preReadCharMatchCount++;
-					if(preReadCharMatchCount>=TrimFilterWriter.pre.length) {
-						inPre=true;
-						preReadCharMatchCount=0;
+					if(preReadCharMatchCount >= pre.length) {
+						inPre = true;
+						preReadCharMatchCount = 0;
 					}
 				} else {
-					preReadCharMatchCount=0;
+					preReadCharMatchCount = 0;
 				}
 				return true;
 			}

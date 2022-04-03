@@ -1,6 +1,6 @@
 /*
  * ao-servlet-filter - Reusable Java library of servlet filters.
- * Copyright (C) 2006, 2007, 2008, 2009, 2010, 2011, 2013, 2016, 2020, 2021  AO Industries, Inc.
+ * Copyright (C) 2006, 2007, 2008, 2009, 2010, 2011, 2013, 2016, 2020, 2021, 2022  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -128,39 +128,34 @@ public class TrimFilterWriter extends PrintWriter {
 	private boolean processChar(char c) {
 		if(inTextArea) {
 			if(
-				c==textarea_close[readCharMatchCount]
-				|| c==TEXTAREA_CLOSE[readCharMatchCount]
+				c == textarea_close[readCharMatchCount]
+				|| c == TEXTAREA_CLOSE[readCharMatchCount]
 			) {
 				readCharMatchCount++;
-				if(readCharMatchCount>=textarea_close.length) {
-					inTextArea=false;
-					readCharMatchCount=0;
+				if(readCharMatchCount >= textarea_close.length) {
+					inTextArea = false;
+					readCharMatchCount = 0;
 				}
 			} else {
-				readCharMatchCount=0;
+				readCharMatchCount = 0;
 			}
 			return true;
 		} else if(inPre) {
 			if(
-				c==pre_close[preReadCharMatchCount]
-				|| c==PRE_CLOSE[preReadCharMatchCount]
+				c == pre_close[preReadCharMatchCount]
+				|| c == PRE_CLOSE[preReadCharMatchCount]
 			) {
 				preReadCharMatchCount++;
-				if(preReadCharMatchCount>=pre_close.length) {
-					inPre=false;
-					preReadCharMatchCount=0;
+				if(preReadCharMatchCount >= pre_close.length) {
+					inPre = false;
+					preReadCharMatchCount = 0;
 				}
 			} else {
-				preReadCharMatchCount=0;
+				preReadCharMatchCount = 0;
 			}
 			return true;
 		} else {
-			if(c=='\r') {
-				readCharMatchCount = 0;
-				preReadCharMatchCount = 0;
-				// Carriage return only output when no longer at the beginning of the line
-				return !atLineStart;
-			} else if(c=='\n') {
+			if(c == '\n') {
 				readCharMatchCount = 0;
 				preReadCharMatchCount = 0;
 				// Newline only output when no longer at the beginning of the line
@@ -170,36 +165,36 @@ public class TrimFilterWriter extends PrintWriter {
 				} else {
 					return false;
 				}
-			} else if(c==' ' || c=='\t') {
+			} else if(c == ' ' || c == '\t' || c == '\r') {
 				readCharMatchCount = 0;
 				preReadCharMatchCount = 0;
-				// Space and tab only output when no longer at the beginning of the line
+				// Space, tab, and carriage return only output when no longer at the beginning of the line
 				return !atLineStart;
 			} else {
 				atLineStart = false;
 				if(
-					c==textarea[readCharMatchCount]
-					|| c==TEXTAREA[readCharMatchCount]
+					c == textarea[readCharMatchCount]
+					|| c == TEXTAREA[readCharMatchCount]
 				) {
 					readCharMatchCount++;
-					if(readCharMatchCount>=textarea.length) {
-						inTextArea=true;
-						readCharMatchCount=0;
+					if(readCharMatchCount >= textarea.length) {
+						inTextArea = true;
+						readCharMatchCount = 0;
 					}
 				} else {
-					readCharMatchCount=0;
+					readCharMatchCount = 0;
 				}
 				if(
-					c==pre[preReadCharMatchCount]
-					|| c==PRE[preReadCharMatchCount]
+					c == pre[preReadCharMatchCount]
+					|| c == PRE[preReadCharMatchCount]
 				) {
 					preReadCharMatchCount++;
-					if(preReadCharMatchCount>=pre.length) {
-						inPre=true;
-						preReadCharMatchCount=0;
+					if(preReadCharMatchCount >= pre.length) {
+						inPre = true;
+						preReadCharMatchCount = 0;
 					}
 				} else {
-					preReadCharMatchCount=0;
+					preReadCharMatchCount = 0;
 				}
 				return true;
 			}
