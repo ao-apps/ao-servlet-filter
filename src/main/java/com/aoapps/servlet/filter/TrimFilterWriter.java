@@ -20,6 +20,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with ao-servlet-filter.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 package com.aoapps.servlet.filter;
 
 import com.aoapps.lang.io.ContentType;
