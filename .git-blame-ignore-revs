@@ -1,2 +1,14 @@
 # Significant manual code formatting clean-up…
 d76c9faa519dc8c2d640769f4e63c82c7b216e2b
+# Removed trailing whitespace
+a61f552d6eeb8053cd06dbc2e18d29f55d92e68f
+# Generics whitespace consistency
+9f9b50f0f50a06144197faf8fbdf97a8fbea0cbf
+# Removed extraneous space at end of line.
+bc233c555150150a1be32a8f144f0bd1d703588f
+# Converted remaining four-space indents to our standard tab indent.
+d75f403522cd7aac23bb41ca2089cc9df109fb27
+# Removed extraneous space at end of line.
+63f20dd412080fe8a637eb8046f0dc310c9d93d6
+# Converted remaining four-space indents to our standard tab indent.
+1ab04065d321022d4ba4f1ec5c18ca949af728b6
