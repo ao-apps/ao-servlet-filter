@@ -30,7 +30,7 @@ import com.aoapps.lang.concurrent.ThreadLocalsRunnable;
  */
 public class FunctionContextRunnable extends ThreadLocalsRunnable {
 
-	public FunctionContextRunnable(Runnable task) {
-		super(task, FunctionContextCallable.threadLocals);
-	}
+  public FunctionContextRunnable(Runnable task) {
+    super(task, FunctionContextCallable.threadLocals);
+  }
 }

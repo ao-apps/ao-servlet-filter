@@ -45,79 +45,100 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class FunctionContext implements Filter {
 
-	private static final String INIT_ERROR_MESSAGE = "Function context not initialized.  Please install FunctionContext filter to web.xml";
+  private static final String INIT_ERROR_MESSAGE = "Function context not initialized.  Please install FunctionContext filter to web.xml";
 
-	static final ThreadLocal<ServletContext> servletContextTL = new ThreadLocal<>();
-	static final ThreadLocal<HttpServletRequest> requestTL = new ThreadLocal<>();
-	static final ThreadLocal<HttpServletResponse> responseTL = new ThreadLocal<>();
+  static final ThreadLocal<ServletContext> servletContextTL = new ThreadLocal<>();
+  static final ThreadLocal<HttpServletRequest> requestTL = new ThreadLocal<>();
+  static final ThreadLocal<HttpServletResponse> responseTL = new ThreadLocal<>();
 
-	public static ServletContext getServletContext() {
-		ServletContext servletContext = servletContextTL.get();
-		if(servletContext==null) throw new IllegalStateException(INIT_ERROR_MESSAGE);
-		return servletContext;
-	}
+  public static ServletContext getServletContext() {
+    ServletContext servletContext = servletContextTL.get();
+    if (servletContext == null) {
+      throw new IllegalStateException(INIT_ERROR_MESSAGE);
+    }
+    return servletContext;
+  }
 
-	public static HttpServletRequest getRequest() {
-		HttpServletRequest request = requestTL.get();
-		if(request==null) throw new IllegalStateException(INIT_ERROR_MESSAGE);
-		return request;
-	}
+  public static HttpServletRequest getRequest() {
+    HttpServletRequest request = requestTL.get();
+    if (request == null) {
+      throw new IllegalStateException(INIT_ERROR_MESSAGE);
+    }
+    return request;
+  }
 
-	public static HttpServletResponse getResponse() {
-		HttpServletResponse response = responseTL.get();
-		if(response==null) throw new IllegalStateException(INIT_ERROR_MESSAGE);
-		return response;
-	}
+  public static HttpServletResponse getResponse() {
+    HttpServletResponse response = responseTL.get();
+    if (response == null) {
+      throw new IllegalStateException(INIT_ERROR_MESSAGE);
+    }
+    return response;
+  }
 
-	private ServletContext filterServletContext;
+  private ServletContext filterServletContext;
 
-	@Override
-	public void init(FilterConfig config) throws ServletException {
-		filterServletContext = config.getServletContext();
-	}
+  @Override
+  public void init(FilterConfig config) throws ServletException {
+    filterServletContext = config.getServletContext();
+  }
 
-	@Override
-	public void doFilter(
-		ServletRequest request,
-		ServletResponse response,
-		FilterChain chain
-	) throws IOException, ServletException {
-		if(
-			(request instanceof HttpServletRequest)
-			&& (response instanceof HttpServletResponse)
-		) {
-			ServletContext newServletContext = filterServletContext;
-			HttpServletRequest newRequest = (HttpServletRequest)request;
-			HttpServletResponse newResponse = (HttpServletResponse)response;
-			ServletContext oldServletContext = servletContextTL.get();
-			HttpServletRequest oldRequest = requestTL.get();
-			HttpServletResponse oldResponse = responseTL.get();
-			try {
-				if(newServletContext != oldServletContext) servletContextTL.set(newServletContext);
-				if(newRequest != oldRequest) requestTL.set(newRequest);
-				if(newResponse != oldResponse) responseTL.set(newResponse);
-				chain.doFilter(request, response);
-			} finally {
-				if(newServletContext != oldServletContext) {
-					if(oldServletContext == null) servletContextTL.remove();
-					else servletContextTL.set(oldServletContext);
-				}
-				if(newRequest != oldRequest) {
-					if(oldRequest == null) requestTL.remove();
-					else requestTL.set(oldRequest);
-				}
-				if(newResponse != oldResponse) {
-					if(oldResponse == null) responseTL.remove();
-					else responseTL.set(oldResponse);
-				}
-			}
-		} else {
-			throw new ServletException("Not using HttpServletRequest and HttpServletResponse");
-		}
-	}
+  @Override
+  public void doFilter(
+    ServletRequest request,
+    ServletResponse response,
+    FilterChain chain
+  ) throws IOException, ServletException {
+    if (
+      (request instanceof HttpServletRequest)
+      && (response instanceof HttpServletResponse)
+    ) {
+      ServletContext newServletContext = filterServletContext;
+      HttpServletRequest newRequest = (HttpServletRequest)request;
+      HttpServletResponse newResponse = (HttpServletResponse)response;
+      ServletContext oldServletContext = servletContextTL.get();
+      HttpServletRequest oldRequest = requestTL.get();
+      HttpServletResponse oldResponse = responseTL.get();
+      try {
+        if (newServletContext != oldServletContext) {
+          servletContextTL.set(newServletContext);
+        }
+        if (newRequest != oldRequest) {
+          requestTL.set(newRequest);
+        }
+        if (newResponse != oldResponse) {
+          responseTL.set(newResponse);
+        }
+        chain.doFilter(request, response);
+      } finally {
+        if (newServletContext != oldServletContext) {
+          if (oldServletContext == null) {
+            servletContextTL.remove();
+          } else {
+            servletContextTL.set(oldServletContext);
+          }
+        }
+        if (newRequest != oldRequest) {
+          if (oldRequest == null) {
+            requestTL.remove();
+          } else {
+            requestTL.set(oldRequest);
+          }
+        }
+        if (newResponse != oldResponse) {
+          if (oldResponse == null) {
+            responseTL.remove();
+          } else {
+            responseTL.set(oldResponse);
+          }
+        }
+      }
+    } else {
+      throw new ServletException("Not using HttpServletRequest and HttpServletResponse");
+    }
+  }
 
-	@Override
-	public void destroy() {
-		filterServletContext = null;
-	}
+  @Override
+  public void destroy() {
+    filterServletContext = null;
+  }
 }

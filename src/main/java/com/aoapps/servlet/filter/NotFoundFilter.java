@@ -55,40 +55,43 @@ import javax.servlet.http.HttpServletResponse;
 */
 public class NotFoundFilter implements Filter {
 
-	private WildcardPatternMatcher patterns;
+  private WildcardPatternMatcher patterns;
 
-	@Override
-	public void init(FilterConfig config) {
-		String param = config.getInitParameter("patterns");
-		if(param == null) patterns = WildcardPatternMatcher.matchAll();
-		else patterns = WildcardPatternMatcher.compile(param);
-	}
+  @Override
+  public void init(FilterConfig config) {
+    String param = config.getInitParameter("patterns");
+    if (param == null) {
+      patterns = WildcardPatternMatcher.matchAll();
+    } else {
+      patterns = WildcardPatternMatcher.compile(param);
+    }
+  }
 
-	@Override
-	public void doFilter(
-		ServletRequest request,
-		ServletResponse response,
-		FilterChain chain
-	) throws IOException, ServletException {
-		final String message = "404 Not Found";
-		if(
-			(request instanceof HttpServletRequest)
-			&& (response instanceof HttpServletResponse)
-		) {
-			HttpServletRequest httpRequest = (HttpServletRequest)request;
-			if(patterns.isMatch(httpRequest.getServletPath())) {
-				HttpServletResponse httpResponse = (HttpServletResponse)response;
-				httpResponse.sendError(HttpServletResponse.SC_NOT_FOUND, message);
-			} else {
-				chain.doFilter(request, response);
-			}
-		} else {
-			throw new ServletException(message);
-		}
-	}
+  @Override
+  public void doFilter(
+    ServletRequest request,
+    ServletResponse response,
+    FilterChain chain
+  ) throws IOException, ServletException {
+    final String message = "404 Not Found";
+    if (
+      (request instanceof HttpServletRequest)
+      && (response instanceof HttpServletResponse)
+    ) {
+      HttpServletRequest httpRequest = (HttpServletRequest)request;
+      if (patterns.isMatch(httpRequest.getServletPath())) {
+        HttpServletResponse httpResponse = (HttpServletResponse)response;
+        httpResponse.sendError(HttpServletResponse.SC_NOT_FOUND, message);
+      } else {
+        chain.doFilter(request, response);
+      }
+    } else {
+      throw new ServletException(message);
+    }
+  }
 
-	@Override
-	public void destroy() {
-		// Do nothing
-	}
+  @Override
+  public void destroy() {
+    // Do nothing
+  }
 }

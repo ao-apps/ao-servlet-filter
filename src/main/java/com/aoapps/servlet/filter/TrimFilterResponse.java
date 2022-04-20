@@ -41,54 +41,54 @@ import javax.servlet.http.HttpServletResponseWrapper;
  */
 public class TrimFilterResponse extends HttpServletResponseWrapper {
 
-	private TrimFilterWriter writer;
-	private TrimFilterOutputStream outputStream;
+  private TrimFilterWriter writer;
+  private TrimFilterOutputStream outputStream;
 
-	public TrimFilterResponse(HttpServletResponse response) {
-		super(response);
-	}
+  public TrimFilterResponse(HttpServletResponse response) {
+    super(response);
+  }
 
-	@Override
-	public void reset() {
-		getResponse().reset();
-		if(writer!=null) {
-			writer.inTextArea = false;
-			writer.inPre = false;
-		}
-		if(outputStream!=null) {
-			outputStream.inTextArea = false;
-			outputStream.inPre = false;
-		}
-	}
+  @Override
+  public void reset() {
+    getResponse().reset();
+    if (writer != null) {
+      writer.inTextArea = false;
+      writer.inPre = false;
+    }
+    if (outputStream != null) {
+      outputStream.inTextArea = false;
+      outputStream.inPre = false;
+    }
+  }
 
-	@Override
-	public void resetBuffer() {
-		getResponse().resetBuffer();
-		if(writer!=null) {
-			writer.inTextArea = false;
-			writer.inPre = false;
-		}
-		if(outputStream!=null) {
-			outputStream.inTextArea = false;
-			outputStream.inPre = false;
-		}
-	}
+  @Override
+  public void resetBuffer() {
+    getResponse().resetBuffer();
+    if (writer != null) {
+      writer.inTextArea = false;
+      writer.inPre = false;
+    }
+    if (outputStream != null) {
+      outputStream.inTextArea = false;
+      outputStream.inPre = false;
+    }
+  }
 
-	@Override
-	public PrintWriter getWriter() throws IOException {
-		if(writer==null) {
-			ServletResponse response = getResponse();
-			writer = new TrimFilterWriter(response.getWriter(), response);
-		}
-		return writer;
-	}
+  @Override
+  public PrintWriter getWriter() throws IOException {
+    if (writer == null) {
+      ServletResponse response = getResponse();
+      writer = new TrimFilterWriter(response.getWriter(), response);
+    }
+    return writer;
+  }
 
-	@Override
-	public ServletOutputStream getOutputStream() throws IOException {
-		if(outputStream==null) {
-			ServletResponse response = getResponse();
-			outputStream = new TrimFilterOutputStream(response.getOutputStream(), response);
-		}
-		return outputStream;
-	}
+  @Override
+  public ServletOutputStream getOutputStream() throws IOException {
+    if (outputStream == null) {
+      ServletResponse response = getResponse();
+      outputStream = new TrimFilterOutputStream(response.getOutputStream(), response);
+    }
+    return outputStream;
+  }
 }

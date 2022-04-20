@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 ao-servlet-filter - Reusable Java library of servlet filters.
-Copyright (C) 2020, 2021  AO Industries, Inc.
+Copyright (C) 2020, 2021, 2022  AO Industries, Inc.
     support@aoindustries.com
     7262 Bull Pen Cir
     Mobile, AL 36695
@@ -27,57 +27,57 @@ along with ao-servlet-filter.  If not, see <https://www.gnu.org/licenses/>.
                       http://xmlns.jcp.org/xml/ns/javaee/web-fragment_3_1.xsd"
   version="3.1"
   metadata-complete="false">
-	<name>@{project.groupId}:@{project.artifactId}</name>
-	<!-- <display-name>@{project.name} @{project.version}</display-name> -->
-	<description>@{project.description}</description>
+  <name>@{project.groupId}:@{project.artifactId}</name>
+  <!-- <display-name>@{project.name} @{project.version}</display-name> -->
+  <description>@{project.description}</description>
 
-	<!--
-		The strip invalid XML filter must be first, declared before all other
-		fragments.  This is because it is responsible for protecting the entire
-		application from unexpected input.
-	-->
-	<ordering>
-		<before>
-			<others />
-		</before>
-	</ordering>
+  <!--
+    The strip invalid XML filter must be first, declared before all other
+    fragments.  This is because it is responsible for protecting the entire
+    application from unexpected input.
+  -->
+  <ordering>
+    <before>
+      <others />
+    </before>
+  </ordering>
 
-	<!-- Filter to strip invalid XML characters from incoming parameters -->
-	<filter>
-		<filter-name>com.aoapps.servlet.filter.StripInvalidXmlCharactersFilter</filter-name>
-		<filter-class>com.aoapps.servlet.filter.StripInvalidXmlCharactersFilter</filter-class>
-	</filter>
-	<filter-mapping>
-		<filter-name>com.aoapps.servlet.filter.StripInvalidXmlCharactersFilter</filter-name>
-		<url-pattern>/*</url-pattern>
-		<dispatcher>REQUEST</dispatcher>
-		<dispatcher>ERROR</dispatcher>
-	</filter-mapping>
+  <!-- Filter to strip invalid XML characters from incoming parameters -->
+  <filter>
+    <filter-name>com.aoapps.servlet.filter.StripInvalidXmlCharactersFilter</filter-name>
+    <filter-class>com.aoapps.servlet.filter.StripInvalidXmlCharactersFilter</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>com.aoapps.servlet.filter.StripInvalidXmlCharactersFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+    <dispatcher>REQUEST</dispatcher>
+    <dispatcher>ERROR</dispatcher>
+  </filter-mapping>
 
-	<!-- Perform final URI/IRI encoding -->
-	<context-param>
-		<description>
-			IRI support is disabled by default, and only recommended for
-			development or internal systems.  IRI may result in slightly
-			smaller output, and more readable HTML source, but for
-			interoperability should be off in production systems.
-		</description>
-		<param-name>com.aoapps.servlet.filter.EncodeURIFilter.enableIRI</param-name>
-		<param-value>false</param-value>
-	</context-param>
-	<filter>
-		<description>
-			Encodes the URL to either RFC 3986 URI US-ASCII format or RFC 3987
-			IRI Unicode format.  Redirects are always formatted as RFC 3986 URI.
-		</description>
-		<filter-name>com.aoapps.servlet.filter.EncodeURIFilter</filter-name>
-		<filter-class>com.aoapps.servlet.filter.EncodeURIFilter</filter-class>
-	</filter>
-	<filter-mapping>
-		<filter-name>com.aoapps.servlet.filter.EncodeURIFilter</filter-name>
-		<url-pattern>/*</url-pattern>
-		<dispatcher>REQUEST</dispatcher>
-		<dispatcher>ERROR</dispatcher>
-	</filter-mapping>
+  <!-- Perform final URI/IRI encoding -->
+  <context-param>
+    <description>
+      IRI support is disabled by default, and only recommended for
+      development or internal systems.  IRI may result in slightly
+      smaller output, and more readable HTML source, but for
+      interoperability should be off in production systems.
+    </description>
+    <param-name>com.aoapps.servlet.filter.EncodeURIFilter.enableIRI</param-name>
+    <param-value>false</param-value>
+  </context-param>
+  <filter>
+    <description>
+      Encodes the URL to either RFC 3986 URI US-ASCII format or RFC 3987
+      IRI Unicode format.  Redirects are always formatted as RFC 3986 URI.
+    </description>
+    <filter-name>com.aoapps.servlet.filter.EncodeURIFilter</filter-name>
+    <filter-class>com.aoapps.servlet.filter.EncodeURIFilter</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>com.aoapps.servlet.filter.EncodeURIFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+    <dispatcher>REQUEST</dispatcher>
+    <dispatcher>ERROR</dispatcher>
+  </filter-mapping>
 
 </web-fragment>

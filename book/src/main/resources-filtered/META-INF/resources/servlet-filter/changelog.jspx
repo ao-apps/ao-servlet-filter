@@ -22,482 +22,482 @@ You should have received a copy of the GNU Lesser General Public License
 along with ao-servlet-filter.  If not, see <https://www.gnu.org/licenses/>.
 -->
 <jsp:root
-	xmlns:ao="https://oss.aoapps.com/taglib/"
-	xmlns:c="http://java.sun.com/jsp/jstl/core"
-	xmlns:changelog="https://semanticcms.com/changelog/taglib/"
-	xmlns:core="https://semanticcms.com/core/taglib/"
-	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-	xmlns:jsp="http://java.sun.com/JSP/Page"
-	version="2.1"
+  xmlns:ao="https://oss.aoapps.com/taglib/"
+  xmlns:c="http://java.sun.com/jsp/jstl/core"
+  xmlns:changelog="https://semanticcms.com/changelog/taglib/"
+  xmlns:core="https://semanticcms.com/core/taglib/"
+  xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+  xmlns:jsp="http://java.sun.com/JSP/Page"
+  version="2.1"
 >
-	<jsp:directive.page language="java" pageEncoding="UTF-8" />
-	<jsp:directive.page session="false" />
-	<core:page
-		title="@{documented.name} Changelog"
-		shortTitle="Changelog"
-		tocLevels="1"
-		datePublished="2016-10-29T21:37:35-05:00"
-		dateModified="2022-02-15T20:36:44-06:00"
-	>
-		<c:if test="${fn:endsWith('@{project.version}', '-SNAPSHOT') and !fn:endsWith('@{project.version}', '-POST-SNAPSHOT')}">
-			<changelog:release
-				projectName="@{documented.name}"
-				version="@{project.version}"
-				groupId="@{project.groupId}"
-				artifactId="@{documented.artifactId}"
-				repository="@{nexusUrl}content/repositories/snapshots/"
-				scmUrl="@{project.scm.url}"
-			/>
-		</c:if>
+  <jsp:directive.page language="java" pageEncoding="UTF-8" />
+  <jsp:directive.page session="false" />
+  <core:page
+    title="@{documented.name} Changelog"
+    shortTitle="Changelog"
+    tocLevels="1"
+    datePublished="2016-10-29T21:37:35-05:00"
+    dateModified="2022-02-15T20:36:44-06:00"
+  >
+    <c:if test="${fn:endsWith('@{project.version}', '-SNAPSHOT') and !fn:endsWith('@{project.version}', '-POST-SNAPSHOT')}">
+      <changelog:release
+        projectName="@{documented.name}"
+        version="@{project.version}"
+        groupId="@{project.groupId}"
+        artifactId="@{documented.artifactId}"
+        repository="@{nexusUrl}content/repositories/snapshots/"
+        scmUrl="@{project.scm.url}"
+      />
+    </c:if>
 
-		<changelog:release
-			projectName="@{documented.name}"
-			version="3.0.2"
-			datePublished="2022-02-15T20:36:44-06:00"
-			groupId="@{project.groupId}"
-			artifactId="@{documented.artifactId}"
-			scmUrl="@{project.scm.url}"
-		>
-			<ul>
-				<li>
-					Cleaning-up ThreadLocal variables when no longer used,
-					see <ao:a href="https://rules.sonarsource.com/java/RSPEC-5164" />.
-				</li>
-			</ul>
-		</changelog:release>
+    <changelog:release
+      projectName="@{documented.name}"
+      version="3.0.2"
+      datePublished="2022-02-15T20:36:44-06:00"
+      groupId="@{project.groupId}"
+      artifactId="@{documented.artifactId}"
+      scmUrl="@{project.scm.url}"
+    >
+      <ul>
+        <li>
+          Cleaning-up ThreadLocal variables when no longer used,
+          see <ao:a href="https://rules.sonarsource.com/java/RSPEC-5164" />.
+        </li>
+      </ul>
+    </changelog:release>
 
-		<changelog:release
-			projectName="@{documented.name}"
-			version="3.0.1"
-			datePublished="2021-10-15T21:17:12-05:00"
-			groupId="@{project.groupId}"
-			artifactId="@{documented.artifactId}"
-			scmUrl="@{project.scm.url}"
-		>
-			<ul>
-				<li>Updated dependencies.</li>
-			</ul>
-		</changelog:release>
+    <changelog:release
+      projectName="@{documented.name}"
+      version="3.0.1"
+      datePublished="2021-10-15T21:17:12-05:00"
+      groupId="@{project.groupId}"
+      artifactId="@{documented.artifactId}"
+      scmUrl="@{project.scm.url}"
+    >
+      <ul>
+        <li>Updated dependencies.</li>
+      </ul>
+    </changelog:release>
 
-		<changelog:release
-			projectName="@{documented.name}"
-			version="3.0.0"
-			datePublished="2021-07-05T01:05:52-05:00"
-			groupId="@{project.groupId}"
-			artifactId="@{documented.artifactId}"
-			scmUrl="@{project.scm.url}"
-		>
-			<ul>
-				<li>Updated to <ao:a rel="nofollow" href="https://www.oracle.com/java/technologies/javaee/javaeetechnologies.html#javaee7">Java™ EE 7 Web Profile</ao:a> (Servlet 3.1, JSP 2.3, EL 3.0, and JSTL 1.2).</li>
-				<li>
-					Now supports Java 9+ modules.  Due to still having filename-based automatic module dependencies,
-					*-SNAPSHOT versions include <code>module-info.class</code> while releases include the
-					<code>Automatic-Module-Name</code> manifest entry.  To minimize the difference between these
-					modes, <code>module-info.java</code> does not perform any transitive requires.
-				</li>
-				<li>Maven artifact relocated from <code>com.aoindustries:ao-servlet-filter</code> to <code>com.aoapps:ao-servlet-filter</code>.</li>
-				<li>Package renamed from <code>com.aoindustries.servlet.filter</code> to <code>com.aoapps.servlet.filter</code>.</li>
-			</ul>
-		</changelog:release>
+    <changelog:release
+      projectName="@{documented.name}"
+      version="3.0.0"
+      datePublished="2021-07-05T01:05:52-05:00"
+      groupId="@{project.groupId}"
+      artifactId="@{documented.artifactId}"
+      scmUrl="@{project.scm.url}"
+    >
+      <ul>
+        <li>Updated to <ao:a rel="nofollow" href="https://www.oracle.com/java/technologies/javaee/javaeetechnologies.html#javaee7">Java™ EE 7 Web Profile</ao:a> (Servlet 3.1, JSP 2.3, EL 3.0, and JSTL 1.2).</li>
+        <li>
+          Now supports Java 9+ modules.  Due to still having filename-based automatic module dependencies,
+          *-SNAPSHOT versions include <code>module-info.class</code> while releases include the
+          <code>Automatic-Module-Name</code> manifest entry.  To minimize the difference between these
+          modes, <code>module-info.java</code> does not perform any transitive requires.
+        </li>
+        <li>Maven artifact relocated from <code>com.aoindustries:ao-servlet-filter</code> to <code>com.aoapps:ao-servlet-filter</code>.</li>
+        <li>Package renamed from <code>com.aoindustries.servlet.filter</code> to <code>com.aoapps.servlet.filter</code>.</li>
+      </ul>
+    </changelog:release>
 
-		<changelog:release
-			projectName="@{documented.name}"
-			version="2.3.0"
-			datePublished="2020-08-27T23:24:15-05:00"
-			groupId="com.aoindustries"
-			artifactId="@{documented.artifactId}"
-			scmUrl="@{project.scm.url}"
-		>
-			<ul>
-				<li><code>LocaleFilter</code> no longer redirects while within the ERROR dispatcher.</li>
-				<li>
-					Added support for Web development file types <code>*.less</code>, <code>*.sass</code>,
-					<code>*.scss</code>, <code>*.css.map</code>, and <code>*.js.map</code>.
-				</li>
-				<li>
-					New init parameter <code>com.aoindustries.servlet.filter.LocaleFilter.redirectStatusCode</code>
-					that sets the HTTP status code used for redirects.  Defaults to 301, which is the value expected
-					to be used in production.  It is recommended to set to 302 in development mode, so that browser
-					caches will not get in the way.
-				</li>
-			</ul>
-		</changelog:release>
+    <changelog:release
+      projectName="@{documented.name}"
+      version="2.3.0"
+      datePublished="2020-08-27T23:24:15-05:00"
+      groupId="com.aoindustries"
+      artifactId="@{documented.artifactId}"
+      scmUrl="@{project.scm.url}"
+    >
+      <ul>
+        <li><code>LocaleFilter</code> no longer redirects while within the ERROR dispatcher.</li>
+        <li>
+          Added support for Web development file types <code>*.less</code>, <code>*.sass</code>,
+          <code>*.scss</code>, <code>*.css.map</code>, and <code>*.js.map</code>.
+        </li>
+        <li>
+          New init parameter <code>com.aoindustries.servlet.filter.LocaleFilter.redirectStatusCode</code>
+          that sets the HTTP status code used for redirects.  Defaults to 301, which is the value expected
+          to be used in production.  It is recommended to set to 302 in development mode, so that browser
+          caches will not get in the way.
+        </li>
+      </ul>
+    </changelog:release>
 
-		<changelog:release
-			projectName="@{documented.name}"
-			version="2.2.0"
-			datePublished="2020-04-21T03:55:26-05:00"
-			groupId="com.aoindustries"
-			artifactId="@{documented.artifactId}"
-			scmUrl="@{project.scm.url}"
-		>
-			<ul>
-				<li>Added support for <ao:a href="https://developers.google.com/speed/webp">WebP images</ao:a>.</li>
-			</ul>
-		</changelog:release>
+    <changelog:release
+      projectName="@{documented.name}"
+      version="2.2.0"
+      datePublished="2020-04-21T03:55:26-05:00"
+      groupId="com.aoindustries"
+      artifactId="@{documented.artifactId}"
+      scmUrl="@{project.scm.url}"
+    >
+      <ul>
+        <li>Added support for <ao:a href="https://developers.google.com/speed/webp">WebP images</ao:a>.</li>
+      </ul>
+    </changelog:release>
 
-		<changelog:release
-			projectName="@{documented.name}"
-			version="2.1.0"
-			datePublished="2020-03-26T19:28:23-05:00"
-			groupId="com.aoindustries"
-			artifactId="@{documented.artifactId}"
-			scmUrl="@{project.scm.url}"
-		>
-			<ul>
-				<li>Minimum Java version changed from 1.7 to 1.8.</li>
-				<li>
-					Reduced use of property substitutions in <code>pom.xml</code>.
-					This is to help 3rd-party parsers that fail to perform full Maven-compatible substitutions.
-				</li>
-				<li>Fixed <code>ClassCastException</code> in <code>EncodeURIFilter.getActiveFilter(ServletRequest)</code>.</li>
-				<li>"Cache-Control" init parameters renamed to "cache-control".  Old values still work for compatibility.</li>
-				<li>
-					<ao:a href="apidocs/com.aoapps.servlet.filter/com/aoapps/servlet/filter/StripInvalidXmlCharactersFilter.html">StripInvalidXmlCharactersFilter</ao:a>
-					now supports the REQUEST dispatcher, too.  It is recommended that all uses of this
-					filter include <![CDATA[&lt;dispatcher&gt;ERROR&lt;/dispatcher&gt;]]>
-				</li>
-				<li>
-					<p>
-						New filter <ao:a href="apidocs/com.aoapps.servlet.filter/com/aoapps/servlet/filter/ApacheAuthenticationFilter.html">ApacheAuthenticationFilter</ao:a>
-						that parses Apache group file for role information while under Apache authentication.
-					</p>
-					<p>
-						When <ao:a href="https://tomcat.apache.org/tomcat-9.0-doc/config/ajp.html"><code>tomcatAuthentication</code></ao:a>
-						is set to <code>false</code>, user information is passed to Tomcat while group membership is not.
-						The filter parses the Apache group file and grants access to the roles corresponding to group names.
-					</p>
-				</li>
-				<li>
-					<ao:a href="apidocs/com.aoapps.servlet.filter/com/aoapps/servlet/filter/Utf8RequestCharacterEncodingListener.html">Utf8RequestCharacterEncodingListener</ao:a>
-					is now enabled via <code>@WebListener</code> annotation, and thus does not need to be included
-					in <code>web.xml</code> or <code>web-fragment.xml</code> when <code>metadata-complete="false"</code>.
-				</li>
-				<li>
-					Now activating the following filters by default within a <code>META-INF/web-fragment.xml</code>,
-					with the fragment configured to be before all others:
-					<ol>
-						<li><ao:a href="apidocs/com.aoapps.servlet.filter/com/aoapps/servlet/filter/StripInvalidXmlCharactersFilter.html">StripInvalidXmlCharactersFilter</ao:a></li>
-						<li><ao:a href="apidocs/com.aoapps.servlet.filter/com/aoapps/servlet/filter/EncodeURIFilter.html">EncodeURIFilter</ao:a></li>
-					</ol>
-				</li>
-				<li>
-					<ao:a href="apidocs/com.aoapps.servlet.filter/com/aoapps/servlet/filter/EncodeURIFilter.html">EncodeURIFilter</ao:a> configuration changed
-					to <![CDATA[&lt;context-param&gt;]]> named <code>com.aoindustries.servlet.filter.EncodeURIFilter.enableIRI</code>.
-					It is still off by default, but may be selectively enabled in development mode via <code>META-INF/context.xml</code>.
-				</li>
-				<li>
-					When <ao:a href="apidocs/com.aoapps.servlet.filter/com/aoapps/servlet/filter/EncodeURIFilter.html">EncodeURIFilter</ao:a> has IRI support
-					enabled, it is now only activated when the current <ao:a href="https://oss.aoapps.com/encoding/apidocs/com.aoapps.encoding/com/aoapps/encoding/Doctype.html">Doctype</ao:a>
-					supports <ao:a href="https://datatracker.ietf.org/doc/html/rfc3987">RFC 3987 IRI</ao:a> Unicode format URLs, which currently
-					is only <ao:a href="https://oss.aoapps.com/encoding/apidocs/com.aoapps.encoding/com/aoapps/encoding/Doctype.html#HTML5">HTML5</ao:a>.
-				</li>
-				<li><ao:a href="apidocs/com.aoapps.servlet.filter/com/aoapps/servlet/filter/CountConcurrencyListener.html">CountConcurrencyListener</ao:a> is now a <code>@WebListener</code>.</li>
-				<li>Optimized ServletContext attribute initialization and concurrency.</li>
-			</ul>
-		</changelog:release>
+    <changelog:release
+      projectName="@{documented.name}"
+      version="2.1.0"
+      datePublished="2020-03-26T19:28:23-05:00"
+      groupId="com.aoindustries"
+      artifactId="@{documented.artifactId}"
+      scmUrl="@{project.scm.url}"
+    >
+      <ul>
+        <li>Minimum Java version changed from 1.7 to 1.8.</li>
+        <li>
+          Reduced use of property substitutions in <code>pom.xml</code>.
+          This is to help 3rd-party parsers that fail to perform full Maven-compatible substitutions.
+        </li>
+        <li>Fixed <code>ClassCastException</code> in <code>EncodeURIFilter.getActiveFilter(ServletRequest)</code>.</li>
+        <li>"Cache-Control" init parameters renamed to "cache-control".  Old values still work for compatibility.</li>
+        <li>
+          <ao:a href="apidocs/com.aoapps.servlet.filter/com/aoapps/servlet/filter/StripInvalidXmlCharactersFilter.html">StripInvalidXmlCharactersFilter</ao:a>
+          now supports the REQUEST dispatcher, too.  It is recommended that all uses of this
+          filter include <![CDATA[&lt;dispatcher&gt;ERROR&lt;/dispatcher&gt;]]>
+        </li>
+        <li>
+          <p>
+            New filter <ao:a href="apidocs/com.aoapps.servlet.filter/com/aoapps/servlet/filter/ApacheAuthenticationFilter.html">ApacheAuthenticationFilter</ao:a>
+            that parses Apache group file for role information while under Apache authentication.
+          </p>
+          <p>
+            When <ao:a href="https://tomcat.apache.org/tomcat-9.0-doc/config/ajp.html"><code>tomcatAuthentication</code></ao:a>
+            is set to <code>false</code>, user information is passed to Tomcat while group membership is not.
+            The filter parses the Apache group file and grants access to the roles corresponding to group names.
+          </p>
+        </li>
+        <li>
+          <ao:a href="apidocs/com.aoapps.servlet.filter/com/aoapps/servlet/filter/Utf8RequestCharacterEncodingListener.html">Utf8RequestCharacterEncodingListener</ao:a>
+          is now enabled via <code>@WebListener</code> annotation, and thus does not need to be included
+          in <code>web.xml</code> or <code>web-fragment.xml</code> when <code>metadata-complete="false"</code>.
+        </li>
+        <li>
+          Now activating the following filters by default within a <code>META-INF/web-fragment.xml</code>,
+          with the fragment configured to be before all others:
+          <ol>
+            <li><ao:a href="apidocs/com.aoapps.servlet.filter/com/aoapps/servlet/filter/StripInvalidXmlCharactersFilter.html">StripInvalidXmlCharactersFilter</ao:a></li>
+            <li><ao:a href="apidocs/com.aoapps.servlet.filter/com/aoapps/servlet/filter/EncodeURIFilter.html">EncodeURIFilter</ao:a></li>
+          </ol>
+        </li>
+        <li>
+          <ao:a href="apidocs/com.aoapps.servlet.filter/com/aoapps/servlet/filter/EncodeURIFilter.html">EncodeURIFilter</ao:a> configuration changed
+          to <![CDATA[&lt;context-param&gt;]]> named <code>com.aoindustries.servlet.filter.EncodeURIFilter.enableIRI</code>.
+          It is still off by default, but may be selectively enabled in development mode via <code>META-INF/context.xml</code>.
+        </li>
+        <li>
+          When <ao:a href="apidocs/com.aoapps.servlet.filter/com/aoapps/servlet/filter/EncodeURIFilter.html">EncodeURIFilter</ao:a> has IRI support
+          enabled, it is now only activated when the current <ao:a href="https://oss.aoapps.com/encoding/apidocs/com.aoapps.encoding/com/aoapps/encoding/Doctype.html">Doctype</ao:a>
+          supports <ao:a href="https://datatracker.ietf.org/doc/html/rfc3987">RFC 3987 IRI</ao:a> Unicode format URLs, which currently
+          is only <ao:a href="https://oss.aoapps.com/encoding/apidocs/com.aoapps.encoding/com/aoapps/encoding/Doctype.html#HTML5">HTML5</ao:a>.
+        </li>
+        <li><ao:a href="apidocs/com.aoapps.servlet.filter/com/aoapps/servlet/filter/CountConcurrencyListener.html">CountConcurrencyListener</ao:a> is now a <code>@WebListener</code>.</li>
+        <li>Optimized ServletContext attribute initialization and concurrency.</li>
+      </ul>
+    </changelog:release>
 
-		<changelog:release
-			projectName="@{documented.name}"
-			version="2.0.0"
-			datePublished="2019-10-08T21:25:15-05:00"
-			groupId="com.aoindustries"
-			artifactId="@{documented.artifactId}"
-			scmUrl="@{project.scm.url}"
-		>
-			<ul>
-				<li>
-					Case-insensitive matching of URL schemes.  Previously, URL schemes were matched case-sensitive,
-					while the spec is case-insensitive.  This has been OK given we only use lower-case schemes within our
-					code and tools, but this is now a correct implementation.
-				</li>
-				<li>
-					<code>NoSessionFilter</code> now passes the URL encoding up the filter chain after its modifications.
-					Previously, the URL rewriting was stopped here.  To obtain the previous behavior, use in
-					conjunction with <code>session-config</code>.
-				</li>
-				<li>
-					New context init parameter <code>com.aoindustries.servlet.filter.NoSessionFilter.cookieUrlParamPrefix</code>
-					that may be used to provide a custom cookie URL prefix.  A fun alternative is
-					<ao:a href="https://www.fileformat.info/info/unicode/char/1f36a/index.htm">Unicode Character 'COOKIE' (U+1F36A)</ao:a>.
-				</li>
-				<li><code>StripInvalidXmlCharactersFilter</code> now removes parameters that have invalid names.</li>
-				<li><code>HideJspExtensionFilter</code> no longer removes <code>index.jsp(x)</code> or <code>.jsp(x)</code> extensions
-					from URLs that have a scheme.  However, http:// and https:// links to the same host are still rewritten
-					in order to handle absolute URLs.
-				</li>
-				<li><code>HideJspExtensionFilter</code> now sends redirect in <code>UTF-8</code>.</li>
-				<li><code>LocaleFilter</code> now sends redirect in <code>UTF-8</code>.</li>
-				<li>Cookie names, values, comments, and paths are now URI-encoded.</li>
-				<li>
-					<p>
-						New filter <code>EncodeURIFilter</code> which encodes the URL to either
-						<ao:a href="https://datatracker.ietf.org/doc/html/rfc3986">RFC 3986 URI</ao:a> US-ASCII format
-						or <ao:a href="https://datatracker.ietf.org/doc/html/rfc3987">RFC 3987 IRI</ao:a> Unicode format.
-						If the URL begins with <code>javascript:</code>, <code>cid:</code>, or <code>data:</code>,
-						(case-insensitive) it is not altered.
-						<ao:a href="https://oss.aoapps.com/servlet-util/apidocs/com.aoapps.servlet.util/com/aoapps/servlet/http/Canonical.html">Canonical URLs</ao:a> are always encoded to US-ASCII format.
-					</p>
-					<p>
-						IRI support is disabled by default, and only recommended for development or
-						internal systems.  IRI may result in slightly smaller output, and more readable
-						HTML source, but for interoperability should be off in production systems.
-					</p>
-					<p>
-						<ao:a href="https://datatracker.ietf.org/doc/html/rfc7231#section-7.1.2">RFC 7231 - 7.1.2.  Location</ao:a>
-						refers only to <ao:a href="https://datatracker.ietf.org/doc/html/rfc3986">RFC 3986 URI</ao:a> for
-						URI-reference, thus redirects are always formatted as
-						<ao:a href="https://datatracker.ietf.org/doc/html/rfc3986">RFC 3986 URI</ao:a>.
-					</p>
-				</li>
-				<li>No longer URL rewriting <code>file:</code> and <code>data:</code> URLs.</li>
-				<li>
-					Removed <code>NoEncodeUrlFilter</code> in favor of Servlet 3.0
-					<code>session-config</code> in <code>WEB-INF/web.xml</code>:
+    <changelog:release
+      projectName="@{documented.name}"
+      version="2.0.0"
+      datePublished="2019-10-08T21:25:15-05:00"
+      groupId="com.aoindustries"
+      artifactId="@{documented.artifactId}"
+      scmUrl="@{project.scm.url}"
+    >
+      <ul>
+        <li>
+          Case-insensitive matching of URL schemes.  Previously, URL schemes were matched case-sensitive,
+          while the spec is case-insensitive.  This has been OK given we only use lower-case schemes within our
+          code and tools, but this is now a correct implementation.
+        </li>
+        <li>
+          <code>NoSessionFilter</code> now passes the URL encoding up the filter chain after its modifications.
+          Previously, the URL rewriting was stopped here.  To obtain the previous behavior, use in
+          conjunction with <code>session-config</code>.
+        </li>
+        <li>
+          New context init parameter <code>com.aoindustries.servlet.filter.NoSessionFilter.cookieUrlParamPrefix</code>
+          that may be used to provide a custom cookie URL prefix.  A fun alternative is
+          <ao:a href="https://www.fileformat.info/info/unicode/char/1f36a/index.htm">Unicode Character 'COOKIE' (U+1F36A)</ao:a>.
+        </li>
+        <li><code>StripInvalidXmlCharactersFilter</code> now removes parameters that have invalid names.</li>
+        <li><code>HideJspExtensionFilter</code> no longer removes <code>index.jsp(x)</code> or <code>.jsp(x)</code> extensions
+          from URLs that have a scheme.  However, http:// and https:// links to the same host are still rewritten
+          in order to handle absolute URLs.
+        </li>
+        <li><code>HideJspExtensionFilter</code> now sends redirect in <code>UTF-8</code>.</li>
+        <li><code>LocaleFilter</code> now sends redirect in <code>UTF-8</code>.</li>
+        <li>Cookie names, values, comments, and paths are now URI-encoded.</li>
+        <li>
+          <p>
+            New filter <code>EncodeURIFilter</code> which encodes the URL to either
+            <ao:a href="https://datatracker.ietf.org/doc/html/rfc3986">RFC 3986 URI</ao:a> US-ASCII format
+            or <ao:a href="https://datatracker.ietf.org/doc/html/rfc3987">RFC 3987 IRI</ao:a> Unicode format.
+            If the URL begins with <code>javascript:</code>, <code>cid:</code>, or <code>data:</code>,
+            (case-insensitive) it is not altered.
+            <ao:a href="https://oss.aoapps.com/servlet-util/apidocs/com.aoapps.servlet.util/com/aoapps/servlet/http/Canonical.html">Canonical URLs</ao:a> are always encoded to US-ASCII format.
+          </p>
+          <p>
+            IRI support is disabled by default, and only recommended for development or
+            internal systems.  IRI may result in slightly smaller output, and more readable
+            HTML source, but for interoperability should be off in production systems.
+          </p>
+          <p>
+            <ao:a href="https://datatracker.ietf.org/doc/html/rfc7231#section-7.1.2">RFC 7231 - 7.1.2.  Location</ao:a>
+            refers only to <ao:a href="https://datatracker.ietf.org/doc/html/rfc3986">RFC 3986 URI</ao:a> for
+            URI-reference, thus redirects are always formatted as
+            <ao:a href="https://datatracker.ietf.org/doc/html/rfc3986">RFC 3986 URI</ao:a>.
+          </p>
+        </li>
+        <li>No longer URL rewriting <code>file:</code> and <code>data:</code> URLs.</li>
+        <li>
+          Removed <code>NoEncodeUrlFilter</code> in favor of Servlet 3.0
+          <code>session-config</code> in <code>WEB-INF/web.xml</code>:
 <pre><![CDATA[&lt;session-config&gt;
-	&lt;cookie-config&gt;
-		&lt;http-only&gt;true&lt;/http-only&gt;
-		&lt;!-- &lt;secure&gt;true&lt;/secure&gt; --&gt;
-	&lt;/cookie-config&gt;
-	&lt;tracking-mode&gt;COOKIE&lt;/tracking-mode&gt;
+  &lt;cookie-config&gt;
+    &lt;http-only&gt;true&lt;/http-only&gt;
+    &lt;!-- &lt;secure&gt;true&lt;/secure&gt; --&gt;
+  &lt;/cookie-config&gt;
+  &lt;tracking-mode&gt;COOKIE&lt;/tracking-mode&gt;
 &lt;/session-config&gt;]]></pre>
-					See also:
-					<ol>
-						<li><ao:a href="https://fralef.me/tomcat-disable-jsessionid-in-url.html">Tomcat - Disable JSESSIONID in URL</ao:a></li>
-						<li><ao:a href="https://access.redhat.com/solutions/338313">How to enable HttpOnly and Secure Session Cookies in EAP 6.x</ao:a></li>
-						<li><ao:a href="https://github.com/terasolunaorg/terasoluna-gfw-web-multi-blank/issues/179">Disable URL Rewriting by default with Servlet 3.0 config</ao:a></li>
-					</ol>
-				</li>
-				<li>No longer URL rewriting <code>*.dia</code> URLs.</li>
-				<li>
-					<code>NoSessionFilter</code> will now not write cookie parameters into
-					<ao:a href="https://oss.aoapps.com/servlet-util/apidocs/com.aoapps.servlet.util/com/aoapps/servlet/http/Canonical.html">Canonical URLs</ao:a>.
-				</li>
-				<li>
-					New filter <ao:a href="https://oss.aoapps.com/servlet-last-modified/apidocs/com.aoapps.servlet.lastmodified/com/aoapps/servlet/lastmodified/LastModifiedCacheControlFilter.html">LastModifiedCacheControlFilter</ao:a>
-					that adds a <ao:a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control">Cache-Control</ao:a> header to any request with a
-					<ao:a href="https://oss.aoapps.com/servlet-last-modified/apidocs/com.aoapps.servlet.lastmodified/com/aoapps/servlet/lastmodified/LastModifiedServlet.html#LAST_MODIFIED_PARAMETER_NAME">LAST_MODIFIED_PARAMETER_NAME</ao:a>
-					parameter.  Defaults to a very aggressive setting of public, one-year, allowing stale, and immutable.
-				</li>
-				<li>
-					New optional init parameter <code>allowMultiple</code>
-					on <ao:a href="apidocs/com.aoapps.servlet.filter/com/aoapps/servlet/filter/AddResponseHeaderFilter.html">AddResponseHeaderFilter</ao:a>
-					allows multiple headers of the same name.  When <code>true</code>, the header will not be added when a header
-					of the same name already exists on the response.  Defaults to <code>true</code> for compatibility.
-				</li>
-				<li>
-					Changed <code>CountConcurrencyFilter</code> from a <code><![CDATA[&lt;filter&gt;]]></code>
-					to a <code><![CDATA[&lt;listener&gt;]]></code> named
-					<ao:a href="apidocs/com.aoapps.servlet.filter/com/aoapps/servlet/filter/CountConcurrencyListener.html">CountConcurrencyListener</ao:a>.
-				</li>
-				<li>
-					Changed <code>Utf8RequestCharacterEncodingFilter</code> from a <code><![CDATA[&lt;filter&gt;]]></code>
-					to a <code><![CDATA[&lt;listener&gt;]]></code> named
-					<ao:a href="apidocs/com.aoapps.servlet.filter/com/aoapps/servlet/filter/CountConcurrencyListener.html">Utf8RequestCharacterEncodingListener</ao:a>.
-				</li>
-				<li>
-					Removed deprecated <code>com.aoindustries.servlet.filter.TempFileContext</code>
-					in favor of new <ao:a href="https://oss.aoapps.com/tempfiles/servlet/apidocs/com.aoapps.tempfiles/com/aoapps/tempfiles/servlet/ServletTempFileContext.html">ServletTempFileContext</ao:a>
-					that does not require <code>web.xml</code> configuration, supports additional scopes (application and session),
-					and registers a shutdown hook to delete on JVM exit.
-				</li>
-			</ul>
-		</changelog:release>
+          See also:
+          <ol>
+            <li><ao:a href="https://fralef.me/tomcat-disable-jsessionid-in-url.html">Tomcat - Disable JSESSIONID in URL</ao:a></li>
+            <li><ao:a href="https://access.redhat.com/solutions/338313">How to enable HttpOnly and Secure Session Cookies in EAP 6.x</ao:a></li>
+            <li><ao:a href="https://github.com/terasolunaorg/terasoluna-gfw-web-multi-blank/issues/179">Disable URL Rewriting by default with Servlet 3.0 config</ao:a></li>
+          </ol>
+        </li>
+        <li>No longer URL rewriting <code>*.dia</code> URLs.</li>
+        <li>
+          <code>NoSessionFilter</code> will now not write cookie parameters into
+          <ao:a href="https://oss.aoapps.com/servlet-util/apidocs/com.aoapps.servlet.util/com/aoapps/servlet/http/Canonical.html">Canonical URLs</ao:a>.
+        </li>
+        <li>
+          New filter <ao:a href="https://oss.aoapps.com/servlet-last-modified/apidocs/com.aoapps.servlet.lastmodified/com/aoapps/servlet/lastmodified/LastModifiedCacheControlFilter.html">LastModifiedCacheControlFilter</ao:a>
+          that adds a <ao:a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control">Cache-Control</ao:a> header to any request with a
+          <ao:a href="https://oss.aoapps.com/servlet-last-modified/apidocs/com.aoapps.servlet.lastmodified/com/aoapps/servlet/lastmodified/LastModifiedServlet.html#LAST_MODIFIED_PARAMETER_NAME">LAST_MODIFIED_PARAMETER_NAME</ao:a>
+          parameter.  Defaults to a very aggressive setting of public, one-year, allowing stale, and immutable.
+        </li>
+        <li>
+          New optional init parameter <code>allowMultiple</code>
+          on <ao:a href="apidocs/com.aoapps.servlet.filter/com/aoapps/servlet/filter/AddResponseHeaderFilter.html">AddResponseHeaderFilter</ao:a>
+          allows multiple headers of the same name.  When <code>true</code>, the header will not be added when a header
+          of the same name already exists on the response.  Defaults to <code>true</code> for compatibility.
+        </li>
+        <li>
+          Changed <code>CountConcurrencyFilter</code> from a <code><![CDATA[&lt;filter&gt;]]></code>
+          to a <code><![CDATA[&lt;listener&gt;]]></code> named
+          <ao:a href="apidocs/com.aoapps.servlet.filter/com/aoapps/servlet/filter/CountConcurrencyListener.html">CountConcurrencyListener</ao:a>.
+        </li>
+        <li>
+          Changed <code>Utf8RequestCharacterEncodingFilter</code> from a <code><![CDATA[&lt;filter&gt;]]></code>
+          to a <code><![CDATA[&lt;listener&gt;]]></code> named
+          <ao:a href="apidocs/com.aoapps.servlet.filter/com/aoapps/servlet/filter/CountConcurrencyListener.html">Utf8RequestCharacterEncodingListener</ao:a>.
+        </li>
+        <li>
+          Removed deprecated <code>com.aoindustries.servlet.filter.TempFileContext</code>
+          in favor of new <ao:a href="https://oss.aoapps.com/tempfiles/servlet/apidocs/com.aoapps.tempfiles/com/aoapps/tempfiles/servlet/ServletTempFileContext.html">ServletTempFileContext</ao:a>
+          that does not require <code>web.xml</code> configuration, supports additional scopes (application and session),
+          and registers a shutdown hook to delete on JVM exit.
+        </li>
+      </ul>
+    </changelog:release>
 
-		<changelog:release
-			projectName="@{documented.name}"
-			version="1.6.1"
-			datePublished="2019-06-19T06:16:19-05:00"
-			groupId="com.aoindustries"
-			artifactId="@{documented.artifactId}"
-			scmUrl="@{project.scm.url}"
-		>
-			<ul>
-				<li>Using managed dependencies:
-					<ol>
-						<li>This project uses managed dependencies.</li>
-						<li>This project's managed dependencies may also be imported by other projects.</li>
-					</ol>
-				</li>
-			</ul>
-		</changelog:release>
+    <changelog:release
+      projectName="@{documented.name}"
+      version="1.6.1"
+      datePublished="2019-06-19T06:16:19-05:00"
+      groupId="com.aoindustries"
+      artifactId="@{documented.artifactId}"
+      scmUrl="@{project.scm.url}"
+    >
+      <ul>
+        <li>Using managed dependencies:
+          <ol>
+            <li>This project uses managed dependencies.</li>
+            <li>This project's managed dependencies may also be imported by other projects.</li>
+          </ol>
+        </li>
+      </ul>
+    </changelog:release>
 
-		<changelog:release
-			projectName="@{documented.name}"
-			version="1.6.0"
-			datePublished="2019-04-19T01:13:37-05:00"
-			groupId="com.aoindustries"
-			artifactId="@{documented.artifactId}"
-			scmUrl="@{project.scm.url}"
-		>
-			<ul>
-				<li>Minimum Java version changed from 1.6 to 1.7.</li>
-				<li>
-					Deprecated <code>com.aoindustries.servlet.filter.TempFileContext</code>
-					in favor of new <ao:a href="https://oss.aoapps.com/tempfiles/servlet/apidocs/com.aoapps.tempfiles/com/aoapps/tempfiles/servlet/ServletTempFileContext.html">ServletTempFileContext</ao:a>
-					that does not require <code>web.xml</code> configuration, supports additional scopes (application and session),
-					and registers a shutdown hook to delete on JVM exit.
-				</li>
-				<li>
-					Aligned the session URL rewriting excluded path extensions to match other projects.
-					The list is now:
-					<ol>
-						<li><code>*.bmp</code> (added this release)</li>
-						<li><code>*.css</code></li>
-						<li><code>*.exe</code> (added this release)</li>
-						<li><code>*.gif</code></li>
-						<li><code>*.ico</code></li>
-						<li><code>*.jpeg</code></li>
-						<li><code>*.jpg</code></li>
-						<li><code>*.js</code></li>
-						<li><code>*.png</code></li>
-						<li><code>*.svg</code> (added this release)</li>
-						<li><code>*.txt</code></li>
-						<li><code>*.zip</code></li>
-					</ol>
-				</li>
-			</ul>
-		</changelog:release>
+    <changelog:release
+      projectName="@{documented.name}"
+      version="1.6.0"
+      datePublished="2019-04-19T01:13:37-05:00"
+      groupId="com.aoindustries"
+      artifactId="@{documented.artifactId}"
+      scmUrl="@{project.scm.url}"
+    >
+      <ul>
+        <li>Minimum Java version changed from 1.6 to 1.7.</li>
+        <li>
+          Deprecated <code>com.aoindustries.servlet.filter.TempFileContext</code>
+          in favor of new <ao:a href="https://oss.aoapps.com/tempfiles/servlet/apidocs/com.aoapps.tempfiles/com/aoapps/tempfiles/servlet/ServletTempFileContext.html">ServletTempFileContext</ao:a>
+          that does not require <code>web.xml</code> configuration, supports additional scopes (application and session),
+          and registers a shutdown hook to delete on JVM exit.
+        </li>
+        <li>
+          Aligned the session URL rewriting excluded path extensions to match other projects.
+          The list is now:
+          <ol>
+            <li><code>*.bmp</code> (added this release)</li>
+            <li><code>*.css</code></li>
+            <li><code>*.exe</code> (added this release)</li>
+            <li><code>*.gif</code></li>
+            <li><code>*.ico</code></li>
+            <li><code>*.jpeg</code></li>
+            <li><code>*.jpg</code></li>
+            <li><code>*.js</code></li>
+            <li><code>*.png</code></li>
+            <li><code>*.svg</code> (added this release)</li>
+            <li><code>*.txt</code></li>
+            <li><code>*.zip</code></li>
+          </ol>
+        </li>
+      </ul>
+    </changelog:release>
 
-		<changelog:release
-			projectName="@{documented.name}"
-			version="1.5.0"
-			datePublished="2017-07-19T19:37:39-05:00"
-			groupId="com.aoindustries"
-			artifactId="@{documented.artifactId}"
-			scmUrl="@{project.scm.url}"
-		>
-			<ul>
-				<li>Updated dependencies.</li>
-				<li>
-					New <code>AddResponseHeaderFilter</code> filter to add response headers.
-					For when filter mappings are not expressive enough, supports both
-					lightning-fast <ao:a href="https://oss.aoapps.com/hodgepodge/apidocs/com.aoapps.hodgepodge/com/aoapps/hodgepodge/util/WildcardPatternMatcher.html">WildcardPatternMatcher</ao:a>
-					and standard Java <ao:a rel="nofollow" href="@{javadoc.link.javase}java/util/regex/Pattern.html">Pattern</ao:a>.
-				</li>
-			</ul>
-		</changelog:release>
+    <changelog:release
+      projectName="@{documented.name}"
+      version="1.5.0"
+      datePublished="2017-07-19T19:37:39-05:00"
+      groupId="com.aoindustries"
+      artifactId="@{documented.artifactId}"
+      scmUrl="@{project.scm.url}"
+    >
+      <ul>
+        <li>Updated dependencies.</li>
+        <li>
+          New <code>AddResponseHeaderFilter</code> filter to add response headers.
+          For when filter mappings are not expressive enough, supports both
+          lightning-fast <ao:a href="https://oss.aoapps.com/hodgepodge/apidocs/com.aoapps.hodgepodge/com/aoapps/hodgepodge/util/WildcardPatternMatcher.html">WildcardPatternMatcher</ao:a>
+          and standard Java <ao:a rel="nofollow" href="@{javadoc.link.javase}java/util/regex/Pattern.html">Pattern</ao:a>.
+        </li>
+      </ul>
+    </changelog:release>
 
-		<changelog:release
-			projectName="@{documented.name}"
-			version="1.4.2"
-			datePublished="2016-11-15T11:29:48-06:00"
-			groupId="com.aoindustries"
-			artifactId="@{documented.artifactId}"
-			scmUrl="@{project.scm.url}"
-		>
-			<ul>
-				<li>New <core:link book="/parent" page="/index.jspx" /> POM to simplify <code>pom.xml</code> files.</li>
-				<li>Project documentation moved to per-project book in <ao:a href="https://semanticcms.com/">SemanticCMS</ao:a> format.</li>
-				<li>Added changelog as top-level project link.</li>
-			</ul>
-		</changelog:release>
+    <changelog:release
+      projectName="@{documented.name}"
+      version="1.4.2"
+      datePublished="2016-11-15T11:29:48-06:00"
+      groupId="com.aoindustries"
+      artifactId="@{documented.artifactId}"
+      scmUrl="@{project.scm.url}"
+    >
+      <ul>
+        <li>New <core:link book="/parent" page="/index.jspx" /> POM to simplify <code>pom.xml</code> files.</li>
+        <li>Project documentation moved to per-project book in <ao:a href="https://semanticcms.com/">SemanticCMS</ao:a> format.</li>
+        <li>Added changelog as top-level project link.</li>
+      </ul>
+    </changelog:release>
 
-		<changelog:release
-			projectName="@{documented.name}"
-			version="1.4.1"
-			datePublished="2016-10-20T18:00:00-05:00"
-			groupId="com.aoindustries"
-			artifactId="@{documented.artifactId}"
-			scmUrl="@{project.scm.url}"
-		>
-			<ul>
-				<li>Improved Javadoc formatting.</li>
-				<li>Improved README formatting.</li>
-			</ul>
-		</changelog:release>
+    <changelog:release
+      projectName="@{documented.name}"
+      version="1.4.1"
+      datePublished="2016-10-20T18:00:00-05:00"
+      groupId="com.aoindustries"
+      artifactId="@{documented.artifactId}"
+      scmUrl="@{project.scm.url}"
+    >
+      <ul>
+        <li>Improved Javadoc formatting.</li>
+        <li>Improved README formatting.</li>
+      </ul>
+    </changelog:release>
 
-		<changelog:release
-			projectName="@{documented.name}"
-			version="1.4.0"
-			datePublished="2016-10-04T19:53:00-05:00"
-			groupId="com.aoindustries"
-			artifactId="@{documented.artifactId}"
-			scmUrl="@{project.scm.url}"
-		>
-			<ul>
-				<li>Improved Javadoc formatting.</li>
-				<li>Now automatically maintains some ThreadLocal values between caller and executor during concurrent processing, and provides wrapper hook for subclasses to extend.</li>
-				<li>May now provide temp file list.</li>
-				<li>Tracks the request concurrency.</li>
-				<li>Added a hook for subclasses to take further action based on concurrency.</li>
-				<li>Now only setting encoding when not provided by client.
-					Also removed ThreadLocale stuff that was unnecessary and never belonged here.</li>
-				<li>Each lock object now a small empty class to help identify lock contention.
-					<p>
-						The lock contention profiler in NetBeans is just showing "java.lang.Object" all over, and can't seem to
-						get from the lock object id to the actual object in the heap dump using OQL (id not found).
-					</p>
-				</li>
-				<li>Trim on includes is just unnecessary filter invocation.</li>
-				<li>Avoiding setting ThreadLocal when value has not changed.</li>
-				<li>Using ServletContextCache for more throughput on Tomcat.</li>
-			</ul>
-		</changelog:release>
+    <changelog:release
+      projectName="@{documented.name}"
+      version="1.4.0"
+      datePublished="2016-10-04T19:53:00-05:00"
+      groupId="com.aoindustries"
+      artifactId="@{documented.artifactId}"
+      scmUrl="@{project.scm.url}"
+    >
+      <ul>
+        <li>Improved Javadoc formatting.</li>
+        <li>Now automatically maintains some ThreadLocal values between caller and executor during concurrent processing, and provides wrapper hook for subclasses to extend.</li>
+        <li>May now provide temp file list.</li>
+        <li>Tracks the request concurrency.</li>
+        <li>Added a hook for subclasses to take further action based on concurrency.</li>
+        <li>Now only setting encoding when not provided by client.
+          Also removed ThreadLocale stuff that was unnecessary and never belonged here.</li>
+        <li>Each lock object now a small empty class to help identify lock contention.
+          <p>
+            The lock contention profiler in NetBeans is just showing "java.lang.Object" all over, and can't seem to
+            get from the lock object id to the actual object in the heap dump using OQL (id not found).
+          </p>
+        </li>
+        <li>Trim on includes is just unnecessary filter invocation.</li>
+        <li>Avoiding setting ThreadLocal when value has not changed.</li>
+        <li>Using ServletContextCache for more throughput on Tomcat.</li>
+      </ul>
+    </changelog:release>
 
-		<changelog:release
-			projectName="@{documented.name}"
-			version="1.3.1"
-			datePublished="2016-09-02T16:56:00-05:00"
-			groupId="com.aoindustries"
-			artifactId="@{documented.artifactId}"
-			scmUrl="@{project.scm.url}"
-		>
-			<ul>
-				<li>Improved Maven configuration for Java EE 6 dependencies.</li>
-			</ul>
-		</changelog:release>
+    <changelog:release
+      projectName="@{documented.name}"
+      version="1.3.1"
+      datePublished="2016-09-02T16:56:00-05:00"
+      groupId="com.aoindustries"
+      artifactId="@{documented.artifactId}"
+      scmUrl="@{project.scm.url}"
+    >
+      <ul>
+        <li>Improved Maven configuration for Java EE 6 dependencies.</li>
+      </ul>
+    </changelog:release>
 
-		<changelog:release
-			projectName="@{documented.name}"
-			version="1.3"
-			datePublished="2016-08-19T14:24:00-05:00"
-			groupId="com.aoindustries"
-			artifactId="@{documented.artifactId}"
-			scmUrl="@{project.scm.url}"
-		>
-			<ul>
-				<li>Improved Javadoc formatting.</li>
-			</ul>
-		</changelog:release>
+    <changelog:release
+      projectName="@{documented.name}"
+      version="1.3"
+      datePublished="2016-08-19T14:24:00-05:00"
+      groupId="com.aoindustries"
+      artifactId="@{documented.artifactId}"
+      scmUrl="@{project.scm.url}"
+    >
+      <ul>
+        <li>Improved Javadoc formatting.</li>
+      </ul>
+    </changelog:release>
 
-		<changelog:release
-			projectName="@{documented.name}"
-			version="1.2"
-			datePublished="2016-08-11T17:18:00-05:00"
-			groupId="com.aoindustries"
-			artifactId="@{documented.artifactId}"
-			scmUrl="@{project.scm.url}"
-		>
-			<ul>
-				<li>Now also hiding .jspx extension in addition to .jsp.</li>
-			</ul>
-		</changelog:release>
+    <changelog:release
+      projectName="@{documented.name}"
+      version="1.2"
+      datePublished="2016-08-11T17:18:00-05:00"
+      groupId="com.aoindustries"
+      artifactId="@{documented.artifactId}"
+      scmUrl="@{project.scm.url}"
+    >
+      <ul>
+        <li>Now also hiding .jspx extension in addition to .jsp.</li>
+      </ul>
+    </changelog:release>
 
-		<changelog:release
-			projectName="@{documented.name}"
-			version="1.1"
-			datePublished="2016-08-07T23:29:00-05:00"
-			groupId="com.aoindustries"
-			artifactId="@{documented.artifactId}"
-			scmUrl="@{project.scm.url}"
-		>
-			<ul>
-				<li>Reverted to Java 1.6 for Android and Java EE 6 compatibility.</li>
-			</ul>
-		</changelog:release>
+    <changelog:release
+      projectName="@{documented.name}"
+      version="1.1"
+      datePublished="2016-08-07T23:29:00-05:00"
+      groupId="com.aoindustries"
+      artifactId="@{documented.artifactId}"
+      scmUrl="@{project.scm.url}"
+    >
+      <ul>
+        <li>Reverted to Java 1.6 for Android and Java EE 6 compatibility.</li>
+      </ul>
+    </changelog:release>
 
-		<changelog:release
-			projectName="@{documented.name}"
-			version="1.0"
-			datePublished="2016-08-05T20:41:00-05:00"
-			groupId="com.aoindustries"
-			artifactId="@{documented.artifactId}"
-			scmUrl="@{project.scm.url}"
-		>
-			<ul>
-				<li>Project moved to GitHub and Maven.</li>
-			</ul>
-		</changelog:release>
-	</core:page>
+    <changelog:release
+      projectName="@{documented.name}"
+      version="1.0"
+      datePublished="2016-08-05T20:41:00-05:00"
+      groupId="com.aoindustries"
+      artifactId="@{documented.artifactId}"
+      scmUrl="@{project.scm.url}"
+    >
+      <ul>
+        <li>Project moved to GitHub and Maven.</li>
+      </ul>
+    </changelog:release>
+  </core:page>
 </jsp:root>

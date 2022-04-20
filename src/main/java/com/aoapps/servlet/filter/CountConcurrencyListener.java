@@ -37,31 +37,35 @@ import javax.servlet.annotation.WebListener;
 // TODO: Rename ConcurrencyCounter or RequestConcurrency?
 public class CountConcurrencyListener implements ServletRequestListener {
 
-	public static final ScopeEE.Request.Attribute<Integer> REQUEST_ATTRIBUTE =
-		ScopeEE.REQUEST.attribute(CountConcurrencyListener.class.getName() + ".concurrency");
+  public static final ScopeEE.Request.Attribute<Integer> REQUEST_ATTRIBUTE =
+    ScopeEE.REQUEST.attribute(CountConcurrencyListener.class.getName() + ".concurrency");
 
-	/**
-	 * Gets the concurrency at the beginning of the request or {@code null} when listener not active.
-	 */
-	public static Integer getConcurrency(ServletRequest request) {
-		return REQUEST_ATTRIBUTE.context(request).get();
-	}
+  /**
+   * Gets the concurrency at the beginning of the request or {@code null} when listener not active.
+   */
+  public static Integer getConcurrency(ServletRequest request) {
+    return REQUEST_ATTRIBUTE.context(request).get();
+  }
 
-	private final AtomicInteger concurrency = new AtomicInteger();
+  private final AtomicInteger concurrency = new AtomicInteger();
 
-	@Override
-	public void requestInitialized(ServletRequestEvent event) {
-		// Increase concurrency
-		int newConcurrency = concurrency.incrementAndGet();
-		if(newConcurrency < 1) throw new IllegalStateException("Concurrency < 1: " + newConcurrency);
-		REQUEST_ATTRIBUTE.context(event.getServletRequest()).set(newConcurrency);
-	}
+  @Override
+  public void requestInitialized(ServletRequestEvent event) {
+    // Increase concurrency
+    int newConcurrency = concurrency.incrementAndGet();
+    if (newConcurrency < 1) {
+      throw new IllegalStateException("Concurrency < 1: " + newConcurrency);
+    }
+    REQUEST_ATTRIBUTE.context(event.getServletRequest()).set(newConcurrency);
+  }
 
-	@Override
-	public void requestDestroyed(ServletRequestEvent event) {
-		// Decrease concurrency
-		REQUEST_ATTRIBUTE.context(event.getServletRequest()).remove();
-		int oldConcurrency = concurrency.getAndDecrement();
-		if(oldConcurrency < 1) throw new IllegalStateException("Concurrency < 1: " + oldConcurrency);
-	}
+  @Override
+  public void requestDestroyed(ServletRequestEvent event) {
+    // Decrease concurrency
+    REQUEST_ATTRIBUTE.context(event.getServletRequest()).remove();
+    int oldConcurrency = concurrency.getAndDecrement();
+    if (oldConcurrency < 1) {
+      throw new IllegalStateException("Concurrency < 1: " + oldConcurrency);
+    }
+  }
 }

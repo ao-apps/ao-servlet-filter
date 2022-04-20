@@ -38,21 +38,21 @@ import javax.servlet.annotation.WebListener;
 @WebListener("Sets request character encoding to UTF-8 when not provided by client")
 public class Utf8RequestCharacterEncodingListener implements ServletRequestListener {
 
-	@Override
-	public void requestInitialized(ServletRequestEvent event) {
-		ServletRequest request = event.getServletRequest();
-		// Only override encoding when not provided by the client
-		if(request.getCharacterEncoding() == null) {
-			try {
-				request.setCharacterEncoding(StandardCharsets.UTF_8.name());
-			} catch(UnsupportedEncodingException e) {
-				throw new AssertionError("Standard encoding (" + StandardCharsets.UTF_8 + ") should always exist", e);
-			}
-		}
-	}
+  @Override
+  public void requestInitialized(ServletRequestEvent event) {
+    ServletRequest request = event.getServletRequest();
+    // Only override encoding when not provided by the client
+    if (request.getCharacterEncoding() == null) {
+      try {
+        request.setCharacterEncoding(StandardCharsets.UTF_8.name());
+      } catch (UnsupportedEncodingException e) {
+        throw new AssertionError("Standard encoding (" + StandardCharsets.UTF_8 + ") should always exist", e);
+      }
+    }
+  }
 
-	@Override
-	public void requestDestroyed(ServletRequestEvent event) {
-		// Do nothing
-	}
+  @Override
+  public void requestDestroyed(ServletRequestEvent event) {
+    // Do nothing
+  }
 }
