@@ -131,10 +131,10 @@ public class AddResponseHeaderFilter implements Filter {
           continue;
         }
         if (
-          regexsByNum.put(
-            number,
-            Pattern.compile(config.getInitParameter(paramName))
-          ) != null
+            regexsByNum.put(
+                number,
+                Pattern.compile(config.getInitParameter(paramName))
+            ) != null
         ) {
           throw new IllegalArgumentException("Duplicate " + REGEX_PARAM_NAME + " parameter number: " + paramName);
         }
@@ -155,10 +155,10 @@ public class AddResponseHeaderFilter implements Filter {
       while (paramNames.hasMoreElements()) {
         String paramName = paramNames.nextElement();
         if (
-          !ALLOW_MULTIPLE_PARAM_NAME.equals(paramName)
-          && !PATTERNS_PARAM_NAME.equals(paramName)
-          && !REGEX_PARAM_NAME.equals(paramName)
-          && !paramName.startsWith(REGEX_PARAM_PREFIX)
+            !ALLOW_MULTIPLE_PARAM_NAME.equals(paramName)
+                && !PATTERNS_PARAM_NAME.equals(paramName)
+                && !REGEX_PARAM_NAME.equals(paramName)
+                && !paramName.startsWith(REGEX_PARAM_PREFIX)
         ) {
           if (foundHeaders.put(paramName, config.getInitParameter(paramName)) != null) {
             throw new AssertionError("Duplicate init parameter: " + paramName);
@@ -180,18 +180,18 @@ public class AddResponseHeaderFilter implements Filter {
 
   @Override
   public void doFilter(
-    ServletRequest request,
-    ServletResponse response,
-    FilterChain chain
+      ServletRequest request,
+      ServletResponse response,
+      FilterChain chain
   ) throws IOException, ServletException {
     if (
-      // Short-cut no headers
-      !headers.isEmpty()
-      // Must be HTTP request
-      && (request instanceof HttpServletRequest)
-      && (response instanceof HttpServletResponse)
+        // Short-cut no headers
+        !headers.isEmpty()
+            // Must be HTTP request
+            && (request instanceof HttpServletRequest)
+            && (response instanceof HttpServletResponse)
     ) {
-      HttpServletRequest httpRequest = (HttpServletRequest)request;
+      HttpServletRequest httpRequest = (HttpServletRequest) request;
       // Fast patterns first
       String servletPath = httpRequest.getServletPath();
       boolean matched = patterns.isMatch(servletPath);
@@ -205,7 +205,7 @@ public class AddResponseHeaderFilter implements Filter {
         }
       }
       if (matched) {
-        HttpServletResponse httpResponse = (HttpServletResponse)response;
+        HttpServletResponse httpResponse = (HttpServletResponse) response;
         for (Map.Entry<String, String> entry : headers.entrySet()) {
           String name = entry.getKey();
           if (allowMultiples || !httpResponse.containsHeader(name)) {

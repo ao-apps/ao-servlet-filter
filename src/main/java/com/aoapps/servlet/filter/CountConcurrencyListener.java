@@ -38,7 +38,7 @@ import javax.servlet.annotation.WebListener;
 public class CountConcurrencyListener implements ServletRequestListener {
 
   public static final ScopeEE.Request.Attribute<Integer> REQUEST_ATTRIBUTE =
-    ScopeEE.REQUEST.attribute(CountConcurrencyListener.class.getName() + ".concurrency");
+      ScopeEE.REQUEST.attribute(CountConcurrencyListener.class.getName() + ".concurrency");
 
   /**
    * Gets the concurrency at the beginning of the request or {@code null} when listener not active.

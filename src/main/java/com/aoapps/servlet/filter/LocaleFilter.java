@@ -102,17 +102,17 @@ public abstract class LocaleFilter implements Filter {
   private static final String DEFAULT_PARAM_NAME = "hl";
 
   private static final ScopeEE.Request.Attribute<Map<String, Locale>> ENABLED_LOCALES_REQUEST_ATTRIBUTE =
-    ScopeEE.REQUEST.attribute(LocaleFilter.class.getName() + ".enabledLocales");
+      ScopeEE.REQUEST.attribute(LocaleFilter.class.getName() + ".enabledLocales");
 
   /**
    * Adds the current locale as a parameter to the URL.
    */
   private IRI addLocale(Locale locale, IRI iri, String paramName) {
     if (
-      // Only add for non-excluded file types
-      isLocalizedPath(iri)
-      // Only rewrite a URL that does not already contain a paramName parameter.
-      && !URIParametersUtils.of(iri.getQueryString()).getParameterMap().containsKey(paramName)
+        // Only add for non-excluded file types
+        isLocalizedPath(iri)
+            // Only rewrite a URL that does not already contain a paramName parameter.
+            && !URIParametersUtils.of(iri.getQueryString()).getParameterMap().containsKey(paramName)
     ) {
       iri = iri.addParameter(paramName, toLocaleString(locale));
     }
@@ -130,11 +130,11 @@ public abstract class LocaleFilter implements Filter {
   public void init(FilterConfig config) throws ServletException {
     servletContext = config.getServletContext();
     String redirectStatusCodeStr = Strings.trimNullIfEmpty(
-      servletContext.getInitParameter(LocaleFilter.class.getName() + ".redirectStatusCode")
+        servletContext.getInitParameter(LocaleFilter.class.getName() + ".redirectStatusCode")
     );
     redirectStatusCode = (redirectStatusCodeStr == null)
-      ? HttpServletResponse.SC_MOVED_PERMANENTLY
-      : Integer.parseInt(redirectStatusCodeStr);
+        ? HttpServletResponse.SC_MOVED_PERMANENTLY
+        : Integer.parseInt(redirectStatusCodeStr);
   }
 
   /**
@@ -154,23 +154,23 @@ public abstract class LocaleFilter implements Filter {
 
   @Override
   public void doFilter(
-    ServletRequest request,
-    ServletResponse response,
-    FilterChain chain
+      ServletRequest request,
+      ServletResponse response,
+      FilterChain chain
   ) throws IOException, ServletException {
     AttributeEE.Request<Map<String, Locale>> enabledLocalesAttribute = ENABLED_LOCALES_REQUEST_ATTRIBUTE.context(request);
     if (
-      // Makes sure only one locale filter is applied per request
-      enabledLocalesAttribute.get() == null
-      // Must be HTTP protocol
-      && (request instanceof HttpServletRequest)
-      && (response instanceof HttpServletResponse)
+        // Makes sure only one locale filter is applied per request
+        enabledLocalesAttribute.get() == null
+            // Must be HTTP protocol
+            && (request instanceof HttpServletRequest)
+            && (response instanceof HttpServletResponse)
     ) {
       final Map<String, Locale> supportedLocales = getSupportedLocales(request);
       enabledLocalesAttribute.set(supportedLocales);
       try {
-        final HttpServletRequest httpRequest = (HttpServletRequest)request;
-        final HttpServletResponse httpResponse = (HttpServletResponse)response;
+        final HttpServletRequest httpRequest = (HttpServletRequest) request;
+        final HttpServletResponse httpResponse = (HttpServletResponse) response;
 
         IRI iri = new IRI(httpRequest.getRequestURI());
         final boolean isLocalized = isLocalizedPath(iri);
@@ -179,16 +179,16 @@ public abstract class LocaleFilter implements Filter {
         final String paramValue = httpRequest.getParameter(paramName);
 
         if (
-          // redirect if paramName should not be on request, stripping paramName
-          paramValue != null
-          && HttpServletUtil.METHOD_GET.equals(httpRequest.getMethod())
-          && request.getDispatcherType() != DispatcherType.ERROR
-          && (
-            // Never allow paramName on non-localized paths
-            !isLocalized
-            // Never allow paramName when no choice in locale
-            || supportedLocales.size() < 2
-          )
+            // redirect if paramName should not be on request, stripping paramName
+            paramValue != null
+                && HttpServletUtil.METHOD_GET.equals(httpRequest.getMethod())
+                && request.getDispatcherType() != DispatcherType.ERROR
+                && (
+                // Never allow paramName on non-localized paths
+                !isLocalized
+                    // Never allow paramName when no choice in locale
+                    || supportedLocales.size() < 2
+            )
         ) {
           if (DEBUG) {
             servletContext.log("DEBUG: Redirecting to remove \"" + paramName + "\" parameter.");
@@ -211,8 +211,8 @@ public abstract class LocaleFilter implements Filter {
           return;
         }
         if (
-          // Set no response locale and perform no URL rewriting when no locales supported
-          !isLocalized
+            // Set no response locale and perform no URL rewriting when no locales supported
+            !isLocalized
         ) {
           if (DEBUG) {
             servletContext.log("DEBUG: Resource not localized, using container's default locale and performing no URL rewriting.");
@@ -221,8 +221,8 @@ public abstract class LocaleFilter implements Filter {
           return;
         }
         if (
-          // Set no response locale and perform no URL rewriting when no locales supported
-          supportedLocales.isEmpty()
+            // Set no response locale and perform no URL rewriting when no locales supported
+            supportedLocales.isEmpty()
         ) {
           if (DEBUG) {
             servletContext.log("DEBUG: No supported locales, using container's default locale and performing no URL rewriting.");
@@ -233,8 +233,8 @@ public abstract class LocaleFilter implements Filter {
         final Locale responseLocale;
         final boolean rewriteUrls;
         if (
-          // Only one choice of locale, use it in the response - no language negotiation
-          supportedLocales.size() < 2
+            // Only one choice of locale, use it in the response - no language negotiation
+            supportedLocales.size() < 2
         ) {
           assert supportedLocales.size() == 1;
           if (DEBUG) {
@@ -279,11 +279,11 @@ public abstract class LocaleFilter implements Filter {
           }
           final String localeString = toLocaleString(locale);
           if (
-            // redirect if paramName not on GET request and not in ERROR dispatcher
-            // or if the parameter value doesn't match the resolved locale
-            HttpServletUtil.METHOD_GET.equals(httpRequest.getMethod())
-            && request.getDispatcherType() != DispatcherType.ERROR
-            && !localeString.equals(paramValue)
+              // redirect if paramName not on GET request and not in ERROR dispatcher
+              // or if the parameter value doesn't match the resolved locale
+              HttpServletUtil.METHOD_GET.equals(httpRequest.getMethod())
+                  && request.getDispatcherType() != DispatcherType.ERROR
+                  && !localeString.equals(paramValue)
           ) {
             if (DEBUG) {
               servletContext.log("DEBUG: Redirecting for missing or mismatched locale parameter: " + localeString);
@@ -329,98 +329,98 @@ public abstract class LocaleFilter implements Filter {
               servletContext.log("DEBUG: Performing URL rewriting.");
             }
             chain.doFilter(
-              httpRequest,
-              new HttpServletResponseWrapper(httpResponse) {
-                private String encode(String url) {
-                  // Don't rewrite empty or anchor-only URLs
-                  if (url.isEmpty() || url.charAt(0) == '#') {
-                    return url;
-                  }
+                httpRequest,
+                new HttpServletResponseWrapper(httpResponse) {
+                  private String encode(String url) {
+                    // Don't rewrite empty or anchor-only URLs
+                    if (url.isEmpty() || url.charAt(0) == '#') {
+                      return url;
+                    }
 
-                  // If starts with http:// or https:// parse out the first part of the URL, encode the path, and reassemble.
-                  String protocol;
-                  String remaining;
-                  if (
-                    // 7: "http://".length()
-                    url.length() > 7
-                    && url.charAt(5) == '/'
-                    && url.charAt(6) == '/'
-                    && URIParser.isScheme(url, "http")
-                  ) {
-                    protocol = url.substring(0, 7);
-                    remaining = url.substring(7);
-                  } else if (
-                    // 8: "https://".length()
-                    url.length() > 8
-                    && url.charAt(6) == '/'
-                    && url.charAt(7) == '/'
-                    && URIParser.isScheme(url, "https")
-                  ) {
-                    protocol = url.substring(0, 8);
-                    remaining = url.substring(8);
-                  } else if (
-                    URIParser.isScheme(url, "javascript")
-                    || URIParser.isScheme(url, "mailto")
-                    || URIParser.isScheme(url, "telnet")
-                    || URIParser.isScheme(url, "tel")
-                    || URIParser.isScheme(url, "cid")
-                    || URIParser.isScheme(url, "file")
-                    || URIParser.isScheme(url, "data")
-                  ) {
-                    return url;
-                  } else {
-                    return addLocale(httpResponse.getLocale(), url, paramName);
-                  }
-                  int slashPos = remaining.indexOf('/');
-                  if (slashPos == -1) {
-                    slashPos = remaining.length();
-                  }
-                  String hostPort = remaining.substring(0, slashPos);
-                  int colonPos = hostPort.indexOf(':');
-                  String host = colonPos == -1 ? hostPort : hostPort.substring(0, colonPos);
-                  if (
-                    // TODO: What about [...] IPv6 addresses?
-                    host.equalsIgnoreCase(httpRequest.getServerName())
-                  ) {
-                    String withLocale = addLocale(httpResponse.getLocale(), remaining.substring(slashPos), paramName);
-                    int newUrlLen = protocol.length() + hostPort.length() + withLocale.length();
-                    if (newUrlLen == url.length()) {
-                      assert url.equals(protocol + hostPort + withLocale);
+                    // If starts with http:// or https:// parse out the first part of the URL, encode the path, and reassemble.
+                    String protocol;
+                    String remaining;
+                    if (
+                        // 7: "http://".length()
+                        url.length() > 7
+                            && url.charAt(5) == '/'
+                            && url.charAt(6) == '/'
+                            && URIParser.isScheme(url, "http")
+                    ) {
+                      protocol = url.substring(0, 7);
+                      remaining = url.substring(7);
+                    } else if (
+                        // 8: "https://".length()
+                        url.length() > 8
+                            && url.charAt(6) == '/'
+                            && url.charAt(7) == '/'
+                            && URIParser.isScheme(url, "https")
+                    ) {
+                      protocol = url.substring(0, 8);
+                      remaining = url.substring(8);
+                    } else if (
+                        URIParser.isScheme(url, "javascript")
+                            || URIParser.isScheme(url, "mailto")
+                            || URIParser.isScheme(url, "telnet")
+                            || URIParser.isScheme(url, "tel")
+                            || URIParser.isScheme(url, "cid")
+                            || URIParser.isScheme(url, "file")
+                            || URIParser.isScheme(url, "data")
+                    ) {
                       return url;
                     } else {
-                      StringBuilder newUrl = new StringBuilder(newUrlLen);
-                      newUrl.append(protocol).append(hostPort).append(withLocale);
-                      assert newUrl.length() == newUrlLen;
-                      return newUrl.toString();
+                      return addLocale(httpResponse.getLocale(), url, paramName);
                     }
-                  } else {
-                    // Going to an different hostname, do not add request parameters
-                    return url;
+                    int slashPos = remaining.indexOf('/');
+                    if (slashPos == -1) {
+                      slashPos = remaining.length();
+                    }
+                    String hostPort = remaining.substring(0, slashPos);
+                    int colonPos = hostPort.indexOf(':');
+                    String host = colonPos == -1 ? hostPort : hostPort.substring(0, colonPos);
+                    if (
+                        // TODO: What about [...] IPv6 addresses?
+                        host.equalsIgnoreCase(httpRequest.getServerName())
+                    ) {
+                      String withLocale = addLocale(httpResponse.getLocale(), remaining.substring(slashPos), paramName);
+                      int newUrlLen = protocol.length() + hostPort.length() + withLocale.length();
+                      if (newUrlLen == url.length()) {
+                        assert url.equals(protocol + hostPort + withLocale);
+                        return url;
+                      } else {
+                        StringBuilder newUrl = new StringBuilder(newUrlLen);
+                        newUrl.append(protocol).append(hostPort).append(withLocale);
+                        assert newUrl.length() == newUrlLen;
+                        return newUrl.toString();
+                      }
+                    } else {
+                      // Going to an different hostname, do not add request parameters
+                      return url;
+                    }
+                  }
+
+                  @Override
+                  @Deprecated
+                  public String encodeRedirectUrl(String url) {
+                    return httpResponse.encodeRedirectUrl(encode(url));
+                  }
+
+                  @Override
+                  public String encodeRedirectURL(String url) {
+                    return httpResponse.encodeRedirectURL(encode(url));
+                  }
+
+                  @Override
+                  @Deprecated
+                  public String encodeUrl(String url) {
+                    return httpResponse.encodeUrl(encode(url));
+                  }
+
+                  @Override
+                  public String encodeURL(String url) {
+                    return httpResponse.encodeURL(encode(url));
                   }
                 }
-
-                @Override
-                @Deprecated
-                public String encodeRedirectUrl(String url) {
-                  return httpResponse.encodeRedirectUrl(encode(url));
-                }
-
-                @Override
-                public String encodeRedirectURL(String url) {
-                  return httpResponse.encodeRedirectURL(encode(url));
-                }
-
-                @Override
-                @Deprecated
-                public String encodeUrl(String url) {
-                  return httpResponse.encodeUrl(encode(url));
-                }
-
-                @Override
-                public String encodeURL(String url) {
-                  return httpResponse.encodeURL(encode(url));
-                }
-              }
             );
           } else {
             // No URL rewriting when no choice in language
@@ -455,33 +455,33 @@ public abstract class LocaleFilter implements Filter {
   protected boolean isLocalizedPath(IRI iri) {
     // TODO: This list is getting long.  Use a map?
     return
-      // Is LocaleFilter.java
-      // Matches NoSessionFilter.java
-      // Matches SessionResponseWrapper.java
-      // Related to LastModifiedServlet.java
-      // Related to ao-mime-types/…/web-fragment.xml
-      // Related to ContentType.java
-      // Related to MimeType.java
-      !iri.pathEndsWithIgnoreCase(".bmp")
-      && !iri.pathEndsWithIgnoreCase(".css")
-      && !iri.pathEndsWithIgnoreCase(".dia")
-      && !iri.pathEndsWithIgnoreCase(".exe")
-      && !iri.pathEndsWithIgnoreCase(".gif")
-      && !iri.pathEndsWithIgnoreCase(".ico")
-      && !iri.pathEndsWithIgnoreCase(".jpeg")
-      && !iri.pathEndsWithIgnoreCase(".jpg")
-      && !iri.pathEndsWithIgnoreCase(".js")
-      && !iri.pathEndsWithIgnoreCase(".png")
-      && !iri.pathEndsWithIgnoreCase(".svg")
-      && !iri.pathEndsWithIgnoreCase(".txt")
-      && !iri.pathEndsWithIgnoreCase(".webp")
-      && !iri.pathEndsWithIgnoreCase(".zip")
-      // Web development
-      && !iri.pathEndsWithIgnoreCase(".less")
-      && !iri.pathEndsWithIgnoreCase(".sass")
-      && !iri.pathEndsWithIgnoreCase(".scss")
-      && !iri.pathEndsWithIgnoreCase(".css.map")
-      && !iri.pathEndsWithIgnoreCase(".js.map")
+        // Is LocaleFilter.java
+        // Matches NoSessionFilter.java
+        // Matches SessionResponseWrapper.java
+        // Related to LastModifiedServlet.java
+        // Related to ao-mime-types/…/web-fragment.xml
+        // Related to ContentType.java
+        // Related to MimeType.java
+        !iri.pathEndsWithIgnoreCase(".bmp")
+            && !iri.pathEndsWithIgnoreCase(".css")
+            && !iri.pathEndsWithIgnoreCase(".dia")
+            && !iri.pathEndsWithIgnoreCase(".exe")
+            && !iri.pathEndsWithIgnoreCase(".gif")
+            && !iri.pathEndsWithIgnoreCase(".ico")
+            && !iri.pathEndsWithIgnoreCase(".jpeg")
+            && !iri.pathEndsWithIgnoreCase(".jpg")
+            && !iri.pathEndsWithIgnoreCase(".js")
+            && !iri.pathEndsWithIgnoreCase(".png")
+            && !iri.pathEndsWithIgnoreCase(".svg")
+            && !iri.pathEndsWithIgnoreCase(".txt")
+            && !iri.pathEndsWithIgnoreCase(".webp")
+            && !iri.pathEndsWithIgnoreCase(".zip")
+            // Web development
+            && !iri.pathEndsWithIgnoreCase(".less")
+            && !iri.pathEndsWithIgnoreCase(".sass")
+            && !iri.pathEndsWithIgnoreCase(".scss")
+            && !iri.pathEndsWithIgnoreCase(".css.map")
+            && !iri.pathEndsWithIgnoreCase(".js.map")
     ;
   }
 
@@ -547,9 +547,9 @@ public abstract class LocaleFilter implements Filter {
           }
         }
         if (
-          q > 0
-          && (Float.isNaN(bestExactQ) || q > bestExactQ)
-          && (Float.isNaN(bestApproxQ) || q > bestApproxQ)
+            q > 0
+                && (Float.isNaN(bestExactQ) || q > bestExactQ)
+                && (Float.isNaN(bestApproxQ) || q > bestApproxQ)
         ) {
           MatchedLocale match = getBestMatch(supportedLocales, acceptLanguage);
           if (match != null) {
@@ -583,6 +583,7 @@ public abstract class LocaleFilter implements Filter {
   protected static class MatchedLocale {
     private final Locale locale;
     private final boolean exact;
+
     protected MatchedLocale(Locale locale, boolean exact) {
       this.locale = locale;
       this.exact = exact;
@@ -626,40 +627,40 @@ public abstract class LocaleFilter implements Filter {
         if (!variant.isEmpty()) {
           // Exact match on language, country, and variant
           Locale match = supportedLocales.get(
-            toLocaleString(
-              new Locale(language, country, variant)
-            )
+              toLocaleString(
+                  new Locale(language, country, variant)
+              )
           );
           if (match != null) {
             return new MatchedLocale(
-              match,
-              true
+                match,
+                true
             );
           }
         }
         // Match on language and country
         Locale match = supportedLocales.get(
-          toLocaleString(
-            new Locale(language, country)
-          )
+            toLocaleString(
+                new Locale(language, country)
+            )
         );
         if (match != null) {
           return new MatchedLocale(
-            match,
-            variant.isEmpty()
+              match,
+              variant.isEmpty()
           );
         }
       }
       // Match language
       Locale match = supportedLocales.get(
-        toLocaleString(
-          new Locale(language)
-        )
+          toLocaleString(
+              new Locale(language)
+          )
       );
       if (match != null) {
         return new MatchedLocale(
-          match,
-          country.isEmpty() && variant.isEmpty()
+            match,
+            country.isEmpty() && variant.isEmpty()
         );
       }
     }

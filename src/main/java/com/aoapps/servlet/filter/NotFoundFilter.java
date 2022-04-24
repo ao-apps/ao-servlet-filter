@@ -69,18 +69,18 @@ public class NotFoundFilter implements Filter {
 
   @Override
   public void doFilter(
-    ServletRequest request,
-    ServletResponse response,
-    FilterChain chain
+      ServletRequest request,
+      ServletResponse response,
+      FilterChain chain
   ) throws IOException, ServletException {
     final String message = "404 Not Found";
     if (
-      (request instanceof HttpServletRequest)
-      && (response instanceof HttpServletResponse)
+        (request instanceof HttpServletRequest)
+            && (response instanceof HttpServletResponse)
     ) {
-      HttpServletRequest httpRequest = (HttpServletRequest)request;
+      HttpServletRequest httpRequest = (HttpServletRequest) request;
       if (patterns.isMatch(httpRequest.getServletPath())) {
-        HttpServletResponse httpResponse = (HttpServletResponse)response;
+        HttpServletResponse httpResponse = (HttpServletResponse) response;
         httpResponse.sendError(HttpServletResponse.SC_NOT_FOUND, message);
       } else {
         chain.doFilter(request, response);

@@ -84,17 +84,17 @@ public class FunctionContext implements Filter {
 
   @Override
   public void doFilter(
-    ServletRequest request,
-    ServletResponse response,
-    FilterChain chain
+      ServletRequest request,
+      ServletResponse response,
+      FilterChain chain
   ) throws IOException, ServletException {
     if (
-      (request instanceof HttpServletRequest)
-      && (response instanceof HttpServletResponse)
+        (request instanceof HttpServletRequest)
+            && (response instanceof HttpServletResponse)
     ) {
       ServletContext newServletContext = filterServletContext;
-      HttpServletRequest newRequest = (HttpServletRequest)request;
-      HttpServletResponse newResponse = (HttpServletResponse)response;
+      HttpServletRequest newRequest = (HttpServletRequest) request;
+      HttpServletResponse newResponse = (HttpServletResponse) response;
       ServletContext oldServletContext = servletContextTL.get();
       HttpServletRequest oldRequest = requestTL.get();
       HttpServletResponse oldResponse = responseTL.get();

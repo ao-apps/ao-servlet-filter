@@ -75,12 +75,12 @@ public class StripInvalidXmlCharactersFilter implements Filter {
    */
   private static boolean isValidCharacter(int codePoint) {
     return
-      (codePoint >= 0x20 && codePoint <= 0xD7FF) // Most common condition first
-      || codePoint == 0x9
-      || codePoint == 0xA
-      || codePoint == 0xD
-      || (codePoint >= 0xE000 && codePoint <= 0xFFFD)
-      || (codePoint >= 0x10000 && codePoint <= 0x10FFFF)
+        (codePoint >= 0x20 && codePoint <= 0xD7FF) // Most common condition first
+            || codePoint == 0x9
+            || codePoint == 0xA
+            || codePoint == 0xD
+            || (codePoint >= 0xE000 && codePoint <= 0xFFFD)
+            || (codePoint >= 0x10000 && codePoint <= 0x10FFFF)
     ;
   }
 
@@ -124,15 +124,15 @@ public class StripInvalidXmlCharactersFilter implements Filter {
 
   @Override
   public void doFilter(
-    ServletRequest request,
-    ServletResponse response,
-    FilterChain chain
+      ServletRequest request,
+      ServletResponse response,
+      FilterChain chain
   ) throws IOException, ServletException {
     if (
-      (request instanceof HttpServletRequest)
-      && (response instanceof HttpServletResponse)
+        (request instanceof HttpServletRequest)
+            && (response instanceof HttpServletResponse)
     ) {
-      HttpServletRequest httpRequest = (HttpServletRequest)request;
+      HttpServletRequest httpRequest = (HttpServletRequest) request;
       Map<String, List<String>> paramMap = new ServletRequestParameters(request).getParameterMap();
       boolean isValid = true;
       for (Map.Entry<String, List<String>> entry : paramMap.entrySet()) {
@@ -148,18 +148,18 @@ public class StripInvalidXmlCharactersFilter implements Filter {
         }
       }
       if (!isValid) {
-        HttpServletResponse httpResponse = (HttpServletResponse)response;
+        HttpServletResponse httpResponse = (HttpServletResponse) response;
         if (
-          httpRequest.getDispatcherType() == DispatcherType.REQUEST
-          && HttpServletUtil.METHOD_GET.equals(httpRequest.getMethod())
+            httpRequest.getDispatcherType() == DispatcherType.REQUEST
+                && HttpServletUtil.METHOD_GET.equals(httpRequest.getMethod())
         ) {
           // Redirect to same request but with invalid parameters and special characters removed
           StringBuilder url = new StringBuilder();
           HttpServletUtil.getAbsoluteURL(
-            httpRequest,
-            false,
-            httpRequest.getRequestURI(),
-            url
+              httpRequest,
+              false,
+              httpRequest.getRequestURI(),
+              url
           );
           // Add any parameters
           boolean didOne = false;
@@ -196,41 +196,41 @@ public class StripInvalidXmlCharactersFilter implements Filter {
           }
           // Dispatch with filtered values
           chain.doFilter(
-            new HttpServletRequestWrapper(httpRequest) {
-              @Override
-              public String getParameter(String name) {
-                List<String> values = filteredMap.get(name);
-                if (values == null || values.isEmpty()) {
-                  return null;
+              new HttpServletRequestWrapper(httpRequest) {
+                @Override
+                public String getParameter(String name) {
+                  List<String> values = filteredMap.get(name);
+                  if (values == null || values.isEmpty()) {
+                    return null;
+                  }
+                  return values.get(0);
                 }
-                return values.get(0);
-              }
 
-              @Override
-              public Map<String, String[]> getParameterMap() {
-                Map<String, String[]> newMap = AoCollections.newLinkedHashMap(filteredMap.size());
-                for (Map.Entry<String, List<String>> entry : filteredMap.entrySet()) {
-                  List<String> values = entry.getValue();
-                  newMap.put(entry.getKey(), values.toArray(new String[values.size()]));
+                @Override
+                public Map<String, String[]> getParameterMap() {
+                  Map<String, String[]> newMap = AoCollections.newLinkedHashMap(filteredMap.size());
+                  for (Map.Entry<String, List<String>> entry : filteredMap.entrySet()) {
+                    List<String> values = entry.getValue();
+                    newMap.put(entry.getKey(), values.toArray(new String[values.size()]));
+                  }
+                  return newMap;
                 }
-                return newMap;
-              }
 
-              @Override
-              public Enumeration<String> getParameterNames() {
-                return Collections.enumeration(filteredMap.keySet());
-              }
-
-              @Override
-              public String[] getParameterValues(String name) {
-                List<String> values = filteredMap.get(name);
-                if (values == null) {
-                  return null;
+                @Override
+                public Enumeration<String> getParameterNames() {
+                  return Collections.enumeration(filteredMap.keySet());
                 }
-                return values.toArray(new String[values.size()]);
-              }
-            },
-            httpResponse
+
+                @Override
+                public String[] getParameterValues(String name) {
+                  List<String> values = filteredMap.get(name);
+                  if (values == null) {
+                    return null;
+                  }
+                  return values.toArray(new String[values.size()]);
+                }
+              },
+              httpResponse
           );
         }
       } else {

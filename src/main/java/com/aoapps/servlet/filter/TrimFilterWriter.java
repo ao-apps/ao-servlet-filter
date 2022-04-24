@@ -76,15 +76,15 @@ public class TrimFilterWriter extends PrintWriter {
     // Fast-path: If the contentType is the same string (by identity), return the previously determined value.
     if (contentType != isTrimEnabledCacheContentType) {
       isTrimEnabledCacheResult =
-        contentType == null
-        || contentType.equals(ContentType.XHTML)
-        || contentType.startsWith(ContentType.XHTML + ";")
-        || contentType.equals(ContentType.HTML)
-        || contentType.startsWith(ContentType.HTML + ";")
-        || contentType.equals(ContentType.XML)
-        || contentType.startsWith(ContentType.XML + ";")
-        || contentType.equals(ContentType.XML_OLD)
-        || contentType.startsWith(ContentType.XML_OLD + ";")
+          contentType == null
+              || contentType.equals(ContentType.XHTML)
+              || contentType.startsWith(ContentType.XHTML + ";")
+              || contentType.equals(ContentType.HTML)
+              || contentType.startsWith(ContentType.HTML + ";")
+              || contentType.equals(ContentType.XML)
+              || contentType.startsWith(ContentType.XML + ";")
+              || contentType.equals(ContentType.XML_OLD)
+              || contentType.startsWith(ContentType.XML_OLD + ";")
       ;
       isTrimEnabledCacheContentType = contentType;
     }
@@ -129,8 +129,8 @@ public class TrimFilterWriter extends PrintWriter {
   private boolean processChar(char c) {
     if (inTextArea) {
       if (
-        c == textarea_close[readCharMatchCount]
-        || c == TEXTAREA_CLOSE[readCharMatchCount]
+          c == textarea_close[readCharMatchCount]
+              || c == TEXTAREA_CLOSE[readCharMatchCount]
       ) {
         readCharMatchCount++;
         if (readCharMatchCount >= textarea_close.length) {
@@ -143,8 +143,8 @@ public class TrimFilterWriter extends PrintWriter {
       return true;
     } else if (inPre) {
       if (
-        c == pre_close[preReadCharMatchCount]
-        || c == PRE_CLOSE[preReadCharMatchCount]
+          c == pre_close[preReadCharMatchCount]
+              || c == PRE_CLOSE[preReadCharMatchCount]
       ) {
         preReadCharMatchCount++;
         if (preReadCharMatchCount >= pre_close.length) {
@@ -174,8 +174,8 @@ public class TrimFilterWriter extends PrintWriter {
       } else {
         atLineStart = false;
         if (
-          c == textarea[readCharMatchCount]
-          || c == TEXTAREA[readCharMatchCount]
+            c == textarea[readCharMatchCount]
+                || c == TEXTAREA[readCharMatchCount]
         ) {
           readCharMatchCount++;
           if (readCharMatchCount >= textarea.length) {
@@ -186,8 +186,8 @@ public class TrimFilterWriter extends PrintWriter {
           readCharMatchCount = 0;
         }
         if (
-          c == pre[preReadCharMatchCount]
-          || c == PRE[preReadCharMatchCount]
+            c == pre[preReadCharMatchCount]
+                || c == PRE[preReadCharMatchCount]
         ) {
           preReadCharMatchCount++;
           if (preReadCharMatchCount >= pre.length) {
@@ -205,8 +205,8 @@ public class TrimFilterWriter extends PrintWriter {
   @Override
   public void write(int c) {
     if (
-      !isTrimEnabled()
-      || processChar((char)c)
+        !isTrimEnabled()
+            || processChar((char) c)
     ) {
       super.write(c);
     }
@@ -218,11 +218,11 @@ public class TrimFilterWriter extends PrintWriter {
       char[] buff = outputBuffer;
       // If len > OUPUT_BUFFER_SIZE, process in blocks
       int buffUsed = 0;
-      while (len>0) {
+      while (len > 0) {
         int blockLen = len <= BufferManager.BUFFER_SIZE ? len : BufferManager.BUFFER_SIZE;
         for (
           int index = off, blockEnd = off + blockLen;
-          index<blockEnd;
+          index < blockEnd;
           index++
         ) {
           char c = buf[index];
@@ -235,10 +235,10 @@ public class TrimFilterWriter extends PrintWriter {
             }
           }
         }
-        off+=blockLen;
-        len-=blockLen;
+        off += blockLen;
+        len -= blockLen;
       }
-      if (buffUsed>0) {
+      if (buffUsed > 0) {
         super.write(buff, 0, buffUsed);
       }
     } else {
@@ -261,11 +261,11 @@ public class TrimFilterWriter extends PrintWriter {
       char[] buff = outputBuffer;
       // If len > OUPUT_BUFFER_SIZE, process in blocks
       int buffUsed = 0;
-      while (len>0) {
+      while (len > 0) {
         int blockLen = len <= BufferManager.BUFFER_SIZE ? len : BufferManager.BUFFER_SIZE;
         for (
           int index = off, blockEnd = off + blockLen;
-          index<blockEnd;
+          index < blockEnd;
           index++
         ) {
           char c = s.charAt(index);
@@ -278,10 +278,10 @@ public class TrimFilterWriter extends PrintWriter {
             }
           }
         }
-        off+=blockLen;
-        len-=blockLen;
+        off += blockLen;
+        len -= blockLen;
       }
-      if (buffUsed>0) {
+      if (buffUsed > 0) {
         super.write(buff, 0, buffUsed);
       }
     } else {
@@ -300,8 +300,8 @@ public class TrimFilterWriter extends PrintWriter {
   @Override
   public void print(char c) {
     if (
-      !isTrimEnabled()
-      || processChar(c)
+        !isTrimEnabled()
+            || processChar(c)
     ) {
       super.print(c);
     }

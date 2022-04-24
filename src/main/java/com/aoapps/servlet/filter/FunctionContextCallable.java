@@ -32,9 +32,9 @@ import java.util.concurrent.Callable;
 public class FunctionContextCallable<T> extends ThreadLocalsCallable<T> {
 
   static final ThreadLocal<?>[] threadLocals = {
-    FunctionContext.servletContextTL,
-    FunctionContext.requestTL,
-    FunctionContext.responseTL
+      FunctionContext.servletContextTL,
+      FunctionContext.requestTL,
+      FunctionContext.responseTL
   };
 
   public FunctionContextCallable(Callable<T> task) {

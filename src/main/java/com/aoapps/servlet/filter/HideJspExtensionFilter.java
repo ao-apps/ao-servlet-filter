@@ -84,7 +84,7 @@ import javax.servlet.http.HttpServletResponseWrapper;
 public class HideJspExtensionFilter implements Filter {
 
   private static final ScopeEE.Request.Attribute<Boolean> FILTER_APPLIED_KEY =
-    ScopeEE.REQUEST.attribute(HideJspExtensionFilter.class.getName() + ".filterApplied");
+      ScopeEE.REQUEST.attribute(HideJspExtensionFilter.class.getName() + ".filterApplied");
 
   private static final Charset ENCODING = StandardCharsets.UTF_8;
 
@@ -92,8 +92,8 @@ public class HideJspExtensionFilter implements Filter {
    * The file extensions to rewrite, in priority order.
    */
   private static final String[] EXTENSIONS = {
-    ".jspx",
-    ".jsp"
+      ".jspx",
+      ".jsp"
   };
 
   /**
@@ -141,29 +141,29 @@ public class HideJspExtensionFilter implements Filter {
 
   @Override
   public void doFilter(
-    ServletRequest request,
-    ServletResponse response,
-    FilterChain chain
+      ServletRequest request,
+      ServletResponse response,
+      FilterChain chain
   ) throws IOException, ServletException {
     AttributeEE.Request<Boolean> filterAppliedAttribute = FILTER_APPLIED_KEY.context(request);
     if (filterAppliedAttribute.get() == null) {
       try {
         filterAppliedAttribute.set(true);
         if (
-          (request instanceof HttpServletRequest)
-          && (response instanceof HttpServletResponse)
+            (request instanceof HttpServletRequest)
+                && (response instanceof HttpServletResponse)
         ) {
-          final HttpServletRequest httpRequest = (HttpServletRequest)request;
-          final HttpServletResponse httpResponse = (HttpServletResponse)response;
+          final HttpServletRequest httpRequest = (HttpServletRequest) request;
+          final HttpServletResponse httpResponse = (HttpServletResponse) response;
 
           final ServletContextCache servletContextCache = ServletContextCache.getInstance(servletContext);
 
           String servletPath = httpRequest.getServletPath();
           boolean requestRewrite = !noRewritePatterns.isMatch(servletPath);
           if (
-            requestRewrite
-            // Only redirect GET requests
-            && HttpServletUtil.METHOD_GET.equals(httpRequest.getMethod())
+              requestRewrite
+                  // Only redirect GET requests
+                  && HttpServletUtil.METHOD_GET.equals(httpRequest.getMethod())
           ) {
             for (int i = 0; i < EXTENSIONS.length; i++) {
               String slashIndex = SLASH_INDEXES[i];
@@ -224,12 +224,12 @@ public class HideJspExtensionFilter implements Filter {
               IRI iri = new IRI(url);
               String hierPart = iri.getHierPart();
               if (
-                !noRewritePatterns.isMatch(hierPart)
+                  !noRewritePatterns.isMatch(hierPart)
               ) {
                 for (int i = 0; i < EXTENSIONS.length; i++) {
                   // Rewrite any URLs ending in "/path/index.jsp(x)" to "/path/", maintaining any query string
                   if (
-                    hierPart.endsWith(SLASH_INDEXES[i])
+                      hierPart.endsWith(SLASH_INDEXES[i])
                   ) {
                     String shortenedHierPart = hierPart.substring(0, hierPart.length() - INDEXES[i].length());
                     return iri.setHierPart(shortenedHierPart).toASCIIString();
@@ -238,7 +238,7 @@ public class HideJspExtensionFilter implements Filter {
                 for (String extension : EXTENSIONS) {
                   // Rewrite any URLs ending in "/path/file.jsp(x)" to "/path/file", maintaining any query string
                   if (
-                    hierPart.endsWith(extension)
+                      hierPart.endsWith(extension)
                   ) {
                     String shortenedHierPart = hierPart.substring(0, hierPart.length() - extension.length());
                     if (!isFolder(shortenedHierPart)) {
@@ -261,20 +261,20 @@ public class HideJspExtensionFilter implements Filter {
                 String protocol;
                 String remaining;
                 if (
-                  // 7: "http://".length()
-                  url.length() > 7
-                  && url.charAt(5) == '/'
-                  && url.charAt(6) == '/'
-                  && URIParser.isScheme(url, "http")
+                    // 7: "http://".length()
+                    url.length() > 7
+                        && url.charAt(5) == '/'
+                        && url.charAt(6) == '/'
+                        && URIParser.isScheme(url, "http")
                 ) {
                   protocol = url.substring(0, 7);
                   remaining = url.substring(7);
                 } else if (
-                  // 8: "https://".length()
-                  url.length() > 8
-                  && url.charAt(6) == '/'
-                  && url.charAt(7) == '/'
-                  && URIParser.isScheme(url, "https")
+                    // 8: "https://".length()
+                    url.length() > 8
+                        && url.charAt(6) == '/'
+                        && url.charAt(7) == '/'
+                        && URIParser.isScheme(url, "https")
                 ) {
                   protocol = url.substring(0, 8);
                   remaining = url.substring(8);
@@ -291,8 +291,8 @@ public class HideJspExtensionFilter implements Filter {
                 int colonPos = hostPort.indexOf(':');
                 String host = colonPos == -1 ? hostPort : hostPort.substring(0, colonPos);
                 if (
-                  // TODO: What about [...] IPv6 addresses?
-                  host.equalsIgnoreCase(httpRequest.getServerName())
+                    // TODO: What about [...] IPv6 addresses?
+                    host.equalsIgnoreCase(httpRequest.getServerName())
                 ) {
                   return rewrite(url);
                 } else {
@@ -344,10 +344,10 @@ public class HideJspExtensionFilter implements Filter {
                   if (resourceUrl != null) {
                     // Forward to .jsp(x) file
                     Dispatcher.forward(
-                      servletContext,
-                      resourcePath,
-                      httpRequest,
-                      rewritingResponse
+                        servletContext,
+                        resourcePath,
+                        httpRequest,
+                        rewritingResponse
                     );
                     return;
                   }

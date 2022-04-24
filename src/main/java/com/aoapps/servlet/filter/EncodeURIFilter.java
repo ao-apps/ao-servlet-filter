@@ -72,7 +72,7 @@ import javax.servlet.http.HttpServletResponseWrapper;
 public class EncodeURIFilter implements Filter {
 
   private static final ScopeEE.Request.Attribute<EncodeURIFilter> REQUEST_ATTRIBUTE =
-    ScopeEE.REQUEST.attribute(EncodeURIFilter.class.getName());
+      ScopeEE.REQUEST.attribute(EncodeURIFilter.class.getName());
 
   /**
    * Gets the filter active on the given request.
@@ -94,20 +94,20 @@ public class EncodeURIFilter implements Filter {
 
   private static String encode(String url, boolean enableIri, String characterEncoding) {
     if (
-      // Do nothing on these types of URI
-      URIParser.isScheme(url, "javascript")
-      || URIParser.isScheme(url, "cid")
-      || URIParser.isScheme(url, "data")
+        // Do nothing on these types of URI
+        URIParser.isScheme(url, "javascript")
+            || URIParser.isScheme(url, "cid")
+            || URIParser.isScheme(url, "data")
     ) {
       return url;
     } else {
       if (
-        enableIri
-        && !Canonical.get()
-        && (
-          characterEncoding.equalsIgnoreCase(StandardCharsets.UTF_8.name())
-          || Charset.forName(characterEncoding) == StandardCharsets.UTF_8
-        )
+          enableIri
+              && !Canonical.get()
+              && (
+              characterEncoding.equalsIgnoreCase(StandardCharsets.UTF_8.name())
+                  || Charset.forName(characterEncoding) == StandardCharsets.UTF_8
+          )
       ) {
         return new IRI(url).toString();
       } else {
@@ -121,9 +121,9 @@ public class EncodeURIFilter implements Filter {
    */
   public String encode(String url, Doctype doctype, String characterEncoding) {
     return encode(
-      url,
-      enableIRI && doctype.supportsIRI(),
-      characterEncoding
+        url,
+        enableIRI && doctype.supportsIRI(),
+        characterEncoding
     );
   }
 
@@ -140,61 +140,61 @@ public class EncodeURIFilter implements Filter {
 
   @Override
   public void doFilter(
-    ServletRequest request,
-    ServletResponse response,
-    FilterChain chain
+      ServletRequest request,
+      ServletResponse response,
+      FilterChain chain
   ) throws IOException, ServletException {
     // Makes sure only one filter is applied per request
     AttributeEE.Request<EncodeURIFilter> attribute = REQUEST_ATTRIBUTE.context(request);
     if (
-      attribute.get() == null
-      && (response instanceof HttpServletResponse)
+        attribute.get() == null
+            && (response instanceof HttpServletResponse)
     ) {
       attribute.set(this);
       try {
         chain.doFilter(
-          request,
-          new HttpServletResponseWrapper((HttpServletResponse)response) {
-            @Override
-            @Deprecated
-            public String encodeRedirectUrl(String url) {
-              return encode(
-                super.encodeRedirectUrl(url),
-                false,
-                null // characterEncoding not used with enableIri = false
-              );
-            }
+            request,
+            new HttpServletResponseWrapper((HttpServletResponse) response) {
+              @Override
+              @Deprecated
+              public String encodeRedirectUrl(String url) {
+                return encode(
+                    super.encodeRedirectUrl(url),
+                    false,
+                    null // characterEncoding not used with enableIri = false
+                );
+              }
 
-            @Override
-            public String encodeRedirectURL(String url) {
-              return encode(
-                super.encodeRedirectURL(url),
-                false,
-                null // characterEncoding not used with enableIri = false
-              );
-            }
+              @Override
+              public String encodeRedirectURL(String url) {
+                return encode(
+                    super.encodeRedirectURL(url),
+                    false,
+                    null // characterEncoding not used with enableIri = false
+                );
+              }
 
-            @Override
-            @Deprecated
-            public String encodeUrl(String url) {
-              boolean enableIri = enableIRI && DoctypeEE.get(servletContext, request).supportsIRI();
-              return encode(
-                super.encodeUrl(url),
-                enableIri,
-                enableIri ? getCharacterEncoding() : null
-              );
-            }
+              @Override
+              @Deprecated
+              public String encodeUrl(String url) {
+                boolean enableIri = enableIRI && DoctypeEE.get(servletContext, request).supportsIRI();
+                return encode(
+                    super.encodeUrl(url),
+                    enableIri,
+                    enableIri ? getCharacterEncoding() : null
+                );
+              }
 
-            @Override
-            public String encodeURL(String url) {
-              boolean enableIri = enableIRI && DoctypeEE.get(servletContext, request).supportsIRI();
-              return encode(
-                super.encodeURL(url),
-                enableIri,
-                enableIri ? getCharacterEncoding() : null
-              );
+              @Override
+              public String encodeURL(String url) {
+                boolean enableIri = enableIRI && DoctypeEE.get(servletContext, request).supportsIRI();
+                return encode(
+                    super.encodeURL(url),
+                    enableIri,
+                    enableIri ? getCharacterEncoding() : null
+                );
+              }
             }
-          }
         );
       } finally {
         attribute.remove();

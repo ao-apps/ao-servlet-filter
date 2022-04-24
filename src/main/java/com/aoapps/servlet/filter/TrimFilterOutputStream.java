@@ -88,15 +88,15 @@ public class TrimFilterOutputStream extends ServletOutputStream {
     // Fast-path: If the contentType is the same string (by identity), return the previously determined value.
     if (contentType != isTrimEnabledCacheContentType) {
       isTrimEnabledCacheResult =
-        contentType == null
-        || contentType.equals(ContentType.XHTML)
-        || contentType.startsWith(ContentType.XHTML + ";")
-        || contentType.equals(ContentType.HTML)
-        || contentType.startsWith(ContentType.HTML + ";")
-        || contentType.equals(ContentType.XML)
-        || contentType.startsWith(ContentType.XML + ";")
-        || contentType.equals(ContentType.XML_OLD)
-        || contentType.startsWith(ContentType.XML_OLD + ";")
+          contentType == null
+              || contentType.equals(ContentType.XHTML)
+              || contentType.startsWith(ContentType.XHTML + ";")
+              || contentType.equals(ContentType.HTML)
+              || contentType.startsWith(ContentType.HTML + ";")
+              || contentType.equals(ContentType.XML)
+              || contentType.startsWith(ContentType.XML + ";")
+              || contentType.equals(ContentType.XML_OLD)
+              || contentType.startsWith(ContentType.XML_OLD + ";")
       ;
       isTrimEnabledCacheContentType = contentType;
     }
@@ -128,8 +128,8 @@ public class TrimFilterOutputStream extends ServletOutputStream {
   private boolean processChar(char c) {
     if (inTextArea) {
       if (
-        c == textarea_close[readCharMatchCount]
-        || c == TEXTAREA_CLOSE[readCharMatchCount]
+          c == textarea_close[readCharMatchCount]
+              || c == TEXTAREA_CLOSE[readCharMatchCount]
       ) {
         readCharMatchCount++;
         if (readCharMatchCount >= textarea_close.length) {
@@ -142,8 +142,8 @@ public class TrimFilterOutputStream extends ServletOutputStream {
       return true;
     } else if (inPre) {
       if (
-        c == pre_close[preReadCharMatchCount]
-        || c == PRE_CLOSE[preReadCharMatchCount]
+          c == pre_close[preReadCharMatchCount]
+              || c == PRE_CLOSE[preReadCharMatchCount]
       ) {
         preReadCharMatchCount++;
         if (preReadCharMatchCount >= pre_close.length) {
@@ -173,8 +173,8 @@ public class TrimFilterOutputStream extends ServletOutputStream {
       } else {
         atLineStart = false;
         if (
-          c == textarea[readCharMatchCount]
-          || c == TEXTAREA[readCharMatchCount]
+            c == textarea[readCharMatchCount]
+                || c == TEXTAREA[readCharMatchCount]
         ) {
           readCharMatchCount++;
           if (readCharMatchCount >= textarea.length) {
@@ -185,8 +185,8 @@ public class TrimFilterOutputStream extends ServletOutputStream {
           readCharMatchCount = 0;
         }
         if (
-          c == pre[preReadCharMatchCount]
-          || c == PRE[preReadCharMatchCount]
+            c == pre[preReadCharMatchCount]
+                || c == PRE[preReadCharMatchCount]
         ) {
           preReadCharMatchCount++;
           if (preReadCharMatchCount >= pre.length) {
@@ -204,8 +204,8 @@ public class TrimFilterOutputStream extends ServletOutputStream {
   @Override
   public void write(int b) throws IOException {
     if (
-      !isTrimEnabled()
-      || processChar((char)b)
+        !isTrimEnabled()
+            || processChar((char) b)
     ) {
       wrapped.write(b);
     }
@@ -217,15 +217,15 @@ public class TrimFilterOutputStream extends ServletOutputStream {
       final byte[] buff = outputBuffer;
       // If len > OUPUT_BUFFER_SIZE, process in blocks
       int buffUsed = 0;
-      while (len>0) {
+      while (len > 0) {
         int blockLen = len <= BufferManager.BUFFER_SIZE ? len : BufferManager.BUFFER_SIZE;
         for (
           int index = off, blockEnd = off + blockLen;
-          index<blockEnd;
+          index < blockEnd;
           index++
         ) {
           byte b = buf[index];
-          if (processChar((char)b)) {
+          if (processChar((char) b)) {
             buff[buffUsed++] = b;
             if (buffUsed >= BufferManager.BUFFER_SIZE) {
               assert buffUsed == BufferManager.BUFFER_SIZE;
@@ -234,10 +234,10 @@ public class TrimFilterOutputStream extends ServletOutputStream {
             }
           }
         }
-        off+=blockLen;
-        len-=blockLen;
+        off += blockLen;
+        len -= blockLen;
       }
-      if (buffUsed>0) {
+      if (buffUsed > 0) {
         wrapped.write(buff, 0, buffUsed);
       }
     } else {
@@ -265,8 +265,8 @@ public class TrimFilterOutputStream extends ServletOutputStream {
   @Override
   public void print(char c) throws IOException {
     if (
-      !isTrimEnabled()
-      || processChar(c)
+        !isTrimEnabled()
+            || processChar(c)
     ) {
       wrapped.print(c);
     }
@@ -312,16 +312,16 @@ public class TrimFilterOutputStream extends ServletOutputStream {
       int off = 0;
       int len = s.length();
       int buffUsed = 0;
-      while (len>0) {
+      while (len > 0) {
         int blockLen = len <= BufferManager.BUFFER_SIZE ? len : BufferManager.BUFFER_SIZE;
         for (
           int index = off, blockEnd = off + blockLen;
-          index<blockEnd;
+          index < blockEnd;
           index++
         ) {
           char c = s.charAt(index);
           if (processChar(c)) {
-            buff[buffUsed++] = (byte)c;
+            buff[buffUsed++] = (byte) c;
             if (buffUsed >= BufferManager.BUFFER_SIZE) {
               assert buffUsed == BufferManager.BUFFER_SIZE;
               wrapped.write(buff, 0, buffUsed);
@@ -329,10 +329,10 @@ public class TrimFilterOutputStream extends ServletOutputStream {
             }
           }
         }
-        off+=blockLen;
-        len-=blockLen;
+        off += blockLen;
+        len -= blockLen;
       }
-      if (buffUsed>0) {
+      if (buffUsed > 0) {
         wrapped.write(buff, 0, buffUsed);
       }
     } else {

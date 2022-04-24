@@ -86,7 +86,9 @@ public class ApacheAuthenticationFilter implements Filter {
     groupsRequestAttribute = ScopeEE.REQUEST.attribute(groupsRequestAttributeName);
   }
 
-  private static class CacheLock {/* Empty lock class to help heap profile */}
+  private static class CacheLock {
+    // Empty lock class to help heap profile
+  }
   private final CacheLock cacheLock = new CacheLock();
 
   private long cacheLastModified;
@@ -106,9 +108,9 @@ public class ApacheAuthenticationFilter implements Filter {
           }
           try (
             BufferedReader reader = new BufferedReader(
-              new InputStreamReader(in, StandardCharsets.UTF_8)
-            )
-          ) {
+                  new InputStreamReader(in, StandardCharsets.UTF_8)
+              )
+              ) {
             Map<String, Set<String>> parsed = new LinkedHashMap<>();
             String line;
             while ((line = reader.readLine()) != null) {
@@ -158,12 +160,12 @@ public class ApacheAuthenticationFilter implements Filter {
 
   @Override
   public void doFilter(
-    ServletRequest request,
-    ServletResponse response,
-    FilterChain chain
+      ServletRequest request,
+      ServletResponse response,
+      FilterChain chain
   ) throws IOException, ServletException {
     if (request instanceof HttpServletRequest) {
-      HttpServletRequest httpRequest = (HttpServletRequest)request;
+      HttpServletRequest httpRequest = (HttpServletRequest) request;
       Principal userPrincipal = httpRequest.getUserPrincipal();
       final Set<String> groups;
       if (userPrincipal != null) {
@@ -184,13 +186,13 @@ public class ApacheAuthenticationFilter implements Filter {
       }
       try (Attribute.OldValue oldAttribute = groupsRequestAttribute.context(request).init(groups)) {
         chain.doFilter(
-          new HttpServletRequestWrapper(httpRequest) {
-            @Override
-            public boolean isUserInRole(String role) {
-              return groups.contains(role);
-            }
-          },
-          response
+            new HttpServletRequestWrapper(httpRequest) {
+              @Override
+              public boolean isUserInRole(String role) {
+                return groups.contains(role);
+              }
+            },
+            response
         );
       }
     } else {
