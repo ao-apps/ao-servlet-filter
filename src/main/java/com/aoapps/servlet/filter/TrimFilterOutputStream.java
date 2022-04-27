@@ -56,13 +56,13 @@ public class TrimFilterOutputStream extends ServletOutputStream {
   private final ServletOutputStream wrapped;
   private final ServletResponse response;
   @SuppressWarnings("PackageVisibleField")
-  boolean inTextArea = false;
+  boolean inTextArea;
   @SuppressWarnings("PackageVisibleField")
-  boolean inPre = false;
+  boolean inPre;
   private boolean atLineStart = true;
 
-  private int readCharMatchCount = 0;
-  private int preReadCharMatchCount = 0;
+  private int readCharMatchCount;
+  private int preReadCharMatchCount;
 
   /**
    * Only used within individual methods, released on close.
