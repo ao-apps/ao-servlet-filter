@@ -250,6 +250,7 @@ public class HideJspExtensionFilter implements Filter {
               // No rewriting
               return url;
             }
+
             private String encode(String url) {
               int urlLen = url.length();
               // Don't rewrite empty or anchor-only URLs
@@ -309,6 +310,7 @@ public class HideJspExtensionFilter implements Filter {
             public String encodeUrl(String url) {
               return httpResponse.encodeUrl(encode(url));
             }
+
             @Override
             public String encodeURL(String url) {
               return httpResponse.encodeURL(encode(url));
@@ -319,6 +321,7 @@ public class HideJspExtensionFilter implements Filter {
             public String encodeRedirectUrl(String url) {
               return httpResponse.encodeRedirectUrl(encode(url));
             }
+
             @Override
             public String encodeRedirectURL(String url) {
               return httpResponse.encodeRedirectURL(encode(url));

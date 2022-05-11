@@ -71,7 +71,7 @@ import javax.servlet.http.HttpServletResponse;
 public class StripInvalidXmlCharactersFilter implements Filter {
 
   /**
-   * <pre>Char   ::=   #x9 | #xA | #xD | [#x20-#xD7FF] | [#xE000-#xFFFD] | [#x10000-#x10FFFF]</pre>
+   * <pre>Char   ::=   #x9 | #xA | #xD | [#x20-#xD7FF] | [#xE000-#xFFFD] | [#x10000-#x10FFFF]</pre>.
    */
   private static boolean isValidCharacter(int codePoint) {
     return
@@ -80,8 +80,7 @@ public class StripInvalidXmlCharactersFilter implements Filter {
             || codePoint == 0xA
             || codePoint == 0xD
             || (codePoint >= 0xE000 && codePoint <= 0xFFFD)
-            || (codePoint >= 0x10000 && codePoint <= 0x10FFFF)
-    ;
+            || (codePoint >= 0x10000 && codePoint <= 0x10FFFF);
   }
 
   private static boolean isValid(String s) {

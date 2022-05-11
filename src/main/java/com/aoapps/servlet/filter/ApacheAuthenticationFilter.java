@@ -89,6 +89,7 @@ public class ApacheAuthenticationFilter implements Filter {
   private static class CacheLock {
     // Empty lock class to help heap profile
   }
+
   private final CacheLock cacheLock = new CacheLock();
 
   private long cacheLastModified;
@@ -107,7 +108,7 @@ public class ApacheAuthenticationFilter implements Filter {
             throw new FileNotFoundException("Resource not found: " + groupFile);
           }
           try (
-            BufferedReader reader = new BufferedReader(
+              BufferedReader reader = new BufferedReader(
                   new InputStreamReader(in, StandardCharsets.UTF_8)
               )
               ) {

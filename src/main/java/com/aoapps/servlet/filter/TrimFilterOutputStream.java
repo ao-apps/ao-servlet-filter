@@ -23,8 +23,6 @@
 
 package com.aoapps.servlet.filter;
 
-import com.aoapps.lang.io.ContentType;
-import com.aoapps.lang.util.BufferManager;
 import static com.aoapps.servlet.filter.TrimFilterWriter.PRE;
 import static com.aoapps.servlet.filter.TrimFilterWriter.PRE_CLOSE;
 import static com.aoapps.servlet.filter.TrimFilterWriter.TEXTAREA;
@@ -33,6 +31,9 @@ import static com.aoapps.servlet.filter.TrimFilterWriter.pre;
 import static com.aoapps.servlet.filter.TrimFilterWriter.pre_close;
 import static com.aoapps.servlet.filter.TrimFilterWriter.textarea;
 import static com.aoapps.servlet.filter.TrimFilterWriter.textarea_close;
+
+import com.aoapps.lang.io.ContentType;
+import com.aoapps.lang.util.BufferManager;
 import java.io.IOException;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.ServletResponse;
@@ -96,8 +97,7 @@ public class TrimFilterOutputStream extends ServletOutputStream {
               || contentType.equals(ContentType.XML)
               || contentType.startsWith(ContentType.XML + ";")
               || contentType.equals(ContentType.XML_OLD)
-              || contentType.startsWith(ContentType.XML_OLD + ";")
-      ;
+              || contentType.startsWith(ContentType.XML_OLD + ";");
       isTrimEnabledCacheContentType = contentType;
     }
     return isTrimEnabledCacheResult;
@@ -219,10 +219,9 @@ public class TrimFilterOutputStream extends ServletOutputStream {
       int buffUsed = 0;
       while (len > 0) {
         int blockLen = len <= BufferManager.BUFFER_SIZE ? len : BufferManager.BUFFER_SIZE;
-        for (
-          int index = off, blockEnd = off + blockLen;
-          index < blockEnd;
-          index++
+        for (int index = off, blockEnd = off + blockLen;
+            index < blockEnd;
+            index++
         ) {
           byte b = buf[index];
           if (processChar((char) b)) {
@@ -314,10 +313,9 @@ public class TrimFilterOutputStream extends ServletOutputStream {
       int buffUsed = 0;
       while (len > 0) {
         int blockLen = len <= BufferManager.BUFFER_SIZE ? len : BufferManager.BUFFER_SIZE;
-        for (
-          int index = off, blockEnd = off + blockLen;
-          index < blockEnd;
-          index++
+        for (int index = off, blockEnd = off + blockLen;
+            index < blockEnd;
+            index++
         ) {
           char c = s.charAt(index);
           if (processChar(c)) {

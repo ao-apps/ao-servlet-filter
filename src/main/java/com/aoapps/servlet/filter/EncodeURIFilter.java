@@ -122,7 +122,7 @@ public class EncodeURIFilter implements Filter {
   public String encode(String url, Doctype doctype, String characterEncoding) {
     return encode(
         url,
-        enableIRI && doctype.supportsIRI(),
+        enableIRI && doctype.getSupportsIRI(),
         characterEncoding
     );
   }
@@ -131,7 +131,7 @@ public class EncodeURIFilter implements Filter {
    * Performs encoding on the given URL in the given response encoding.
    *
    * @deprecated  Please provide the current {@link Doctype} so can be enabled
-   *              selectively via {@link Doctype#supportsIRI()}.
+   *              selectively via {@link Doctype#getSupportsIRI()}.
    */
   @Deprecated
   public String encode(String url, String characterEncoding) {
@@ -177,7 +177,7 @@ public class EncodeURIFilter implements Filter {
               @Override
               @Deprecated
               public String encodeUrl(String url) {
-                boolean enableIri = enableIRI && DoctypeEE.get(servletContext, request).supportsIRI();
+                boolean enableIri = EncodeURIFilter.this.enableIRI && DoctypeEE.get(servletContext, request).getSupportsIRI();
                 return encode(
                     super.encodeUrl(url),
                     enableIri,
@@ -187,7 +187,7 @@ public class EncodeURIFilter implements Filter {
 
               @Override
               public String encodeURL(String url) {
-                boolean enableIri = enableIRI && DoctypeEE.get(servletContext, request).supportsIRI();
+                boolean enableIri = EncodeURIFilter.this.enableIRI && DoctypeEE.get(servletContext, request).getSupportsIRI();
                 return encode(
                     super.encodeURL(url),
                     enableIri,

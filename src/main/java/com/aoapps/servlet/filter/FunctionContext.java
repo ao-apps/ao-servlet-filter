@@ -51,6 +51,9 @@ public class FunctionContext implements Filter {
   static final ThreadLocal<HttpServletRequest> requestTL = new ThreadLocal<>();
   static final ThreadLocal<HttpServletResponse> responseTL = new ThreadLocal<>();
 
+  /**
+   * Gets the {@link ServletContext} associated with the current thread.
+   */
   public static ServletContext getServletContext() {
     ServletContext servletContext = servletContextTL.get();
     if (servletContext == null) {
@@ -59,6 +62,9 @@ public class FunctionContext implements Filter {
     return servletContext;
   }
 
+  /**
+   * Gets the {@link HttpServletRequest} associated with the current thread.
+   */
   public static HttpServletRequest getRequest() {
     HttpServletRequest request = requestTL.get();
     if (request == null) {
@@ -67,6 +73,9 @@ public class FunctionContext implements Filter {
     return request;
   }
 
+  /**
+   * Gets the {@link HttpServletResponse} associated with the current thread.
+   */
   public static HttpServletResponse getResponse() {
     HttpServletResponse response = responseTL.get();
     if (response == null) {

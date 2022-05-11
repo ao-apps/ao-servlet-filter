@@ -448,9 +448,10 @@ public abstract class LocaleFilter implements Filter {
 
   /**
    * Checks if the locale parameter should be added to the given URL.
-   *
+   * <p>
    * This default implementation will cause the parameter to be added to any
    * URL that is not one of the excluded extensions (case-insensitive).
+   * </p>
    */
   protected boolean isLocalizedPath(IRI iri) {
     // TODO: This list is getting long.  Use a map?
@@ -481,8 +482,7 @@ public abstract class LocaleFilter implements Filter {
             && !iri.pathEndsWithIgnoreCase(".sass")
             && !iri.pathEndsWithIgnoreCase(".scss")
             && !iri.pathEndsWithIgnoreCase(".css.map")
-            && !iri.pathEndsWithIgnoreCase(".js.map")
-    ;
+            && !iri.pathEndsWithIgnoreCase(".js.map");
   }
 
   protected boolean isLocalizedPath(String url) {
@@ -580,6 +580,9 @@ public abstract class LocaleFilter implements Filter {
     return selected;
   }
 
+  /**
+   * Records a locale and how matched.
+   */
   protected static class MatchedLocale {
     private final Locale locale;
     private final boolean exact;
@@ -700,8 +703,9 @@ public abstract class LocaleFilter implements Filter {
    * Gets the default locale to be used when a best locale cannot be resolved.
    * This will never be called when <code>getSupportedLocales</code> returns an
    * empty map.
-   *
+   * <p>
    * This must be one of the supported locales.
+   * </p>
    *
    * @see  #getSupportedLocales(javax.servlet.ServletRequest)
    */

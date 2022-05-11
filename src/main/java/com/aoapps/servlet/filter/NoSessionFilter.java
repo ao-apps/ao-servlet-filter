@@ -255,6 +255,7 @@ public class NoSessionFilter implements Filter {
                 public HttpSession getSession() {
                   throw new RuntimeException("Sessions are disabled by NoSessionFilter");
                 }
+
                 @Override
                 public HttpSession getSession(boolean create) {
                   if (create) {
@@ -262,7 +263,10 @@ public class NoSessionFilter implements Filter {
                   }
                   return null;
                 }
-                /** Filter cookie parameters */
+
+                /**
+                 * Filter cookie parameters.
+                 */
                 @Override
                 public String getParameter(String name) {
                   if (name.startsWith(cookieUrlParamPrefix)) {
@@ -270,7 +274,10 @@ public class NoSessionFilter implements Filter {
                   }
                   return super.getParameter(name);
                 }
-                /** Filter cookie parameters */
+
+                /**
+                 * Filter cookie parameters.
+                 */
                 @Override
                 public Map<String, String[]> getParameterMap() {
                   // Only create new map if at least one parameter is filtered
@@ -294,7 +301,10 @@ public class NoSessionFilter implements Filter {
                   }
                   return Collections.unmodifiableMap(filteredMap);
                 }
-                /** Filter cookie parameters */
+
+                /**
+                 * Filter cookie parameters.
+                 */
                 @Override
                 public Enumeration<String> getParameterNames() {
                   final Enumeration<String> completeNames = super.getParameterNames();
@@ -316,6 +326,7 @@ public class NoSessionFilter implements Filter {
                       }
                       return false;
                     }
+
                     @Override
                     public String nextElement() {
                       String name = nextName;
@@ -332,7 +343,10 @@ public class NoSessionFilter implements Filter {
                     }
                   };
                 }
-                /** Filter cookie parameters */
+
+                /**
+                 * Filter cookie parameters.
+                 */
                 @Override
                 public String[] getParameterValues(String name) {
                   if (name.startsWith(cookieUrlParamPrefix)) {

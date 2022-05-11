@@ -36,7 +36,7 @@ import javax.servlet.http.HttpServletResponseWrapper;
  * PREs are automatically detected as long as they start with exact "&lt;pre" and end with exactly "&lt;/pre" (case insensitive).
  * The reason for the specific tag format is to simplify the implementation
  * for maximum performance.
- * 
+ *
  * @author  AO Industries, Inc.
  */
 public class TrimFilterResponse extends HttpServletResponseWrapper {

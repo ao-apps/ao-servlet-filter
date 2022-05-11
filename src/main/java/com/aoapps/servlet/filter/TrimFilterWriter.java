@@ -84,8 +84,7 @@ public class TrimFilterWriter extends PrintWriter {
               || contentType.equals(ContentType.XML)
               || contentType.startsWith(ContentType.XML + ";")
               || contentType.equals(ContentType.XML_OLD)
-              || contentType.startsWith(ContentType.XML_OLD + ";")
-      ;
+              || contentType.startsWith(ContentType.XML_OLD + ";");
       isTrimEnabledCacheContentType = contentType;
     }
     return isTrimEnabledCacheResult;
@@ -220,10 +219,9 @@ public class TrimFilterWriter extends PrintWriter {
       int buffUsed = 0;
       while (len > 0) {
         int blockLen = len <= BufferManager.BUFFER_SIZE ? len : BufferManager.BUFFER_SIZE;
-        for (
-          int index = off, blockEnd = off + blockLen;
-          index < blockEnd;
-          index++
+        for (int index = off, blockEnd = off + blockLen;
+            index < blockEnd;
+            index++
         ) {
           char c = buf[index];
           if (processChar(c)) {
@@ -263,10 +261,9 @@ public class TrimFilterWriter extends PrintWriter {
       int buffUsed = 0;
       while (len > 0) {
         int blockLen = len <= BufferManager.BUFFER_SIZE ? len : BufferManager.BUFFER_SIZE;
-        for (
-          int index = off, blockEnd = off + blockLen;
-          index < blockEnd;
-          index++
+        for (int index = off, blockEnd = off + blockLen;
+            index < blockEnd;
+            index++
         ) {
           char c = s.charAt(index);
           if (processChar(c)) {
