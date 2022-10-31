@@ -631,6 +631,7 @@ public abstract class LocaleFilter implements Filter {
           // Exact match on language, country, and variant
           Locale match = supportedLocales.get(
               toLocaleString(
+                  // Java 19: Deprecation of Locale Class Constructors, see https://bugs.openjdk.org/browse/JDK-8282819
                   new Locale(language, country, variant)
               )
           );
@@ -644,6 +645,7 @@ public abstract class LocaleFilter implements Filter {
         // Match on language and country
         Locale match = supportedLocales.get(
             toLocaleString(
+                // Java 19: Deprecation of Locale Class Constructors, see https://bugs.openjdk.org/browse/JDK-8282819
                 new Locale(language, country)
             )
         );
@@ -657,6 +659,7 @@ public abstract class LocaleFilter implements Filter {
       // Match language
       Locale match = supportedLocales.get(
           toLocaleString(
+              // Java 19: Deprecation of Locale Class Constructors, see https://bugs.openjdk.org/browse/JDK-8282819
               new Locale(language)
           )
       );
