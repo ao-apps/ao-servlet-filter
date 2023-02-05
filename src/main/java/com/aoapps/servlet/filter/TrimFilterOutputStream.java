@@ -1,6 +1,6 @@
 /*
  * ao-servlet-filter - Reusable Java library of servlet filters.
- * Copyright (C) 2006, 2007, 2008, 2009, 2010, 2011, 2013, 2014, 2016, 2020, 2021, 2022  AO Industries, Inc.
+ * Copyright (C) 2006, 2007, 2008, 2009, 2010, 2011, 2013, 2014, 2016, 2020, 2021, 2022, 2023  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -35,6 +35,7 @@ import static com.aoapps.servlet.filter.TrimFilterWriter.textarea_close;
 import com.aoapps.lang.io.ContentType;
 import com.aoapps.lang.util.BufferManager;
 import java.io.IOException;
+import java.util.logging.Logger;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.ServletResponse;
 import javax.servlet.WriteListener;
@@ -51,6 +52,8 @@ import javax.servlet.WriteListener;
  * @author  AO Industries, Inc.
  */
 public class TrimFilterOutputStream extends ServletOutputStream {
+
+  private static final Logger logger = Logger.getLogger(TrimFilterOutputStream.class.getName());
 
   private static final String lineSeparator = System.lineSeparator();
 
@@ -214,30 +217,43 @@ public class TrimFilterOutputStream extends ServletOutputStream {
   @Override
   public void write(byte[] buf, int off, int len) throws IOException {
     if (isTrimEnabled()) {
-      final byte[] buff = outputBuffer;
-      // If len > OUPUT_BUFFER_SIZE, process in blocks
-      int buffUsed = 0;
-      while (len > 0) {
-        int blockLen = len <= BufferManager.BUFFER_SIZE ? len : BufferManager.BUFFER_SIZE;
-        for (int index = off, blockEnd = off + blockLen;
-            index < blockEnd;
-            index++
-        ) {
-          byte b = buf[index];
-          if (processChar((char) b)) {
-            buff[buffUsed++] = b;
-            if (buffUsed >= BufferManager.BUFFER_SIZE) {
-              assert buffUsed == BufferManager.BUFFER_SIZE;
-              wrapped.write(buff, 0, buffUsed);
-              buffUsed = 0;
+      byte[] buff = outputBuffer;
+      // outputBuffer is null once closed: allocate a new, temporary buffer.  Although we do not expect writes after
+      // close, pass-through the writes without throwing NullPointerException here.
+      boolean isNewBuff = (buff == null);
+      if (isNewBuff) {
+        logger.fine("Allocating temporary buffer for write-after-close");
+        buff = BufferManager.getBytes();
+      }
+      try {
+        // If len > OUPUT_BUFFER_SIZE, process in blocks
+        int buffUsed = 0;
+        while (len > 0) {
+          int blockLen = len <= BufferManager.BUFFER_SIZE ? len : BufferManager.BUFFER_SIZE;
+          for (int index = off, blockEnd = off + blockLen;
+              index < blockEnd;
+              index++
+          ) {
+            byte b = buf[index];
+            if (processChar((char) b)) {
+              buff[buffUsed++] = b;
+              if (buffUsed >= BufferManager.BUFFER_SIZE) {
+                assert buffUsed == BufferManager.BUFFER_SIZE;
+                wrapped.write(buff, 0, buffUsed);
+                buffUsed = 0;
+              }
             }
           }
+          off += blockLen;
+          len -= blockLen;
         }
-        off += blockLen;
-        len -= blockLen;
-      }
-      if (buffUsed > 0) {
-        wrapped.write(buff, 0, buffUsed);
+        if (buffUsed > 0) {
+          wrapped.write(buff, 0, buffUsed);
+        }
+      } finally {
+        if (isNewBuff) {
+          BufferManager.release(buff, false);
+        }
       }
     } else {
       wrapped.write(buf, off, len);
@@ -307,31 +323,44 @@ public class TrimFilterOutputStream extends ServletOutputStream {
   public void print(String s) throws IOException {
     if (isTrimEnabled()) {
       byte[] buff = outputBuffer;
-      // If len > OUPUT_BUFFER_SIZE, process in blocks
-      int off = 0;
-      int len = s.length();
-      int buffUsed = 0;
-      while (len > 0) {
-        int blockLen = len <= BufferManager.BUFFER_SIZE ? len : BufferManager.BUFFER_SIZE;
-        for (int index = off, blockEnd = off + blockLen;
-            index < blockEnd;
-            index++
-        ) {
-          char c = s.charAt(index);
-          if (processChar(c)) {
-            buff[buffUsed++] = (byte) c;
-            if (buffUsed >= BufferManager.BUFFER_SIZE) {
-              assert buffUsed == BufferManager.BUFFER_SIZE;
-              wrapped.write(buff, 0, buffUsed);
-              buffUsed = 0;
+      // outputBuffer is null once closed: allocate a new, temporary buffer.  Although we do not expect writes after
+      // close, pass-through the writes without throwing NullPointerException here.
+      boolean isNewBuff = (buff == null);
+      if (isNewBuff) {
+        logger.fine("Allocating temporary buffer for write-after-close");
+        buff = BufferManager.getBytes();
+      }
+      try {
+        // If len > OUPUT_BUFFER_SIZE, process in blocks
+        int off = 0;
+        int len = s.length();
+        int buffUsed = 0;
+        while (len > 0) {
+          int blockLen = len <= BufferManager.BUFFER_SIZE ? len : BufferManager.BUFFER_SIZE;
+          for (int index = off, blockEnd = off + blockLen;
+              index < blockEnd;
+              index++
+          ) {
+            char c = s.charAt(index);
+            if (processChar(c)) {
+              buff[buffUsed++] = (byte) c;
+              if (buffUsed >= BufferManager.BUFFER_SIZE) {
+                assert buffUsed == BufferManager.BUFFER_SIZE;
+                wrapped.write(buff, 0, buffUsed);
+                buffUsed = 0;
+              }
             }
           }
+          off += blockLen;
+          len -= blockLen;
         }
-        off += blockLen;
-        len -= blockLen;
-      }
-      if (buffUsed > 0) {
-        wrapped.write(buff, 0, buffUsed);
+        if (buffUsed > 0) {
+          wrapped.write(buff, 0, buffUsed);
+        }
+      } finally {
+        if (isNewBuff) {
+          BufferManager.release(buff, false);
+        }
       }
     } else {
       wrapped.print(s);

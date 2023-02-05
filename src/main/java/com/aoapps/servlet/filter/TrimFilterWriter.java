@@ -1,6 +1,6 @@
 /*
  * ao-servlet-filter - Reusable Java library of servlet filters.
- * Copyright (C) 2006, 2007, 2008, 2009, 2010, 2011, 2013, 2016, 2020, 2021, 2022  AO Industries, Inc.
+ * Copyright (C) 2006, 2007, 2008, 2009, 2010, 2011, 2013, 2016, 2020, 2021, 2022, 2023  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -28,6 +28,7 @@ import com.aoapps.lang.util.BufferManager;
 import java.io.PrintWriter;
 import java.io.Writer;
 import java.util.Locale;
+import java.util.logging.Logger;
 import javax.servlet.ServletResponse;
 
 /**
@@ -39,6 +40,8 @@ import javax.servlet.ServletResponse;
  * @author  AO Industries, Inc.
  */
 public class TrimFilterWriter extends PrintWriter {
+
+  private static final Logger logger = Logger.getLogger(TrimFilterWriter.class.getName());
 
   private static final String lineSeparator = System.lineSeparator();
 
@@ -215,29 +218,42 @@ public class TrimFilterWriter extends PrintWriter {
   public void write(char[] buf, int off, int len) {
     if (isTrimEnabled()) {
       char[] buff = outputBuffer;
-      // If len > OUPUT_BUFFER_SIZE, process in blocks
-      int buffUsed = 0;
-      while (len > 0) {
-        int blockLen = len <= BufferManager.BUFFER_SIZE ? len : BufferManager.BUFFER_SIZE;
-        for (int index = off, blockEnd = off + blockLen;
-            index < blockEnd;
-            index++
-        ) {
-          char c = buf[index];
-          if (processChar(c)) {
-            buff[buffUsed++] = c;
-            if (buffUsed >= BufferManager.BUFFER_SIZE) {
-              assert buffUsed == BufferManager.BUFFER_SIZE;
-              super.write(buff, 0, buffUsed);
-              buffUsed = 0;
+      // outputBuffer is null once closed: allocate a new, temporary buffer.  Although we do not expect writes after
+      // close, pass-through the writes without throwing NullPointerException here.
+      boolean isNewBuff = (buff == null);
+      if (isNewBuff) {
+        logger.fine("Allocating temporary buffer for write-after-close");
+        buff = BufferManager.getChars();
+      }
+      try {
+        // If len > OUPUT_BUFFER_SIZE, process in blocks
+        int buffUsed = 0;
+        while (len > 0) {
+          int blockLen = len <= BufferManager.BUFFER_SIZE ? len : BufferManager.BUFFER_SIZE;
+          for (int index = off, blockEnd = off + blockLen;
+              index < blockEnd;
+              index++
+          ) {
+            char c = buf[index];
+            if (processChar(c)) {
+              buff[buffUsed++] = c;
+              if (buffUsed >= BufferManager.BUFFER_SIZE) {
+                assert buffUsed == BufferManager.BUFFER_SIZE;
+                super.write(buff, 0, buffUsed);
+                buffUsed = 0;
+              }
             }
           }
+          off += blockLen;
+          len -= blockLen;
         }
-        off += blockLen;
-        len -= blockLen;
-      }
-      if (buffUsed > 0) {
-        super.write(buff, 0, buffUsed);
+        if (buffUsed > 0) {
+          super.write(buff, 0, buffUsed);
+        }
+      } finally {
+        if (isNewBuff) {
+          BufferManager.release(buff, false);
+        }
       }
     } else {
       super.write(buf, off, len);
@@ -257,29 +273,42 @@ public class TrimFilterWriter extends PrintWriter {
   public void write(String s, int off, int len) {
     if (isTrimEnabled()) {
       char[] buff = outputBuffer;
-      // If len > OUPUT_BUFFER_SIZE, process in blocks
-      int buffUsed = 0;
-      while (len > 0) {
-        int blockLen = len <= BufferManager.BUFFER_SIZE ? len : BufferManager.BUFFER_SIZE;
-        for (int index = off, blockEnd = off + blockLen;
-            index < blockEnd;
-            index++
-        ) {
-          char c = s.charAt(index);
-          if (processChar(c)) {
-            buff[buffUsed++] = c;
-            if (buffUsed >= BufferManager.BUFFER_SIZE) {
-              assert buffUsed == BufferManager.BUFFER_SIZE;
-              super.write(buff, 0, buffUsed);
-              buffUsed = 0;
+      // outputBuffer is null once closed: allocate a new, temporary buffer.  Although we do not expect writes after
+      // close, pass-through the writes without throwing NullPointerException here.
+      boolean isNewBuff = (buff == null);
+      if (isNewBuff) {
+        logger.fine("Allocating temporary buffer for write-after-close");
+        buff = BufferManager.getChars();
+      }
+      try {
+        // If len > OUPUT_BUFFER_SIZE, process in blocks
+        int buffUsed = 0;
+        while (len > 0) {
+          int blockLen = len <= BufferManager.BUFFER_SIZE ? len : BufferManager.BUFFER_SIZE;
+          for (int index = off, blockEnd = off + blockLen;
+              index < blockEnd;
+              index++
+          ) {
+            char c = s.charAt(index);
+            if (processChar(c)) {
+              buff[buffUsed++] = c;
+              if (buffUsed >= BufferManager.BUFFER_SIZE) {
+                assert buffUsed == BufferManager.BUFFER_SIZE;
+                super.write(buff, 0, buffUsed);
+                buffUsed = 0;
+              }
             }
           }
+          off += blockLen;
+          len -= blockLen;
         }
-        off += blockLen;
-        len -= blockLen;
-      }
-      if (buffUsed > 0) {
-        super.write(buff, 0, buffUsed);
+        if (buffUsed > 0) {
+          super.write(buff, 0, buffUsed);
+        }
+      } finally {
+        if (isNewBuff) {
+          BufferManager.release(buff, false);
+        }
       }
     } else {
       super.write(s, off, len);
