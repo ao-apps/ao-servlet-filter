@@ -106,11 +106,6 @@ public class TrimFilterWriter extends PrintWriter {
       outputBuffer = null;
     }
     super.close();
-    readCharMatchCount = 0;
-    preReadCharMatchCount = 0;
-    inTextArea = false;
-    inPre = false;
-    atLineStart = true;
   }
 
   static final char[] textarea = {'<', 't', 'e', 'x', 't', 'a', 'r', 'e', 'a'};

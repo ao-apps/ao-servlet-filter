@@ -118,11 +118,6 @@ public class TrimFilterOutputStream extends ServletOutputStream {
       outputBuffer = null;
     }
     wrapped.close();
-    readCharMatchCount = 0;
-    preReadCharMatchCount = 0;
-    inTextArea = false;
-    inPre = false;
-    atLineStart = true;
   }
 
   /**
