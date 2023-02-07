@@ -29,7 +29,7 @@ along with ao-servlet-filter.  If not, see <https://www.gnu.org/licenses/>.
     <relativePath>../parent/pom.xml</relativePath>
   </parent>
 
-  <groupId>com.aoapps</groupId><artifactId>ao-servlet-filter</artifactId><version>3.0.3</version>
+  <groupId>com.aoapps</groupId><artifactId>ao-servlet-filter</artifactId><version>3.0.3-POST-SNAPSHOT</version>
   <packaging>bundle</packaging>
 
   <properties>
@@ -83,7 +83,7 @@ along with ao-servlet-filter.  If not, see <https://www.gnu.org/licenses/>.
     <connection>scm:git:git://github.com/ao-apps/ao-servlet-filter.git</connection>
     <developerConnection>scm:git:git@github.com:ao-apps/ao-servlet-filter.git</developerConnection>
     <url>https://github.com/ao-apps/ao-servlet-filter</url>
-    <tag>ao-servlet-filter-3.0.3</tag>
+    <tag>HEAD</tag>
   </scm>
 
   <issueManagement>
