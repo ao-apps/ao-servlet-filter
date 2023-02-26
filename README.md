@@ -23,7 +23,7 @@ Reusable Java library of servlet filters.
 * [Project Home](https://oss.aoapps.com/servlet-filter/)
 * [Changelog](https://oss.aoapps.com/servlet-filter/changelog)
 * [API Docs](https://oss.aoapps.com/servlet-filter/apidocs/)
-* [Maven Central Repository](https://search.maven.org/artifact/com.aoapps/ao-servlet-filter)
+* [Maven Central Repository](https://central.sonatype.com/search?namespace=com.aoapps&q=a%3Aao-servlet-filter)
 * [GitHub](https://github.com/ao-apps/ao-servlet-filter)
 
 ## Contact Us
