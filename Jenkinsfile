@@ -22,9 +22,6 @@
  * along with ao-servlet-filter.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-// JDK versions
-def testJdks  = ['1.8', '11', '17', '20'] // Changes must be copied to matrix axes!
-
 // Parent, Extensions, Plugins, Direct and BOM Dependencies
 def upstreamProjects = [
   // Parent
@@ -782,7 +779,7 @@ pipeline {
               dir(projectDir) {
                 withMaven(
                   maven: maven,
-                  mavenOpts: "${(jdk == '1.8' || jdk == '11') ? mavenOpts : (mavenOpts + ' ' + mavenOptsJdk16)}",
+                  mavenOpts: "${jdk == '11' ? mavenOpts : (mavenOpts + ' ' + mavenOptsJdk16)}",
                   mavenLocalRepo: ".m2/repository-jdk-${jdk}",
                   jdk: "jdk-$jdk"
                 ) {
@@ -823,7 +820,7 @@ pipeline {
           }
           axis {
             name 'testJdk'
-            values '1.8', '11', '17', '20' // testJdks
+            values '11', '17', '20' // testJdks
           }
         }
         stages {
@@ -837,7 +834,7 @@ pipeline {
               dir(projectDir) {
                 withMaven(
                   maven: maven,
-                  mavenOpts: "${(testJdk == '1.8' || testJdk == '11') ? mavenOpts : (mavenOpts + ' ' + mavenOptsJdk16)}",
+                  mavenOpts: "${testJdk == '11' ? mavenOpts : (mavenOpts + ' ' + mavenOptsJdk16)}",
                   mavenLocalRepo: ".m2/repository-jdk-${jdk}",
                   jdk: "jdk-$testJdk"
                 ) {
@@ -933,7 +930,7 @@ void deploySteps(niceCmd, projectDir, deployJdk, maven, mavenOpts, mavenOptsJdk1
     sh moveSurefireReportsScript(deployJdk)
     withMaven(
       maven: maven,
-      mavenOpts: "${(deployJdk == '1.8' || deployJdk == '11') ? mavenOpts : (mavenOpts + ' ' + mavenOptsJdk16)}",
+      mavenOpts: "${deployJdk == '11' ? mavenOpts : (mavenOpts + ' ' + mavenOptsJdk16)}",
       mavenLocalRepo: ".m2/repository-jdk-${deployJdk}",
       jdk: "jdk-$deployJdk"
     ) {
@@ -954,7 +951,7 @@ void sonarQubeAnalysisSteps(niceCmd, projectDir, deployJdk, maven, mavenOpts, ma
     withSonarQubeEnv(installationName: 'AO SonarQube') {
       withMaven(
         maven: maven,
-        mavenOpts: "${(deployJdk == '1.8' || deployJdk == '11') ? mavenOpts : (mavenOpts + ' ' + mavenOptsJdk16)}",
+        mavenOpts: "${deployJdk == '11' ? mavenOpts : (mavenOpts + ' ' + mavenOptsJdk16)}",
         mavenLocalRepo: ".m2/repository-jdk-${deployJdk}",
         jdk: "jdk-$deployJdk"
       ) {
