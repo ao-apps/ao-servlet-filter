@@ -37,7 +37,7 @@ along with ao-servlet-filter.  If not, see <https://www.gnu.org/licenses/>.
     shortTitle="Changelog"
     tocLevels="1"
     datePublished="2016-10-29T21:37:35-05:00"
-    dateModified="2023-02-07T07:34:18-06:00"
+    dateModified="2023-09-20T00:18:05Z"
   >
     <c:set var="latestRelease" value="3.0.3" />
     <c:if test="${
@@ -296,7 +296,7 @@ along with ao-servlet-filter.  If not, see <https://www.gnu.org/licenses/>.
           <ao:a href="https://oss.aoapps.com/servlet-util/apidocs/com.aoapps.servlet.util/com/aoapps/servlet/http/Canonical.html">Canonical URLs</ao:a>.
         </li>
         <li>
-          New filter <ao:a href="https://oss.aoapps.com/servlet-last-modified/apidocs/com.aoapps.servlet.lastmodified/com/aoapps/servlet/lastmodified/LastModifiedCacheControlFilter.html">LastModifiedCacheControlFilter</ao:a>
+          New filter <ao:a href="https://oss.aoapps.com/servlet-last-modified/apidocs/com.aoapps.servlet.lastmodified/com/aoapps/servlet/lastmodified/LastModifiedHeaderFilter.html">LastModifiedHeaderFilter</ao:a>
           that adds a <ao:a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control">Cache-Control</ao:a> header to any request with a
           <ao:a href="https://oss.aoapps.com/servlet-last-modified/apidocs/com.aoapps.servlet.lastmodified/com/aoapps/servlet/lastmodified/LastModifiedServlet.html#LAST_MODIFIED_PARAMETER_NAME">LAST_MODIFIED_PARAMETER_NAME</ao:a>
           parameter.  Defaults to a very aggressive setting of public, one-year, allowing stale, and immutable.
