@@ -1,6 +1,6 @@
 /*
  * ao-servlet-filter - Reusable Java library of servlet filters.
- * Copyright (C) 2006, 2007, 2008, 2009, 2010, 2011, 2013, 2016, 2021, 2022  AO Industries, Inc.
+ * Copyright (C) 2006, 2007, 2008, 2009, 2010, 2011, 2013, 2016, 2021, 2022, 2024  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -44,6 +44,9 @@ public class TrimFilterResponse extends HttpServletResponseWrapper {
   private TrimFilterWriter writer;
   private TrimFilterOutputStream outputStream;
 
+  /**
+   * Creates a new {@link TrimFilterResponse}.
+   */
   public TrimFilterResponse(HttpServletResponse response) {
     super(response);
   }

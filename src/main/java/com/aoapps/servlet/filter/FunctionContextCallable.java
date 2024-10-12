@@ -1,6 +1,6 @@
 /*
  * ao-servlet-filter - Reusable Java library of servlet filters.
- * Copyright (C) 2016, 2021, 2022  AO Industries, Inc.
+ * Copyright (C) 2016, 2021, 2022, 2024  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -37,6 +37,9 @@ public class FunctionContextCallable<T> extends ThreadLocalsCallable<T> {
       FunctionContext.responseTL
   };
 
+  /**
+   * Creates a new {@link FunctionContextCallable}.
+   */
   public FunctionContextCallable(Callable<T> task) {
     super(task, threadLocals);
   }
