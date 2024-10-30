@@ -1,6 +1,6 @@
 /*
  * ao-servlet-filter - Reusable Java library of servlet filters.
- * Copyright (C) 2017, 2019, 2020, 2021, 2022  AO Industries, Inc.
+ * Copyright (C) 2017, 2019, 2020, 2021, 2022, 2024  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -47,21 +47,18 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * Adds headers to the response of any filter-mapping that is sent to this filter.
  * Headers are added before the filter chain is called.
- * <p>
- * Due to the limitations of filter mapping URLs, patterns may be provided and
+ *
+ * <p>Due to the limitations of filter mapping URLs, patterns may be provided and
  * handled by this filter itself.  All patterns and regular expressions will be
  * evaluated and any match is considered a match overall.  There is currently no
- * support for negation.
- * </p>
- * <p>
- * Each header name that does not specify a pattern is taken directly from the filter init
- * parameters.
- * </p>
- * <p>
- * This should be used for the {@link DispatcherType#REQUEST} dispatcher only.
- * </p>
- * <pre>
- * Init Parameters:
+ * support for negation.</p>
+ *
+ * <p>Each header name that does not specify a pattern is taken directly from the filter init
+ * parameters.</p>
+ *
+ * <p>This should be used for the {@link DispatcherType#REQUEST} dispatcher only.</p>
+ *
+ * <pre>Init Parameters:
  *    allowMultiple (Optional) Allow multiple headers of the same name?  Defaults to "true".
  *    Request filter:
  *        patterns  (Optional) Comma/space-separated list of patterns (default to *)
@@ -76,8 +73,7 @@ import javax.servlet.http.HttpServletResponse;
  *        name.regex.2   (Optional) second regular expression to match
  *        name.regex.n   (Optional) nth regular expression to match
  *    Header:
- *        name=value
- * </pre>
+ *        name=value</pre>
  *
  * @see  WildcardPatternMatcher  for supported patterns
 */

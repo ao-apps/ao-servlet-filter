@@ -1,6 +1,6 @@
 /*
  * ao-servlet-filter - Reusable Java library of servlet filters.
- * Copyright (C) 2010, 2011, 2013, 2016, 2019, 2020, 2021, 2022  AO Industries, Inc.
+ * Copyright (C) 2010, 2011, 2013, 2016, 2019, 2020, 2021, 2022, 2024  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -54,62 +54,51 @@ import javax.servlet.http.HttpServletResponseWrapper;
 import javax.servlet.http.HttpSession;
 
 /**
- * <p>
  * Prevents sessions from being created.  Without sessions, minimal information
  * should be stored as cookies.  In the event cookies are disabled, this filter
  * also adds the cookie values during URL rewriting.  Any cookies added to the
  * URLs through rewriting will have a parameter name beginning with
  * <code>cookie:</code> (by default).
- * </p>
- * <p>
- * <strong>Security implications!</strong>  Since cookies may now come from the URL, they
+ *
+ * <p><strong>Security implications!</strong>  Since cookies may now come from the URL, they
  * may be added on links from other sites.  Thus, one cannot use cookies in
  * any Cross-Site Request Forgery (CSRF) detection or for any other purpose
- * that assumes the cookie may only be provided by the browser.
- * </p>
- * <p>
- * This should be used for both the {@link DispatcherType#REQUEST} and {@link DispatcherType#ERROR} dispatchers.
- * </p>
- * <p>
- * Only cookie names and values are encoded as URL parameters.  Comments, paths,
- * and other attributes are lost.
- * </p>
- * <p>
- * To ensure no namespace conflicts with cookies potentially rewritten as URL
+ * that assumes the cookie may only be provided by the browser.</p>
+ *
+ * <p>This should be used for both the {@link DispatcherType#REQUEST} and {@link DispatcherType#ERROR} dispatchers.</p>
+ *
+ * <p>Only cookie names and values are encoded as URL parameters.  Comments, paths,
+ * and other attributes are lost.</p>
+ *
+ * <p>To ensure no namespace conflicts with cookies potentially rewritten as URL
  * parameters, any parameter in the request beginning with <code>cookie:</code> (by default)
  * is filtered, even if it doesn't currently match an allowed cookie name.
  * The result of <code>getQueryString</code>, however, is unaltered any may possibly
- * contain cookie parameters.
- * </p>
- * <p>
- * Any cookie name that is not in the configured list of cookies names is ignored
+ * contain cookie parameters.</p>
+ *
+ * <p>Any cookie name that is not in the configured list of cookies names is ignored
  * and not presented to the application, whether it came from HTTP headers or
- * URL parameters.
- * </p>
- * <p>
- * In the event a cookie value is available from both the headers and the URL
- * parameters, the headers take precedence.
- * </p>
- * <p>
- * Note: If using JSP, add <code>session="false"</code>, for example:
- * </p>
+ * URL parameters.</p>
+ *
+ * <p>In the event a cookie value is available from both the headers and the URL
+ * parameters, the headers take precedence.</p>
+ *
+ * <p>Note: If using JSP, add <code>session="false"</code>, for example:</p>
+ *
  * <pre>&lt;%@ page language="java" session="false" %&gt;</pre>
- * <p>
- * Consider using in conjunction with <code>session-config</code> to ensure that
- * <code>;jsessionid</code> is never added to the URLs.
- * </p>
- * <p>
- * TODO: Idea:
+ *
+ * <p>Consider using in conjunction with <code>session-config</code> to ensure that
+ * <code>;jsessionid</code> is never added to the URLs.</p>
+ *
+ * <p>TODO: Idea:
  * When only one cookie name is allowed, convert it to be just the cookie symbol itself?
  * This would means cookies would be lost when a second cookie added, but would be a cool short URL otherwise.
  * Or a second init parameter that specifies which cookie name is the "shortCookie"?
- * Or do we allow each cookie to mapped to a custom name instead of prefix + name?
- * </p>
- * <p>
- * TODO: Support empty cookieUrlParamPrefix?  This would make it more difficult
+ * Or do we allow each cookie to mapped to a custom name instead of prefix + name?</p>
+ *
+ * <p>TODO: Support empty cookieUrlParamPrefix?  This would make it more difficult
  * to separate cookies and parameters.  It would make it where any cookie name
- * allowed here would effectively never be able to be used as a parameter.
- * </p>
+ * allowed here would effectively never be able to be used as a parameter.</p>
  */
 public class NoSessionFilter implements Filter {
 

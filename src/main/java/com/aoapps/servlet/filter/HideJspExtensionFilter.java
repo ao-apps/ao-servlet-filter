@@ -1,6 +1,6 @@
 /*
  * ao-servlet-filter - Reusable Java library of servlet filters.
- * Copyright (C) 2015, 2016, 2017, 2019, 2020, 2021, 2022  AO Industries, Inc.
+ * Copyright (C) 2015, 2016, 2017, 2019, 2020, 2021, 2022, 2024  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -50,10 +50,9 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
 
 /**
- * <p>
  * A servlet filter that hides the .jspx or .jsp extension from JSP-based sites.
  * It accomplishes this with the following steps:
- * </p>
+ *
  * <ol>
  * <li>Rewrite any URLs ending in "/path/index.jsp(x)" to "/path/", maintaining any query string</li>
  * <li>Rewrite any URLs ending in "/path/file.jsp(x)" to "/path/file", maintaining any query string</li>
@@ -64,20 +63,16 @@ import javax.servlet.http.HttpServletResponseWrapper;
  * <li>Forward incoming request of "/path/file" to "/path/file.jsp(x)", if the resource exists</li>
  * <li>Send any other request down the filter chain</li>
  * </ol>
- * <p>
- * When both *.jspx and *.jsp resources exist, the *.jspx is used.
- * </p>
- * <p>
- * This should be used for the {@link DispatcherType#REQUEST} and {@link DispatcherType#ERROR} dispatchers.
- * </p>
- * <p>
- * In the filter chain, it is important to consider the forwarding performed by this filter.  Subsequent filters
- * may need {@link DispatcherType#FORWARD} dispatcher in addition to {@link DispatcherType#REQUEST} to see the forwarded requests.
- * </p>
- * <p>
- * Note: When testing in Tomcat 7, /WEB-INF/ protection was not compromised by the forwarding.
- * Requests to /WEB-INF/ never even hit the filter.
- * </p>
+ *
+ * <p>When both *.jspx and *.jsp resources exist, the *.jspx is used.</p>
+ *
+ * <p>This should be used for the {@link DispatcherType#REQUEST} and {@link DispatcherType#ERROR} dispatchers.</p>
+ *
+ * <p>In the filter chain, it is important to consider the forwarding performed by this filter.  Subsequent filters
+ * may need {@link DispatcherType#FORWARD} dispatcher in addition to {@link DispatcherType#REQUEST} to see the forwarded requests.</p>
+ *
+ * <p>Note: When testing in Tomcat 7, /WEB-INF/ protection was not compromised by the forwarding.
+ * Requests to /WEB-INF/ never even hit the filter.</p>
  *
  * @see  ServletContextCache  This requires the cache be active
  */

@@ -1,6 +1,6 @@
 /*
  * ao-servlet-filter - Reusable Java library of servlet filters.
- * Copyright (C) 2019, 2020, 2021, 2022  AO Industries, Inc.
+ * Copyright (C) 2019, 2020, 2021, 2022, 2024  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -46,28 +46,23 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
 
 /**
- * <p>
  * Encodes the URL to either
  * <a href="https://datatracker.ietf.org/doc/html/rfc3986">RFC 3986 URI</a> US-ASCII format
  * or <a href="https://datatracker.ietf.org/doc/html/rfc3987">RFC 3987 IRI</a> Unicode format.
  * If the URL begins with <code>javascript:</code>, <code>cid:</code>, or <code>data:</code>,
  * (case-insensitive) it is not altered.
  * {@linkplain Canonical Canonical URLs} are always encoded to US-ASCII format.
- * </p>
- * <p>
- * IRI support is disabled by default, and only recommended for development or
+ *
+ * <p>IRI support is disabled by default, and only recommended for development or
  * internal systems.  IRI may result in slightly smaller output, and more readable
- * HTML source, but for interoperability should be off in production systems.
- * </p>
- * <p>
- * <a href="https://datatracker.ietf.org/doc/html/rfc7231#section-7.1.2">RFC 7231 - 7.1.2.  Location</a>
+ * HTML source, but for interoperability should be off in production systems.</p>
+ *
+ * <p><a href="https://datatracker.ietf.org/doc/html/rfc7231#section-7.1.2">RFC 7231 - 7.1.2.  Location</a>
  * refers only to <a href="https://datatracker.ietf.org/doc/html/rfc3986">RFC 3986 URI</a> for
  * URI-reference, thus redirects are always formatted as
- * <a href="https://datatracker.ietf.org/doc/html/rfc3986">RFC 3986 URI</a>.
- * </p>
- * <p>
- * This should be used for both the {@link DispatcherType#REQUEST} and {@link DispatcherType#ERROR} dispatchers.
- * </p>
+ * <a href="https://datatracker.ietf.org/doc/html/rfc3986">RFC 3986 URI</a>.</p>
+ *
+ * <p>This should be used for both the {@link DispatcherType#REQUEST} and {@link DispatcherType#ERROR} dispatchers.</p>
  */
 public class EncodeURIFilter implements Filter {
 

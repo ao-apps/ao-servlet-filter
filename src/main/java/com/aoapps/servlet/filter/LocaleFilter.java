@@ -54,37 +54,31 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
 
 /**
- * <p>
  * Maintains the user Locale through URL rewriting.
  * The URL rewriting is preferred since it will allow search engines to properly
  * crawl the site per-locale and does not depend on cookies.
- * </p>
- * <p>
- * Each URL (except javascript:, mailto:, telnet:, tel:, cid:, file:, and data: schemes, case-insensitive) may be rewritten
+ *
+ * <p>Each URL (except javascript:, mailto:, telnet:, tel:, cid:, file:, and data: schemes, case-insensitive) may be rewritten
  * using encodeURL to include a <code>paramName</code> parameter.  URLs to
- * non-localized resources are not rewritten.
- * </p>
- * <p>
- * During each request, the locale will be set according to:
- * </p>
+ * non-localized resources are not rewritten.</p>
+ *
+ * <p>During each request, the locale will be set according to:</p>
+ *
  * <ol>
  *   <li>If <code>paramName</code> parameter exists and is a supported locale, then set response locale to the exact match.</li>
  *   <li>If <code>paramName</code> parameter exists and can match a supported locale, then set response locale to the matched locale.</li>
  *   <li>Otherwise, select the best locale from the Accept headers.</li>
  * </ol>
- * <p>
- * Also sets the JSTL fmt tag locale via the {@link com.aoapps.servlet.attribute.AttributeEE.Jstl#FMT_LOCALE} request attribute
- * to the current locale.
- * </p>
- * <p>
- * Also sets the ThreadLocale.
- * </p>
- * <p>
- * If the request is a GET request, is not in the {@link DispatcherType#ERROR} dispatcher, and the request parameter is
+ *
+ * <p>Also sets the JSTL fmt tag locale via the {@link com.aoapps.servlet.attribute.AttributeEE.Jstl#FMT_LOCALE} request attribute
+ * to the current locale.</p>
+ *
+ * <p>Also sets the ThreadLocale.</p>
+ *
+ * <p>If the request is a GET request, is not in the {@link DispatcherType#ERROR} dispatcher, and the request parameter is
  * missing, invalid, or does not match the final resolved locale, the client is redirected to the
  * URL including the <var>paramName</var> parameter.  This is to help avoid possible duplicate content penalties for
- * search engines.
- * </p>
+ * search engines.</p>
  *
  * @see ThreadLocale
  */
@@ -448,10 +442,9 @@ public abstract class LocaleFilter implements Filter {
 
   /**
    * Checks if the locale parameter should be added to the given URL.
-   * <p>
-   * This default implementation will cause the parameter to be added to any
-   * URL that is not one of the excluded extensions (case-insensitive).
-   * </p>
+   *
+   * <p>This default implementation will cause the parameter to be added to any
+   * URL that is not one of the excluded extensions (case-insensitive).</p>
    */
   protected boolean isLocalizedPath(IRI iri) {
     // TODO: This list is getting long.  Use a map?
@@ -687,19 +680,15 @@ public abstract class LocaleFilter implements Filter {
   }
 
   /**
-   * <p>
    * Gets the supported locales as a mapping of localeString to locale.
    * The map key must be consistent with <code>toLocaleString</code> for
    * each supported locale.
-   * </p>
-   * <p>
-   * If no specific locales are supported, and the responses should remain in
-   * the container's default locale, may return an empty map.
-   * </p>
-   * <p>
-   * When less than two locales are supported, the URLs will not be rewritten and
-   * any paramName parameter will be stripped from incoming requests.
-   * </p>
+   *
+   * <p>If no specific locales are supported, and the responses should remain in
+   * the container's default locale, may return an empty map.</p>
+   *
+   * <p>When less than two locales are supported, the URLs will not be rewritten and
+   * any paramName parameter will be stripped from incoming requests.</p>
    *
    * @see  #toLocaleString(java.util.Locale)
    */
@@ -709,9 +698,8 @@ public abstract class LocaleFilter implements Filter {
    * Gets the default locale to be used when a best locale cannot be resolved.
    * This will never be called when <code>getSupportedLocales</code> returns an
    * empty map.
-   * <p>
-   * This must be one of the supported locales.
-   * </p>
+   *
+   * <p>This must be one of the supported locales.</p>
    *
    * @see  #getSupportedLocales(javax.servlet.ServletRequest)
    */

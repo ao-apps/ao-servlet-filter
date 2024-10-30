@@ -1,6 +1,6 @@
 /*
  * ao-servlet-filter - Reusable Java library of servlet filters.
- * Copyright (C) 2016, 2019, 2020, 2021, 2022  AO Industries, Inc.
+ * Copyright (C) 2016, 2019, 2020, 2021, 2022, 2024  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -45,28 +45,22 @@ import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * <p>
  * Strips all invalid XML characters on incoming parameters.
  * GET requests on the {@link DispatcherType#REQUEST} dispatcher will be 301-redirected to the same URL without the invalid XML characters.
  * All other methods and all other dispatchers, including POST requests, will have the invalid XML characters stripped.
- * </p>
- * <p>
- * Parameters with invalid names are removed.
- * </p>
- * <p>
- * This implementation supports UTF-16 surrogate pairs:
- * <a href="https://wikipedia.org/wiki/Universal_Character_Set_characters#Surrogates">https://wikipedia.org/wiki/Universal_Character_Set_characters#Surrogates</a>
- * </p>
- * <p>
- * The allowed characters defined by the specification at <a href="https://www.w3.org/TR/xml/#charsets">https://www.w3.org/TR/xml/#charsets</a>:
- * </p>
+ *
+ * <p>Parameters with invalid names are removed.</p>
+ *
+ * <p>This implementation supports UTF-16 surrogate pairs:
+ * <a href="https://wikipedia.org/wiki/Universal_Character_Set_characters#Surrogates">https://wikipedia.org/wiki/Universal_Character_Set_characters#Surrogates</a></p>
+ *
+ * <p>The allowed characters defined by the specification at <a href="https://www.w3.org/TR/xml/#charsets">https://www.w3.org/TR/xml/#charsets</a>:</p>
+ *
  * <pre>Char   ::=   #x9 | #xA | #xD | [#x20-#xD7FF] | [#xE000-#xFFFD] | [#x10000-#x10FFFF]</pre>
- * <p>
- * Only HTTP/HTTPS requests are filtered.
- * </p>
- * <p>
- * This should be used for both the {@link DispatcherType#REQUEST} and {@link DispatcherType#ERROR} dispatchers.
- * </p>
+ *
+ * <p>Only HTTP/HTTPS requests are filtered.</p>
+ *
+ * <p>This should be used for both the {@link DispatcherType#REQUEST} and {@link DispatcherType#ERROR} dispatchers.</p>
  */
 public class StripInvalidXmlCharactersFilter implements Filter {
 
