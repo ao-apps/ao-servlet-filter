@@ -1,6 +1,6 @@
 /*
  * ao-servlet-filter - Reusable Java library of servlet filters.
- * Copyright (C) 2016, 2019, 2020, 2021, 2022, 2024  AO Industries, Inc.
+ * Copyright (C) 2016, 2019, 2020, 2021, 2022, 2024, 2025  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -204,7 +204,7 @@ public class StripInvalidXmlCharactersFilter implements Filter {
                   Map<String, String[]> newMap = AoCollections.newLinkedHashMap(filteredMap.size());
                   for (Map.Entry<String, List<String>> entry : filteredMap.entrySet()) {
                     List<String> values = entry.getValue();
-                    newMap.put(entry.getKey(), values.toArray(new String[values.size()]));
+                    newMap.put(entry.getKey(), values.toArray(String[]::new));
                   }
                   return newMap;
                 }
@@ -220,7 +220,7 @@ public class StripInvalidXmlCharactersFilter implements Filter {
                   if (values == null) {
                     return null;
                   }
-                  return values.toArray(new String[values.size()]);
+                  return values.toArray(String[]::new);
                 }
               },
               httpResponse

@@ -1,6 +1,6 @@
 /*
  * ao-servlet-filter - Reusable Java library of servlet filters.
- * Copyright (C) 2010, 2011, 2013, 2016, 2019, 2020, 2021, 2022, 2024  AO Industries, Inc.
+ * Copyright (C) 2010, 2011, 2013, 2016, 2019, 2020, 2021, 2022, 2024, 2025  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -297,8 +297,7 @@ public class NoSessionFilter implements Filter {
                 @Override
                 public Enumeration<String> getParameterNames() {
                   final Enumeration<String> completeNames = super.getParameterNames();
-                  // Java 9: new Enumeration<>
-                  return new Enumeration<String>() {
+                  return new Enumeration<>() {
                     // Need to look one ahead
                     private String nextName = null;
                     @Override

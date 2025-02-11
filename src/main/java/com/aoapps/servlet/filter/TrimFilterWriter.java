@@ -1,6 +1,6 @@
 /*
  * ao-servlet-filter - Reusable Java library of servlet filters.
- * Copyright (C) 2006, 2007, 2008, 2009, 2010, 2011, 2013, 2016, 2020, 2021, 2022, 2023, 2024  AO Industries, Inc.
+ * Copyright (C) 2006, 2007, 2008, 2009, 2010, 2011, 2013, 2016, 2020, 2021, 2022, 2023, 2024, 2025  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -103,6 +103,7 @@ public class TrimFilterWriter extends PrintWriter {
   }*/
 
   @Override
+  @SuppressWarnings("ConvertToTryWithResources")
   public void close() {
     if (outputBuffer != null) {
       BufferManager.release(outputBuffer, false);
