@@ -1,6 +1,6 @@
 /*
  * ao-servlet-filter - Reusable Java library of servlet filters.
- * Copyright (C) 2017, 2019, 2020, 2021, 2022, 2024  AO Industries, Inc.
+ * Copyright (C) 2017, 2019, 2020, 2021, 2022, 2024, 2025  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -112,66 +112,66 @@ public class AddResponseHeaderFilter implements Filter {
       patterns = WildcardPatternMatcher.compile(patternsParam);
     }
 
-      // Find and sort any regular expressions
-      {
-        SortedMap<Integer, Pattern> regexsByNum = new TreeMap<>();
-        Enumeration<String> paramNames = config.getInitParameterNames();
-        while (paramNames.hasMoreElements()) {
-          String paramName = paramNames.nextElement();
-          Integer number;
-          if (REGEX_PARAM_NAME.equals(paramName)) {
-            number = 0;
-          } else if (paramName.startsWith(REGEX_PARAM_PREFIX)) {
-            number = Integer.valueOf(paramName.substring(REGEX_PARAM_PREFIX.length()));
-          } else {
-            continue;
-          }
-          if (
-              regexsByNum.put(
-                  number,
-                  Pattern.compile(config.getInitParameter(paramName))
-              ) != null
-          ) {
-            throw new IllegalArgumentException("Duplicate " + REGEX_PARAM_NAME + " parameter number: " + paramName);
-          }
-        }
-        if (regexsByNum.isEmpty()) {
-          regexs = Collections.emptyList();
-        } else if (regexsByNum.size() == 1) {
-          regexs = Collections.singletonList(regexsByNum.values().iterator().next());
+    // Find and sort any regular expressions
+    {
+      SortedMap<Integer, Pattern> regexsByNum = new TreeMap<>();
+      Enumeration<String> paramNames = config.getInitParameterNames();
+      while (paramNames.hasMoreElements()) {
+        String paramName = paramNames.nextElement();
+        Integer number;
+        if (REGEX_PARAM_NAME.equals(paramName)) {
+          number = 0;
+        } else if (paramName.startsWith(REGEX_PARAM_PREFIX)) {
+          number = Integer.valueOf(paramName.substring(REGEX_PARAM_PREFIX.length()));
         } else {
-          regexs = new ArrayList<>(regexsByNum.values());
+          continue;
+        }
+        if (
+            regexsByNum.put(
+                number,
+                Pattern.compile(config.getInitParameter(paramName))
+            ) != null
+        ) {
+          throw new IllegalArgumentException("Duplicate " + REGEX_PARAM_NAME + " parameter number: " + paramName);
         }
       }
+      if (regexsByNum.isEmpty()) {
+        regexs = Collections.emptyList();
+      } else if (regexsByNum.size() == 1) {
+        regexs = Collections.singletonList(regexsByNum.values().iterator().next());
+      } else {
+        regexs = new ArrayList<>(regexsByNum.values());
+      }
+    }
 
-      // Find all headers
-      {
-        Map<String, String> foundHeaders = new LinkedHashMap<>();
-        Enumeration<String> paramNames = config.getInitParameterNames();
-        while (paramNames.hasMoreElements()) {
-          String paramName = paramNames.nextElement();
-          if (
-              !ALLOW_MULTIPLE_PARAM_NAME.equals(paramName)
-                  && !PATTERNS_PARAM_NAME.equals(paramName)
-                  && !REGEX_PARAM_NAME.equals(paramName)
-                  && !paramName.startsWith(REGEX_PARAM_PREFIX)
-          ) {
-            if (foundHeaders.put(paramName, config.getInitParameter(paramName)) != null) {
-              throw new AssertionError("Duplicate init parameter: " + paramName);
-            }
+    // Find all headers
+    {
+      Map<String, String> foundHeaders = new LinkedHashMap<>();
+      Enumeration<String> paramNames = config.getInitParameterNames();
+      while (paramNames.hasMoreElements()) {
+        String paramName = paramNames.nextElement();
+        if (
+            !ALLOW_MULTIPLE_PARAM_NAME.equals(paramName)
+                && !PATTERNS_PARAM_NAME.equals(paramName)
+                && !REGEX_PARAM_NAME.equals(paramName)
+                && !paramName.startsWith(REGEX_PARAM_PREFIX)
+        ) {
+          if (foundHeaders.put(paramName, config.getInitParameter(paramName)) != null) {
+            throw new AssertionError("Duplicate init parameter: " + paramName);
           }
         }
-        if (foundHeaders.isEmpty()) {
-          // Shortcut for empty headers
-          headers = Collections.emptyMap();
-        } else if (foundHeaders.size() == 1) {
-          // Use singleton map for common case of single header
-          Map.Entry<String, String> header = foundHeaders.entrySet().iterator().next();
-          headers = Collections.singletonMap(header.getKey(), header.getValue());
-        } else {
-          headers = foundHeaders;
-        }
       }
+      if (foundHeaders.isEmpty()) {
+        // Shortcut for empty headers
+        headers = Collections.emptyMap();
+      } else if (foundHeaders.size() == 1) {
+        // Use singleton map for common case of single header
+        Map.Entry<String, String> header = foundHeaders.entrySet().iterator().next();
+        headers = Collections.singletonMap(header.getKey(), header.getValue());
+      } else {
+        headers = foundHeaders;
+      }
+    }
   }
 
   @Override
