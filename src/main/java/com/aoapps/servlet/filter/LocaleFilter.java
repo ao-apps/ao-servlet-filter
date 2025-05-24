@@ -1,6 +1,6 @@
 /*
  * ao-servlet-filter - Reusable Java library of servlet filters.
- * Copyright (C) 2014, 2015, 2016, 2019, 2020, 2021, 2022, 2024  AO Industries, Inc.
+ * Copyright (C) 2014, 2015, 2016, 2019, 2020, 2021, 2022, 2024, 2025  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -182,7 +182,7 @@ public abstract class LocaleFilter implements Filter {
                 !isLocalized
                     // Never allow paramName when no choice in locale
                     || supportedLocales.size() < 2
-            )
+              )
         ) {
           if (DEBUG) {
             servletContext.log("DEBUG: Redirecting to remove \"" + paramName + "\" parameter.");

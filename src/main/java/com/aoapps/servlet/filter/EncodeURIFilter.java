@@ -1,6 +1,6 @@
 /*
  * ao-servlet-filter - Reusable Java library of servlet filters.
- * Copyright (C) 2019, 2020, 2021, 2022, 2024  AO Industries, Inc.
+ * Copyright (C) 2019, 2020, 2021, 2022, 2024, 2025  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -102,7 +102,7 @@ public class EncodeURIFilter implements Filter {
               && (
               characterEncoding.equalsIgnoreCase(StandardCharsets.UTF_8.name())
                   || Charset.forName(characterEncoding) == StandardCharsets.UTF_8
-          )
+            )
       ) {
         return new IRI(url).toString();
       } else {
