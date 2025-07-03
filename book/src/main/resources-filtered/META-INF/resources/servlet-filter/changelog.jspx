@@ -37,7 +37,7 @@ along with ao-servlet-filter.  If not, see <https://www.gnu.org/licenses/>.
     shortTitle="Changelog"
     tocLevels="1"
     datePublished="2016-10-29T21:37:35-05:00"
-    dateModified="2025-02-11T09:50:42Z"
+    dateModified="2025-07-02T23:05:45Z"
   >
     <c:set var="latestRelease" value="3.0.3" />
     <c:if test="${
@@ -50,7 +50,6 @@ along with ao-servlet-filter.  If not, see <https://www.gnu.org/licenses/>.
         version="@{project.version}"
         groupId="@{project.groupId}"
         artifactId="@{documented.artifactId}"
-        repository="@{nexusUrl}content/repositories/snapshots/"
         scmUrl="@{project.scm.url}"
       >
         <ul>
