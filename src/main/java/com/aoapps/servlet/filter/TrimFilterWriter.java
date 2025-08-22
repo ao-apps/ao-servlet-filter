@@ -456,7 +456,7 @@ public class TrimFilterWriter extends PrintWriter {
   }
 
   @Override
-  public TrimFilterWriter format(String format, Object ... args) {
+  public TrimFilterWriter format(String format, Object... args) {
     atLineStart = false;
     readCharMatchCount = 0;
     preReadCharMatchCount = 0;
@@ -465,7 +465,7 @@ public class TrimFilterWriter extends PrintWriter {
   }
 
   @Override
-  public TrimFilterWriter format(Locale l, String format, Object ... args) {
+  public TrimFilterWriter format(Locale l, String format, Object... args) {
     atLineStart = false;
     readCharMatchCount = 0;
     preReadCharMatchCount = 0;
