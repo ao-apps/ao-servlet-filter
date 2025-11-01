@@ -47,7 +47,7 @@ import javax.servlet.http.HttpServletResponse;
  *    patterns  Comma/space-separated list of patterns (default to *)</pre>
  *
  * @see  WildcardPatternMatcher  for supported patterns
-*/
+ */
 public class NotFoundFilter implements Filter {
 
   private WildcardPatternMatcher patterns;

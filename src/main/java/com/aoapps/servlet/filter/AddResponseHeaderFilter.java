@@ -76,7 +76,7 @@ import javax.servlet.http.HttpServletResponse;
  *        name=value</pre>
  *
  * @see  WildcardPatternMatcher  for supported patterns
-*/
+ */
 public class AddResponseHeaderFilter implements Filter {
 
   private static final String ALLOW_MULTIPLE_PARAM_NAME = "allowMultiple";
