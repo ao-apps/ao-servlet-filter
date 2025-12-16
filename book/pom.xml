@@ -89,7 +89,7 @@ along with ao-servlet-filter.  If not, see <https://www.gnu.org/licenses/>.
 
   <ciManagement>
     <system>Jenkins</system>
-    <url>https://jenkins.aoindustries.com/job/ao/job/oss/job/servlet-filter-book/</url>
+    <url>https://jenkins.aoindustries.com/job/ao/job/oss/job/servlet-filter-book-javaee/</url>
   </ciManagement>
   <!-- Only one allowed in POM:
   <ciManagement>
