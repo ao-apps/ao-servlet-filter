@@ -1,6 +1,6 @@
 /*
  * ao-servlet-filter - Reusable Java library of servlet filters.
- * Copyright (C) 2019, 2020, 2021, 2022, 2024, 2025  AO Industries, Inc.
+ * Copyright (C) 2019, 2020, 2021, 2022, 2024, 2025, 2026  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -31,19 +31,19 @@ import com.aoapps.net.URIParser;
 import com.aoapps.servlet.attribute.AttributeEE;
 import com.aoapps.servlet.attribute.ScopeEE;
 import com.aoapps.servlet.http.Canonical;
+import jakarta.servlet.DispatcherType;
+import jakarta.servlet.Filter;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.FilterConfig;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponseWrapper;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import javax.servlet.DispatcherType;
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpServletResponseWrapper;
 
 /**
  * Encodes the URL to either
@@ -151,32 +151,11 @@ public class EncodeURIFilter implements Filter {
             request,
             new HttpServletResponseWrapper((HttpServletResponse) response) {
               @Override
-              @Deprecated
-              public String encodeRedirectUrl(String url) {
-                return encode(
-                    super.encodeRedirectUrl(url),
-                    false,
-                    null // characterEncoding not used with enableIri = false
-                );
-              }
-
-              @Override
               public String encodeRedirectURL(String url) {
                 return encode(
                     super.encodeRedirectURL(url),
                     false,
                     null // characterEncoding not used with enableIri = false
-                );
-              }
-
-              @Override
-              @Deprecated
-              public String encodeUrl(String url) {
-                boolean enableIri = EncodeURIFilter.this.enableIRI && DoctypeEE.get(servletContext, request).getSupportsIRI();
-                return encode(
-                    super.encodeUrl(url),
-                    enableIri,
-                    enableIri ? getCharacterEncoding() : null
                 );
               }
 

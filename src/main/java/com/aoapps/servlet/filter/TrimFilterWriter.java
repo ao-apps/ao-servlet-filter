@@ -25,11 +25,11 @@ package com.aoapps.servlet.filter;
 
 import com.aoapps.lang.io.ContentType;
 import com.aoapps.lang.util.BufferManager;
+import jakarta.servlet.ServletResponse;
 import java.io.PrintWriter;
 import java.io.Writer;
 import java.util.Locale;
 import java.util.logging.Logger;
-import javax.servlet.ServletResponse;
 
 /**
  * Filters the output and removes extra white space at the beginning of lines and completely removes blank lines.

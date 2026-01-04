@@ -34,11 +34,11 @@ import static com.aoapps.servlet.filter.TrimFilterWriter.textarea_close;
 
 import com.aoapps.lang.io.ContentType;
 import com.aoapps.lang.util.BufferManager;
+import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.ServletResponse;
+import jakarta.servlet.WriteListener;
 import java.io.IOException;
 import java.util.logging.Logger;
-import javax.servlet.ServletOutputStream;
-import javax.servlet.ServletResponse;
-import javax.servlet.WriteListener;
 
 /**
  * Filters the output and removes extra white space at the beginning of lines and completely removes blank lines.

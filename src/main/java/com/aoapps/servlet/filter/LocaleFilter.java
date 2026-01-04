@@ -1,6 +1,6 @@
 /*
  * ao-servlet-filter - Reusable Java library of servlet filters.
- * Copyright (C) 2014, 2015, 2016, 2019, 2020, 2021, 2022, 2024, 2025  AO Industries, Inc.
+ * Copyright (C) 2014, 2015, 2016, 2019, 2020, 2021, 2022, 2024, 2025, 2026  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -34,6 +34,17 @@ import com.aoapps.servlet.ServletRequestParameters;
 import com.aoapps.servlet.attribute.AttributeEE;
 import com.aoapps.servlet.attribute.ScopeEE;
 import com.aoapps.servlet.http.HttpServletUtil;
+import jakarta.servlet.DispatcherType;
+import jakarta.servlet.Filter;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.FilterConfig;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponseWrapper;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -41,17 +52,6 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import javax.servlet.DispatcherType;
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpServletResponseWrapper;
 
 /**
  * Maintains the user Locale through URL rewriting.
@@ -394,20 +394,8 @@ public abstract class LocaleFilter implements Filter {
                   }
 
                   @Override
-                  @Deprecated
-                  public String encodeRedirectUrl(String url) {
-                    return httpResponse.encodeRedirectUrl(encode(url));
-                  }
-
-                  @Override
                   public String encodeRedirectURL(String url) {
                     return httpResponse.encodeRedirectURL(encode(url));
-                  }
-
-                  @Override
-                  @Deprecated
-                  public String encodeUrl(String url) {
-                    return httpResponse.encodeUrl(encode(url));
                   }
 
                   @Override
@@ -701,7 +689,7 @@ public abstract class LocaleFilter implements Filter {
    *
    * <p>This must be one of the supported locales.</p>
    *
-   * @see  #getSupportedLocales(javax.servlet.ServletRequest)
+   * @see  #getSupportedLocales(jakarta.servlet.ServletRequest)
    */
   protected abstract Locale getDefaultLocale(ServletRequest request, Map<String, Locale> supportedLocales) throws ServletException;
 }
