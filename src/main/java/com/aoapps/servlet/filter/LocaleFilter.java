@@ -91,7 +91,7 @@ public abstract class LocaleFilter implements Filter {
   /**
    * The default parameter name if not overridden.
    *
-   * @see  #getParamName()
+   * @see  LocaleFilter#getParamName()
    */
   private static final String DEFAULT_PARAM_NAME = "hl";
 
@@ -467,7 +467,7 @@ public abstract class LocaleFilter implements Filter {
   }
 
   /**
-   * Calls {@link #isLocalizedPath(com.aoapps.net.IRI)} after wrapping in a new {@link IRI}.
+   * Calls {@link LocaleFilter#isLocalizedPath(com.aoapps.net.IRI)} after wrapping in a new {@link IRI}.
    */
   protected boolean isLocalizedPath(String url) {
     return isLocalizedPath(new IRI(url));
@@ -661,7 +661,7 @@ public abstract class LocaleFilter implements Filter {
   /**
    * Gets the name of the parameter that will contain the locale.
    *
-   * @see  #DEFAULT_PARAM_NAME
+   * @see  LocaleFilter#DEFAULT_PARAM_NAME
    */
   protected String getParamName() {
     return DEFAULT_PARAM_NAME;
@@ -678,7 +678,7 @@ public abstract class LocaleFilter implements Filter {
    * <p>When less than two locales are supported, the URLs will not be rewritten and
    * any paramName parameter will be stripped from incoming requests.</p>
    *
-   * @see  #toLocaleString(java.util.Locale)
+   * @see  LocaleFilter#toLocaleString(java.util.Locale)
    */
   protected abstract Map<String, Locale> getSupportedLocales(ServletRequest request) throws ServletException;
 
@@ -689,7 +689,7 @@ public abstract class LocaleFilter implements Filter {
    *
    * <p>This must be one of the supported locales.</p>
    *
-   * @see  #getSupportedLocales(jakarta.servlet.ServletRequest)
+   * @see  LocaleFilter#getSupportedLocales(jakarta.servlet.ServletRequest)
    */
   protected abstract Locale getDefaultLocale(ServletRequest request, Map<String, Locale> supportedLocales) throws ServletException;
 }
