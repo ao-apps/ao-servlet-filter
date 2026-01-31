@@ -29,12 +29,12 @@ along with ao-servlet-filter.  If not, see <https://www.gnu.org/licenses/>.
     <relativePath>../parent/pom.xml</relativePath>
   </parent>
 
-  <groupId>com.aoapps</groupId><artifactId>ao-servlet-filter</artifactId><version>3.1.0</version>
+  <groupId>com.aoapps</groupId><artifactId>ao-servlet-filter</artifactId><version>3.1.0-POST-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <properties>
     <!-- Must be set to ${git.commit.time} for snapshots or ISO 8601 timestamp for releases. -->
-    <project.build.outputTimestamp>2026-01-31T08:28:03Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>${git.commit.time}</project.build.outputTimestamp>
     <module.name>com.aoapps.servlet.filter</module.name>
 
     <javadoc.breadcrumbs><![CDATA[<a target="${javadoc.target}" href="https://oss.aoapps.com/">AO OSS</a>
@@ -75,7 +75,7 @@ along with ao-servlet-filter.  If not, see <https://www.gnu.org/licenses/>.
     <connection>scm:git:git://github.com/ao-apps/ao-servlet-filter.git</connection>
     <developerConnection>scm:git:git@github.com:ao-apps/ao-servlet-filter.git</developerConnection>
     <url>https://github.com/ao-apps/ao-servlet-filter</url>
-    <tag>ao-servlet-filter-3.1.0</tag>
+    <tag>HEAD</tag>
   </scm>
 
   <issueManagement>
