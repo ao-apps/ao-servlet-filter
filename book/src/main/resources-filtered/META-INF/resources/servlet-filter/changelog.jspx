@@ -37,7 +37,7 @@ along with ao-servlet-filter.  If not, see <https://www.gnu.org/licenses/>.
     shortTitle="Changelog"
     tocLevels="1"
     datePublished="2016-10-29T21:37:35-05:00"
-    dateModified="2026-01-31T08:44:31Z"
+    dateModified="2026-02-05T18:09:30Z"
   >
     <c:set var="latestRelease" value="4.0.0" />
     <c:if test="${
@@ -420,7 +420,7 @@ along with ao-servlet-filter.  If not, see <https://www.gnu.org/licenses/>.
           New <code>AddResponseHeaderFilter</code> filter to add response headers.
           For when filter mappings are not expressive enough, supports both
           lightning-fast <ao:a href="https://oss.aoapps.com/hodgepodge/apidocs/com.aoapps.hodgepodge/com/aoapps/hodgepodge/util/WildcardPatternMatcher.html">WildcardPatternMatcher</ao:a>
-          and standard Java <ao:a rel="nofollow" href="@{javadoc.link.javase}java/util/regex/Pattern.html">Pattern</ao:a>.
+          and standard Java <ao:a rel="nofollow" href="@{documented.javadoc.link.javase}java.base/java/util/regex/Pattern.html">Pattern</ao:a>.
         </li>
       </ul>
     </changelog:release>
