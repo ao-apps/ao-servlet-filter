@@ -97,11 +97,10 @@ public class TrimFilterWriter extends PrintWriter {
     return isTrimEnabledCacheResult;
   }
 
-  /*
-  @Override
-  public void flush() {
-    out.flush();
-  }*/
+  // @Override
+  // public void flush() {
+  //   out.flush();
+  // }
 
   @Override
   @SuppressWarnings("ConvertToTryWithResources")
