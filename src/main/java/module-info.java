@@ -21,7 +21,6 @@
  * along with ao-servlet-filter.  If not, see <https://www.gnu.org/licenses/>.
  */
 module com.aoapps.servlet.filter {
-  exports com.aoapps.servlet.filter;
   // Direct
   requires com.aoapps.collections; // <groupId>com.aoapps</groupId><artifactId>ao-collections</artifactId>
   requires com.aoapps.encoding; // <groupId>com.aoapps</groupId><artifactId>ao-encoding</artifactId>
@@ -33,4 +32,6 @@ module com.aoapps.servlet.filter {
   requires jakarta.servlet; // <groupId>jakarta.servlet</groupId><artifactId>jakarta.servlet-api</artifactId>
   // Java SE
   requires java.logging;
+
+  exports com.aoapps.servlet.filter;
 }
