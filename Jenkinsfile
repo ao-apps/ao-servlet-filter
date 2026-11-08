@@ -47,6 +47,11 @@ binding.setVariable('upstreamProjects', [
   'javaee-web-api-bom', // <groupId>com.aoapps</groupId><artifactId>javaee-web-api-bom</artifactId>
 ])
 
+// All projects that use this library declare and update versions for all transitive dependencies.
+// While the latest *-SNAPSHOT of this library will have up-to-date dependencies,
+// this project will not be re-released solely for updated dependency versions.
+binding.setVariable('scmAdditionalAuditBranches', [])
+
 /******************************************************************************************
  *                                                                                        *
  * Everything below this line is identical for all projects, except the copied matrix     *
